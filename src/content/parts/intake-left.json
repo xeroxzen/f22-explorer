@@ -36,8 +36,8 @@
       "value": "Fixed-geometry caret inlet + S-duct",
       "unit": "",
       "status": "SOURCED",
-      "source": "NASA NTRS / Virginia Tech F-22 Aerodynamic Planform Reference",
-      "urlOrLocator": "https://ntrs.nasa.gov/search?q=F-22+wing+sweep+42",
+      "source": "Wikipedia — Lockheed Martin F-22 Raptor Specifications (citing Jay Miller, Aerofax, 2005)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor#Specifications_(F-22A)",
       "accessed": "2026-11-24",
       "snippet": "Fixed-geometry caret supersonic inlets with S-ducts"
     },
@@ -57,10 +57,10 @@
       "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
     },
     {
-      "title": "NASA NTRS / Virginia Tech F-22 Aerodynamic Planform Reference",
-      "urlOrLocator": "https://ntrs.nasa.gov/search?q=F-22+wing+sweep+42",
+      "title": "Wikipedia — Lockheed Martin F-22 Raptor Specifications (citing Jay Miller, Aerofax, 2005)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor#Specifications_(F-22A)",
       "accessed": "2026-11-24",
-      "snippet": "42-degree leading-edge sweep, 840 sq ft wing, 28-degree tail cant"
+      "snippet": "Wing area 840 sq ft (78.04 m²), 42° sweep, 28° tail cant"
     }
   ]
 }

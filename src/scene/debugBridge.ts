@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 import { soundEngine } from '../audio/soundEngine.js';
-import { useExplorerStore, type QualityTier } from '../store/explorerStore.js';
+import { findExactPartCollisionsAtExplode } from './f22Geometry.js';
+import {
+  useExplorerStore,
+  type CameraPresetId,
+  type ClipAxis,
+  type QualityTier,
+} from '../store/explorerStore.js';
 
 interface RegisteredHitbox {
   readonly partId: string;
@@ -121,6 +127,11 @@ export function installDebugHook(): void {
         soundMuted: s.soundMuted,
         selectedPartId: s.selectedPartId,
         showInspector: s.showInspector,
+        showPartTree: s.showPartTree,
+        explodeFactor: s.explodeFactor,
+        xrayMode: s.xrayMode,
+        clipAxis: s.clipAxis,
+        clipPosition: s.clipPosition,
         bottomSheetHeightPx: s.bottomSheetHeightPx,
         rightDrawerWidthPx: s.rightDrawerWidthPx,
         mobileControlsHidden: s.mobileControlsHidden,
@@ -138,6 +149,21 @@ export function installDebugHook(): void {
     },
     setShowInspector(open: boolean) {
       useExplorerStore.getState().setShowInspector(open);
+    },
+    setShowPartTree(open: boolean) {
+      useExplorerStore.getState().setShowPartTree(open);
+    },
+    setExplodeFactor(v: number) {
+      useExplorerStore.getState().setExplodeFactor(v);
+    },
+    setXrayMode(enabled: boolean) {
+      useExplorerStore.getState().setXrayMode(enabled);
+    },
+    setClipAxis(axis: ClipAxis) {
+      useExplorerStore.getState().setClipAxis(axis);
+    },
+    setCameraPreset(preset: CameraPresetId) {
+      useExplorerStore.getState().setCameraPreset(preset);
     },
     setMobileControlsHidden(hidden: boolean) {
       useExplorerStore.getState().setMobileControlsHidden(hidden);
@@ -197,28 +223,13 @@ export function installDebugHook(): void {
       };
     },
     /**
-     * Check axis-aligned bounding-box intersections among all registered parts
-     * (used in Phase 2+ e2e tests to assert zero unintended interpenetration / explode collisions).
+     * Exact 3D Separating Axis Theorem (SAT) collision check across all 44 parts
+     * at the current explode factor.
      */
     checkPartIntersections(toleranceM = 0.005) {
       if (!activeScene) return [];
-      activeScene.updateMatrixWorld(true);
-      const entries = Array.from(hitboxes.values());
-      const boxes = entries.map((e) => {
-        const box = new THREE.Box3().setFromObject(e.boundsMesh);
-        box.expandByScalar(-toleranceM);
-        return { partId: e.partId, box };
-      });
-
-      const overlaps: Array<{ a: string; b: string }> = [];
-      for (let i = 0; i < boxes.length; i++) {
-        for (let j = i + 1; j < boxes.length; j++) {
-          if (boxes[i]!.box.intersectsBox(boxes[j]!.box)) {
-            overlaps.push({ a: boxes[i]!.partId, b: boxes[j]!.partId });
-          }
-        }
-      }
-      return overlaps;
+      const factor = useExplorerStore.getState().explodeFactor;
+      return findExactPartCollisionsAtExplode(factor, toleranceM);
     },
   };
 }

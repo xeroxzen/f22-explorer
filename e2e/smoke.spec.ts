@@ -5,8 +5,8 @@ import {
   waitForExplorerReady,
 } from './helpers.js';
 
-test.describe('Phase 0 Desktop Empty Hangar Smoke', () => {
-  test('renders empty hangar scene, inspector, quality tiers, and muted audio with zero console errors', async ({
+test.describe('Phase 2 Desktop F-22 Hangar, Disassembly & Collision Checks', () => {
+  test('renders lofted 44-part F-22 from front/top/side/3-4 views, zero collisions, system-tinted explode & leader labels', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -21,33 +21,79 @@ test.describe('Phase 0 Desktop Empty Hangar Smoke', () => {
     const state = await waitForExplorerReady(page);
     expect(state.sceneReady).toBe(true);
     expect(state.soundMuted).toBe(true);
+    expect(state.registeredHitboxes.length).toBe(44);
 
-    const canvas = page.locator('canvas');
-    await expect(canvas).toBeVisible();
-    const box = await canvas.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.width).toBeGreaterThan(800);
-    expect(box!.height).toBeGreaterThan(500);
+    // 1. Assert ZERO unintended part interpenetration in assembled state (explode = 0)
+    const assembledOverlaps = await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { checkPartIntersections: (tol?: number) => Array<{ a: string; b: string }> };
+        }
+      ).__f22debug;
+      return dbg.checkPartIntersections(0.005);
+    });
+    expect(assembledOverlaps).toEqual([]);
 
-    // Quality tier switching works
-    await page.getByTestId('quality-low').click();
-    await expect(page.getByTestId('quality-low')).toHaveClass(/active/);
-    await page.getByTestId('quality-high').click();
+    // Capture 3/4, Front (28° tail cant), Top (42° diamond wing), Side (chined profile + canopy)
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-assembled.png');
 
-    // Open inspector & ensure top bar does not overlap inspector
-    await page.getByTestId('inspector-toggle-btn').click();
+    await page.getByTestId('cam-front').click();
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-front.png');
+
+    await page.getByTestId('cam-top').click();
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-top.png');
+
+    await page.getByTestId('cam-side').click();
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-side.png');
+
+    await page.getByTestId('cam-three-quarter').click();
+    await page.waitForTimeout(750);
+
+    // 2. Explode to 100%, let smooth directional explode + camera auto-fit settle, assert ZERO collisions
+    await page.getByTestId('explode-toggle-btn').click();
+    await page.waitForTimeout(950);
+    await expect(page.getByTestId('system-legend')).toBeVisible();
+
+    const explodedOverlaps = await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { checkPartIntersections: (tol?: number) => Array<{ a: string; b: string }> };
+        }
+      ).__f22debug;
+      return dbg.checkPartIntersections(0.005);
+    });
+    expect(explodedOverlaps).toEqual([]);
+
+    // 3. Open Part Tree, select engine-f119-left, verify leader-line label + dual-badge Inspector
+    await page.getByTestId('part-tree-toggle-btn').click();
+    await expect(page.getByTestId('part-tree-panel')).toBeVisible();
+    await page.getByTestId('tree-part-engine-f119-left').click();
     await expect(page.getByTestId('inspector-panel')).toBeVisible();
-    await expect(page.getByTestId('inspector-empty')).toBeVisible();
+    await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
+    await expect(page.getByTestId('leader-label-engine-f119-left')).toBeVisible();
     await assertNoElementOverlap(
       page,
       '[data-testid="top-bar"]',
       '[data-testid="inspector-panel"]'
     );
 
-    await savePhaseScreenshot(page, 'docs/screenshots/phase0/desktop-hangar-inspector.png');
+    await savePhaseScreenshot(
+      page,
+      'docs/screenshots/phase2/desktop-exploded-inspector.png'
+    );
 
+    // 4. Assemble + enable X-Ray + longitudinal section cut X
+    await page.getByTestId('part-tree-close-btn').click();
     await page.getByTestId('inspector-close-btn').click();
-    await expect(page.getByTestId('inspector-panel')).toHaveCount(0);
+    await page.getByTestId('explode-toggle-btn').click();
+    await page.getByTestId('xray-toggle-btn').click();
+    await page.getByTestId('clip-x').click();
+    await page.waitForTimeout(900);
+
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-xray-section.png');
 
     expect(consoleErrors).toEqual([]);
     expect(pageErrors).toEqual([]);

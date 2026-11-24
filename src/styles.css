@@ -402,14 +402,222 @@ body,
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* Desktop Part Tree Panel */
+.part-tree-panel {
+  position: fixed;
+  top: 64px;
+  left: 14px;
+  bottom: 74px;
+  width: 280px;
+  max-width: calc(100vw - 28px);
+  z-index: 24;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+.part-tree-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.mini-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mini-btn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.tree-group {
+  margin-bottom: 12px;
+}
+
+.tree-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+
+.tree-row.dimmed .tree-select-btn {
+  opacity: 0.45;
+}
+
+.tree-select-btn {
+  flex: 1;
+  text-align: left;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 5px 7px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tree-select-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tree-row.selected .tree-select-btn {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.tree-vis-btn {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--panel-border);
+  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Bottom Disassembly Dock */
+.bottom-dock {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  z-index: 22;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 14px;
+  max-width: calc(100vw - 24px);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+}
+
+.dock-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.dock-slider input[type='range'] {
+  width: 110px;
+  accent-color: var(--accent);
+}
+
+.dock-clip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dock-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Leader-Line 3D Part Callout */
+.leader-callout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgba(13, 18, 25, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  color: #f1f5f9;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.leader-callout::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 18px;
+  background: rgba(56, 189, 248, 0.75);
+}
+
+.leader-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Exploded Mode System Tint Legend */
+.system-legend {
+  position: fixed;
+  top: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 19;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(15, 22, 33, 0.85);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(8px);
+  font-size: 10px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
 @media (max-width: 600px) {
   .brand-sub {
     display: none;
   }
-  .status-pill {
-    font-size: 10px;
-    left: 10px;
-    right: 10px;
-    text-align: center;
+  .dock-slider input[type='range'] {
+    width: 82px;
   }
 }
