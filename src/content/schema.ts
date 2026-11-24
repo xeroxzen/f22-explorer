@@ -36,6 +36,8 @@ export interface SourceCitation {
   readonly accessed: string;
   /** Short supporting snippet (< 15 words) or section locator. */
   readonly snippet: string;
+  /** Must be true whenever snippet is enclosed in quotation marks (verified verbatim by hand). */
+  readonly verbatim?: boolean;
 }
 
 export interface ComponentSpec {
@@ -50,6 +52,8 @@ export interface ComponentSpec {
   readonly accessed?: string;
   /** Required for SOURCED specs: short supporting snippet (< 15 words) or locator. */
   readonly snippet?: string;
+  /** Must be true whenever snippet is enclosed in quotation marks (verified verbatim by hand). */
+  readonly verbatim?: boolean;
 }
 
 export interface ModelingNotes {
@@ -101,6 +105,17 @@ function isTupleOfNumbers(val: unknown, len: number): boolean {
 
 function wordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+/**
+ * Returns true if a snippet contains quotation marks (indicating a direct quote
+ * that must be explicitly marked `verbatim: true` and verified by hand).
+ */
+export function isQuotedSnippet(text: string): boolean {
+  const trimmed = text.trim();
+  if (/^["'“‘].*["'”’]$/.test(trimmed)) return true;
+  if (/["“][^"”]+["”]/.test(trimmed)) return true;
+  return false;
 }
 
 export function validateComponentContent(
@@ -206,6 +221,14 @@ export function validateComponentContent(
     if (wordCount(c['snippet'] as string) > 15) {
       throw new Error(`${fileHint}: sources[${i}].snippet must be 15 words or fewer`);
     }
+    if (c['verbatim'] !== undefined && typeof c['verbatim'] !== 'boolean') {
+      throw new Error(`${fileHint}: sources[${i}].verbatim must be a boolean`);
+    }
+    if (isQuotedSnippet(c['snippet'] as string) && c['verbatim'] !== true) {
+      throw new Error(
+        `${fileHint}: sources[${i}].snippet is in quotes and must be marked verbatim: true`
+      );
+    }
   }
 
   if (!Array.isArray(obj['specs']) || obj['specs'].length === 0) {
@@ -242,6 +265,14 @@ export function validateComponentContent(
       }
       if (wordCount(s['snippet'] as string) > 15) {
         throw new Error(`${fileHint}: specs[${i}].snippet must be 15 words or fewer`);
+      }
+      if (s['verbatim'] !== undefined && typeof s['verbatim'] !== 'boolean') {
+        throw new Error(`${fileHint}: specs[${i}].verbatim must be a boolean`);
+      }
+      if (isQuotedSnippet(s['snippet'] as string) && s['verbatim'] !== true) {
+        throw new Error(
+          `${fileHint}: specs[${i}].snippet is in quotes and must be marked verbatim: true`
+        );
       }
     }
   }

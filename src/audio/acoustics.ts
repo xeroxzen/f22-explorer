@@ -21,6 +21,8 @@ export interface AcousticInputs {
   readonly afterburnerFraction: number;
   /** Number of running engines (0, 1, or 2). */
   readonly activeEngineCount: number;
+  /** Optional APU spool fraction [0..1] for autonomous start whine. */
+  readonly apuSpoolFraction?: number;
 }
 
 export interface AcousticOutputs {
@@ -62,7 +64,9 @@ export function evaluateAcoustics(inp: AcousticInputs): AcousticOutputs {
   const activeEngines = Math.max(0, inp.activeEngineCount);
   const spool = Math.max(0, Math.min(1, inp.spoolFraction));
   const ab = Math.max(0, Math.min(1, inp.afterburnerFraction));
-  const continuousMuted = !inp.running || activeEngines <= 0 || spool <= 0.001;
+  const apu = Math.max(0, Math.min(1, inp.apuSpoolFraction ?? 0));
+  const hasEngineSound = activeEngines > 0 && spool > 0.001;
+  const continuousMuted = !inp.running || (!hasEngineSound && apu <= 0.01);
 
   if (continuousMuted) {
     return {
@@ -80,7 +84,7 @@ export function evaluateAcoustics(inp: AcousticInputs): AcousticOutputs {
   }
 
   // Twin-engine acoustic power scaling (~+3 dB for 2 engines vs 1)
-  const engineScale = Math.min(1, Math.sqrt(activeEngines / 2));
+  const engineScale = hasEngineSound ? Math.min(1, Math.sqrt(activeEngines / 2)) : 0;
 
   // Inverse-distance rolloff with 8 m near-field reference radius
   const refDistM = 8;
@@ -94,10 +98,10 @@ export function evaluateAcoustics(inp: AcousticInputs): AcousticOutputs {
   const extScale = inp.isInterior ? 0.12 : distAtten;
   const rumbleGain = Math.min(1, engineScale * (0.25 + 0.55 * spool + 0.2 * ab) * extScale);
   const roarGain = Math.min(1, engineScale * (0.15 + 0.65 * spool + 0.2 * ab) * extScale);
-  const whineGain = Math.min(1, engineScale * spool * 0.45 * extScale);
+  const whineGain = Math.min(1, (engineScale * spool * 0.45 + apu * 0.35) * extScale);
   const crackleGain = Math.min(1, engineScale * ab * 0.85 * extScale);
   const interiorGain = inp.isInterior
-    ? Math.min(1, engineScale * (0.2 + 0.5 * spool + 0.3 * ab))
+    ? Math.min(1, (engineScale * (0.2 + 0.5 * spool + 0.3 * ab) + apu * 0.15))
     : 0;
 
   return {

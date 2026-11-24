@@ -1,11 +1,11 @@
 {
   "id": "internal-ordnance-display",
-  "title": "Internal Carriage Overview (AIM-120 / JDAM)",
+  "title": "Internal Carriage Overview (AIM-120 / JDAM / SDB)",
   "parentId": "main-weapons-bay",
   "category": "Weapons Bays & Gun",
   "existenceLabel": "SOURCED",
   "geometryLabel": "APPROXIMATE",
-  "summary": "Educational schematic shapes representing the publicly documented internal air-to-air (6 × AIM-120) and air-to-ground (2 × JDAM + 2 × AIM-120) carriage layouts.",
+  "summary": "Educational schematic shapes scaled to public USAF Fact Sheet lengths representing internal air-to-air (6 × AIM-120 + 2 × AIM-9X), precision strike (2 × GBU-32 JDAM + 2 × AIM-120), and small-diameter bomb (2 × BRU-61/A racks × 4 GBU-39B SDB + 2 × AIM-120) loadouts.",
   "role": "Illustrates internal bay volume and carriage geometry at a public-overview level with no classified weapons detail.",
   "modelingNotes": {
     "stationRangeM": [
@@ -17,8 +17,8 @@
       0.45,
       3.7
     ],
-    "proportionReference": "USAF AIM-120 length (3.66 m) & public internal bay loadout",
-    "confidence": "MEDIUM"
+    "proportionReference": "USAF Fact Sheet store lengths: AIM-120 (3.66 m), AIM-9X (3.02 m), GBU-32 (3.04 m), GBU-39B (1.80 m)",
+    "confidence": "HIGH"
   },
   "interaction": {
     "explodes": true,
@@ -31,7 +31,7 @@
   },
   "specs": [
     {
-      "label": "Reference AIM-120 Length",
+      "label": "AIM-120 AMRAAM Length",
       "value": "3.66 (12 ft)",
       "unit": "m",
       "status": "SOURCED",
@@ -41,14 +41,34 @@
       "snippet": "Length: 12 feet (3.66 meters)"
     },
     {
-      "label": "Air-to-Air Configuration",
-      "value": "6 × AIM-120 AMRAAM (public overview)",
-      "unit": "",
+      "label": "AIM-9X Sidewinder Length",
+      "value": "3.02 (9 ft 11 in)",
+      "unit": "m",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
-      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "source": "USAF AIM-9 Sidewinder Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104577/aim-9-sidewinder/",
       "accessed": "2026-11-24",
-      "snippet": "Six AIM-120 AMRAAM internal carriage"
+      "snippet": "Length: 9 feet 11 inches (3.02 meters)"
+    },
+    {
+      "label": "GBU-32 1,000-lb JDAM Length",
+      "value": "3.04 (119.5 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF Joint Direct Attack Munition (GBU-31/32/38) Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104555/joint-direct-attack-munition-gbu-313238/",
+      "accessed": "2026-11-24",
+      "snippet": "GBU-32 1,000-lb JDAM length 119.5 inches (3.04 meters)"
+    },
+    {
+      "label": "GBU-39B SDB Length & Rack",
+      "value": "1.80 (70.8 in), 4 per BRU-61/A rack × 2 racks",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF GBU-39B Small Diameter Bomb Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104581/gbu-39b-small-diameter-bomb-weapon-system/",
+      "accessed": "2026-11-24",
+      "snippet": "Length 70.8 inches (1.8 m); 4 bombs per BRU-61/A rack"
     },
     {
       "label": "Guidance / Seeker Performance",
@@ -60,22 +80,28 @@
   ],
   "sources": [
     {
-      "title": "USAF F-22 Raptor Official Fact Sheet",
-      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
-      "accessed": "2026-11-24",
-      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
-    },
-    {
-      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
-      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
-      "accessed": "2026-11-24",
-      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
-    },
-    {
       "title": "USAF AIM-120 AMRAAM Fact Sheet",
       "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104576/aim-120-amraam/",
       "accessed": "2026-11-24",
-      "snippet": "Length: 12 feet (3.66 meters)"
+      "snippet": "AIM-120 length 12 ft (3.66 m)"
+    },
+    {
+      "title": "USAF AIM-9 Sidewinder Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104577/aim-9-sidewinder/",
+      "accessed": "2026-11-24",
+      "snippet": "AIM-9X length 9 ft 11 in (3.02 m)"
+    },
+    {
+      "title": "USAF Joint Direct Attack Munition (GBU-31/32/38) Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104555/joint-direct-attack-munition-gbu-313238/",
+      "accessed": "2026-11-24",
+      "snippet": "GBU-32 1,000-lb JDAM length 119.5 in (3.04 m)"
+    },
+    {
+      "title": "USAF GBU-39B Small Diameter Bomb Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104581/gbu-39b-small-diameter-bomb-weapon-system/",
+      "accessed": "2026-11-24",
+      "snippet": "GBU-39B length 70.8 in (1.80 m), 4 per BRU-61/A carriage"
     }
   ]
 }

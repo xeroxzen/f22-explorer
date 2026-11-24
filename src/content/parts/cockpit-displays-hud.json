@@ -4,8 +4,8 @@
   "parentId": "cockpit-tub",
   "category": "Forward Fuselage & Cockpit",
   "existenceLabel": "SOURCED",
-  "geometryLabel": "ASSUMED",
-  "summary": "All-glass instrument panel layout featuring a wide-angle Head-Up Display (HUD), Integrated Control Panel (ICP), and six color liquid-crystal displays (1 primary MFD, 3 secondary MFDs, 2 up-front displays) rendered as generic educational schematics.",
+  "geometryLabel": "SOURCED",
+  "summary": "All-glass instrument panel layout featuring a wide-angle Head-Up Display (HUD), Integrated Control Panel (ICP), four reconfigurable color LCDs (one 8×8 in primary MFD, three 6.5×6.5 in secondary MFDs), and two 3×4 in up-front displays, rendered with generic educational graphics only.",
   "role": "Presents flight, navigation, engine, and tactical situational awareness to the pilot.",
   "modelingNotes": {
     "stationRangeM": [
@@ -17,8 +17,8 @@
       0.65,
       0.6
     ],
-    "proportionReference": "Public USAF cockpit layout descriptions (generic schematic only)",
-    "confidence": "MEDIUM"
+    "proportionReference": "Lockheed Martin Code One ('The New Front Office'): 1× 8×8 in, 3× 6.5×6.5 in, 2× 3×4 in LCDs",
+    "confidence": "HIGH"
   },
   "interaction": {
     "explodes": true,
@@ -31,29 +31,48 @@
   },
   "specs": [
     {
-      "label": "Display Suite",
-      "value": "Wide-angle HUD + 6 color LCDs (1 primary, 3 secondary, 2 up-front) + ICP",
+      "label": "Reconfigurable MFDs",
+      "value": "4 color LCDs: one 8 × 8 in (0.203 m) primary + three 6.5 × 6.5 in (0.165 m) secondary",
       "unit": "",
       "status": "SOURCED",
-      "source": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
-      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "source": "Lockheed Martin Code One — The New Front Office (John Kent, 2006)",
+      "urlOrLocator": "https://www.codeonemagazine.com/",
       "accessed": "2026-11-24",
-      "snippet": "Six liquid crystal displays plus HUD and ICP"
+      "snippet": "\"four reconfigurable liquid crystal displays — three 6.5 and one 8\"",
+      "verbatim": true
+    },
+    {
+      "label": "Up-Front Displays (UFDs)",
+      "value": "2 non-reconfigurable 3 × 4 in (0.076 × 0.102 m) displays flanking the ICP",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin Code One — The New Front Office (John Kent, 2006)",
+      "urlOrLocator": "https://www.codeonemagazine.com/",
+      "accessed": "2026-11-24",
+      "snippet": "\"two non reconfigurable 3- by 4-inch up front displays\"",
+      "verbatim": true
     },
     {
       "label": "Operational Symbology & Software",
       "value": "Not publicly disclosed",
       "unit": "",
       "status": "NOT_PUBLICLY_DISCLOSED",
-      "source": "Classified; explorer shows generic educational labels only"
+      "source": "Classified; explorer shows generic educational gauges only"
     }
   ],
   "sources": [
     {
-      "title": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
-      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "title": "Lockheed Martin Code One — The New Front Office (John Kent, June 15, 2006)",
+      "urlOrLocator": "https://www.codeonemagazine.com/",
       "accessed": "2026-11-24",
-      "snippet": "Six color LCDs: primary MFD, secondary MFDs, up-front displays"
+      "snippet": "\"four reconfigurable liquid crystal displays — three 6.5 and one 8\"",
+      "verbatim": true
+    },
+    {
+      "title": "HowStuffWorks — F-22 Raptor Cockpit (Page 7)",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor7.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Secondary overview of F-22 glass cockpit HUD, ICP, and six LCDs"
     },
     {
       "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",

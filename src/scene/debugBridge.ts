@@ -135,8 +135,19 @@ export function installDebugHook(): void {
         bottomSheetHeightPx: s.bottomSheetHeightPx,
         rightDrawerWidthPx: s.rightDrawerWidthPx,
         mobileControlsHidden: s.mobileControlsHidden,
+        enginePhase: s.engineSim.phase,
+        engineOutdoors: s.engineSim.outdoors,
+        leftThrustLbf: s.engineSim.left.thrustLbf,
+        rightThrustLbf: s.engineSim.right.thrustLbf,
+        afterburnerOn: s.engineSim.left.afterburnerOn,
         registeredHitboxes: Array.from(hitboxes.keys()),
       };
+    },
+    tickEngineSim(dtS: number) {
+      useExplorerStore.getState().tickEngineSim(dtS);
+    },
+    setEnginePreset(preset: 'off' | 'mid-start' | 'idle' | 'mil' | 'ab') {
+      useExplorerStore.getState().setEnginePreset(preset);
     },
     getSoundState() {
       return soundEngine.getDebugState();

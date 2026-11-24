@@ -18,4 +18,5 @@
 ## Branching & Validation Hygiene (Non-Negotiable)
 - **Feature branches only:** Work on one feature branch per phase (e.g., `feat/phase-0-bootstrap`), never push unreviewed work directly to `main` (pushing to `main` auto-deploys to GitHub Pages). Merge to `main` (merge commit, no squash) and tag releases only after explicit review.
 - **Phase screenshots:** Capture desktop + mobile screenshots under `docs/screenshots/phaseN/` and stop for review after each phase.
+- **Verbatim quote review checklist:** Any content JSON `snippet` enclosed in quotation marks MUST set `verbatim: true` (enforced by `tests/content-schema.test.ts`), and reviewers must verify every `verbatim: true` snippet by hand against the cited source before merging.
 - **Geometry & collision assertions (Phase 2+):** E2E tests must assert zero unintended part interpenetration in the assembled state and zero collisions along explode vectors.

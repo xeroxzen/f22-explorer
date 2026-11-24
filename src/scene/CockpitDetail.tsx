@@ -1,20 +1,87 @@
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
+import type { EngineSimState } from '../sim/engineSim.js';
 import { fsToZ } from './f22Geometry.js';
+import { COCKPIT_DISPLAY_DIMENSIONS_M } from './storeDimensions.js';
 import { useExplorerStore } from '../store/explorerStore.js';
 
 type ScreenKind =
   | 'pri-attitude'
   | 'sec-grid'
-  | 'sec-engine'
   | 'sec-stores'
   | 'ufd-left'
   | 'ufd-right'
   | 'icp'
   | 'hud';
 
-function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
+/**
+ * Redraw the Right Secondary MFD (generic engine gauges) from the live EngineSimState.
+ * Driven by the exact same state as the 3D nozzles, exhaust plumes, and outside HUD.
+ */
+export function drawEngineMfdCanvas(
+  ctx: CanvasRenderingContext2D,
+  engineSim: EngineSimState
+): void {
+  ctx.fillStyle = '#071019';
+  ctx.fillRect(0, 0, 256, 256);
+  ctx.strokeStyle = engineSim.left.afterburnerOn ? '#f97316' : '#1e3a52';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(4, 4, 248, 248);
+
+  // Header + AB indicator
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('ENG · GENERIC', 16, 26);
+
+  const abOn = engineSim.left.afterburnerOn || engineSim.right.afterburnerOn;
+  ctx.fillStyle = abOn ? '#f97316' : '#1e293b';
+  ctx.fillRect(156, 10, 86, 22);
+  ctx.fillStyle = abOn ? '#0b1120' : '#94a3b8';
+  ctx.font = 'bold 13px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(abOn ? 'AB: ON' : 'AB: OFF', 199, 26);
+
+  // 4 live vertical bar graphs: L N2%, R N2%, THR%, NOZ%
+  const avgThrustPct = ((engineSim.left.thrustFraction + engineSim.right.thrustFraction) / 2) * 100;
+  const avgNozPct = ((engineSim.left.nozzleOpenFraction + engineSim.right.nozzleOpenFraction) / 2) * 100;
+  const bars = [
+    { x: 24, pct: engineSim.left.n2Pct, lbl: 'L N2', col: '#38bdf8' },
+    { x: 82, pct: engineSim.right.n2Pct, lbl: 'R N2', col: '#38bdf8' },
+    { x: 140, pct: avgThrustPct, lbl: 'THR%', col: abOn ? '#f97316' : '#22c55e' },
+    { x: 198, pct: avgNozPct, lbl: 'NOZ%', col: '#eab308' },
+  ];
+
+  const barTop = 60;
+  const barMaxH = 136;
+  for (const b of bars) {
+    const clamped = Math.max(0, Math.min(100, b.pct));
+    const h = (clamped / 100) * barMaxH;
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(b.x, barTop, 34, barMaxH);
+    ctx.fillStyle = b.col;
+    ctx.fillRect(b.x, barTop + barMaxH - h, 34, h);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${Math.round(clamped)}`, b.x + 17, barTop - 8);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillText(b.lbl, b.x + 17, barTop + barMaxH + 18);
+  }
+
+  // Footer regime & phase status
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  const statusLine =
+    engineSim.phase === 'RUNNING'
+      ? `MODE: ${engineSim.left.regime} · APU OFF`
+      : `PHASE: ${engineSim.phase}`;
+  ctx.fillText(statusLine, 128, 240);
+}
+
+function makeStaticScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
   const c = document.createElement('canvas');
   c.width = 256;
   c.height = 256;
@@ -25,7 +92,6 @@ function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
     ctx.strokeStyle = '#4ade80';
     ctx.fillStyle = '#4ade80';
     ctx.lineWidth = 3;
-    // Generic pitch ladder & horizon line
     ctx.beginPath();
     ctx.moveTo(40, 128);
     ctx.lineTo(104, 128);
@@ -40,11 +106,9 @@ function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
       ctx.lineTo(164, 128 + dy);
       ctx.stroke();
     }
-    // Center reticle
     ctx.beginPath();
     ctx.arc(128, 128, 10, 0, Math.PI * 2);
     ctx.stroke();
-    // Top heading tape
     ctx.beginPath();
     ctx.moveTo(48, 36);
     ctx.lineTo(208, 36);
@@ -59,7 +123,6 @@ function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
     return tex;
   }
 
-  // Dark CRT/LCD background
   ctx.fillStyle = '#071019';
   ctx.fillRect(0, 0, 256, 256);
   ctx.strokeStyle = '#1e3a52';
@@ -67,7 +130,6 @@ function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
   ctx.strokeRect(4, 4, 248, 248);
 
   if (kind === 'pri-attitude') {
-    // Generic attitude ball (blue sky / brown ground)
     ctx.save();
     ctx.beginPath();
     ctx.arc(128, 134, 78, 0, Math.PI * 2);
@@ -91,12 +153,11 @@ function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
     ctx.fillStyle = '#e0f2fe';
     ctx.font = 'bold 16px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('PRIMARY MFD', 128, 28);
+    ctx.fillText('PRIMARY MFD (8×8")', 128, 28);
     ctx.font = '12px monospace';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText('GENERIC ATTITUDE', 128, 238);
   } else if (kind === 'sec-grid') {
-    // Generic tactical range rings & map grid
     ctx.strokeStyle = '#14532d';
     ctx.lineWidth = 2;
     for (let x = 32; x < 256; x += 32) {
@@ -122,33 +183,11 @@ function makeScreenTexture(kind: ScreenKind): THREE.CanvasTexture {
     ctx.font = 'bold 15px monospace';
     ctx.textAlign = 'center';
     ctx.fillText('SEC MFD · GRID', 128, 28);
-  } else if (kind === 'sec-engine') {
-    // Generic twin-engine vertical bar graphs
-    ctx.fillStyle = '#fbbf24';
-    ctx.font = 'bold 15px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('ENGINE · GENERIC', 128, 28);
-    const bars = [
-      { x: 42, h: 120, lbl: 'L N2', col: '#38bdf8' },
-      { x: 92, h: 118, lbl: 'R N2', col: '#38bdf8' },
-      { x: 146, h: 95, lbl: 'EGT', col: '#f59e0b' },
-      { x: 196, h: 135, lbl: 'FUEL', col: '#22c55e' },
-    ];
-    for (const b of bars) {
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(b.x, 54, 28, 150);
-      ctx.fillStyle = b.col;
-      ctx.fillRect(b.x, 204 - b.h, 28, b.h);
-      ctx.fillStyle = '#e2e8f0';
-      ctx.font = '12px monospace';
-      ctx.fillText(b.lbl, b.x + 14, 226);
-    }
   } else if (kind === 'sec-stores') {
     ctx.fillStyle = '#c084fc';
     ctx.font = 'bold 15px monospace';
     ctx.textAlign = 'center';
     ctx.fillText('STORES · GENERIC', 128, 28);
-    // Simple generic wing/bay box schematic
     ctx.strokeStyle = '#a855f7';
     ctx.lineWidth = 3;
     ctx.strokeRect(86, 68, 84, 118);
@@ -214,7 +253,7 @@ function BezeledDisplay({
   clippingPlanes,
   onSelect,
 }: BezeledDisplayProps) {
-  const bezelPad = 0.018;
+  const bezelPad = 0.014;
   const btnCount = 4;
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -224,27 +263,24 @@ function BezeledDisplay({
 
   return (
     <group position={position} rotation={rotation} onClick={handleClick}>
-      {/* Matte dark outer bezel */}
       <mesh>
         <boxGeometry args={[width + bezelPad * 2, height + bezelPad * 2, 0.022]} />
         <meshStandardMaterial color="#181f28" roughness={0.65} metalness={0.35} clippingPlanes={clippingPlanes} />
       </mesh>
-      {/* Glowing generic LCD screen */}
       <mesh position={[0, 0, 0.013]}>
         <planeGeometry args={[width, height]} />
         <meshBasicMaterial map={texture} clippingPlanes={clippingPlanes} />
       </mesh>
-      {/* Perimeter bezel option select buttons (top & bottom rows) */}
       {Array.from({ length: btnCount }).map((_, i) => {
         const bx = -width * 0.36 + (i / (btnCount - 1)) * (width * 0.72);
         return (
           <group key={i}>
             <mesh position={[bx, height / 2 + bezelPad * 0.5, 0.013]}>
-              <boxGeometry args={[0.012, 0.008, 0.006]} />
+              <boxGeometry args={[0.011, 0.007, 0.006]} />
               <meshStandardMaterial color="#64748b" clippingPlanes={clippingPlanes} />
             </mesh>
             <mesh position={[bx, -height / 2 - bezelPad * 0.5, 0.013]}>
-              <boxGeometry args={[0.012, 0.008, 0.006]} />
+              <boxGeometry args={[0.011, 0.007, 0.006]} />
               <meshStandardMaterial color="#64748b" clippingPlanes={clippingPlanes} />
             </mesh>
           </group>
@@ -260,26 +296,48 @@ export function CockpitDetail({
   readonly clippingPlanes: readonly THREE.Plane[];
 }) {
   const selectPart = useExplorerStore((s) => s.selectPart);
+  const engineSim = useExplorerStore((s) => s.engineSim);
   const cp = clippingPlanes as THREE.Plane[];
 
   const textures = useMemo(() => {
     if (typeof document === 'undefined') return null;
+    const engCanvas = document.createElement('canvas');
+    engCanvas.width = 256;
+    engCanvas.height = 256;
+    const engTex = new THREE.CanvasTexture(engCanvas);
     return {
-      pri: makeScreenTexture('pri-attitude'),
-      grid: makeScreenTexture('sec-grid'),
-      eng: makeScreenTexture('sec-engine'),
-      stores: makeScreenTexture('sec-stores'),
-      ufdL: makeScreenTexture('ufd-left'),
-      ufdR: makeScreenTexture('ufd-right'),
-      icp: makeScreenTexture('icp'),
-      hud: makeScreenTexture('hud'),
+      pri: makeStaticScreenTexture('pri-attitude'),
+      grid: makeStaticScreenTexture('sec-grid'),
+      stores: makeStaticScreenTexture('sec-stores'),
+      ufdL: makeStaticScreenTexture('ufd-left'),
+      ufdR: makeStaticScreenTexture('ufd-right'),
+      icp: makeStaticScreenTexture('icp'),
+      hud: makeStaticScreenTexture('hud'),
+      engCanvas,
+      engTex,
     };
   }, []);
+
+  // Redraw the live Right Secondary MFD whenever engineSim changes
+  useEffect(() => {
+    if (!textures) return;
+    const ctx = textures.engCanvas.getContext('2d');
+    if (!ctx) return;
+    drawEngineMfdCanvas(ctx, engineSim);
+    textures.engTex.needsUpdate = true;
+  }, [textures, engineSim]);
 
   useEffect(() => {
     return () => {
       if (!textures) return;
-      Object.values(textures).forEach((t) => t.dispose());
+      textures.pri.dispose();
+      textures.grid.dispose();
+      textures.stores.dispose();
+      textures.ufdL.dispose();
+      textures.ufdR.dispose();
+      textures.icp.dispose();
+      textures.hud.dispose();
+      textures.engTex.dispose();
     };
   }, [textures]);
 
@@ -291,11 +349,14 @@ export function CockpitDetail({
     selectPart(id);
   };
 
+  const { primaryMfd, secondaryMfd, upFrontDisplay } = COCKPIT_DISPLAY_DIMENSIONS_M;
+  const throttleRotX = 0.25 - engineSim.throttle * 0.55;
+
   return (
-    <group name="cockpit-interior-detail">
+    <group name="cockpit-interior-detail" position={[0, 0.18, 0]}>
       {/* 1. Sculpted Glare Shield & Coaming Arch */}
-      <mesh position={[0, 2.60, zPanel - 0.04]} onClick={pick('cockpit-displays-hud')}>
-        <boxGeometry args={[0.88, 0.04, 0.34]} />
+      <mesh position={[0, 2.63, zPanel - 0.04]} onClick={pick('cockpit-displays-hud')}>
+        <boxGeometry args={[0.92, 0.04, 0.34]} />
         <meshStandardMaterial color="#141920" roughness={0.85} metalness={0.2} clippingPlanes={cp} />
       </mesh>
       {/* Canopy Sill / Bow Frame visible from pilot seat */}
@@ -308,71 +369,71 @@ export function CockpitDetail({
         <meshStandardMaterial color="#2a323d" metalness={0.5} roughness={0.4} clippingPlanes={cp} />
       </mesh>
 
-      {/* 2. 6 Bezeled Color LCDs + ICP + Wide-Angle HUD */}
-      {/* Top Row: Left UFD, Center ICP, Right UFD */}
+      {/* 2. 6 Bezeled Color LCDs (Lockheed Martin Code One sourced sizes) + ICP + HUD */}
+      {/* Top Row: Left 3×4 in UFD, Center ICP, Right 3×4 in UFD */}
       <BezeledDisplay
-        position={[-0.20, 2.51, zPanel + 0.04]}
+        position={[-0.195, 2.55, zPanel + 0.035]}
         rotation={[-0.14, 0.08, 0]}
-        width={0.105}
-        height={0.085}
+        width={upFrontDisplay.width}
+        height={upFrontDisplay.height}
         texture={textures.ufdL}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
       />
       <BezeledDisplay
-        position={[0, 2.51, zPanel + 0.03]}
+        position={[0, 2.55, zPanel + 0.025]}
         rotation={[-0.14, 0, 0]}
-        width={0.12}
-        height={0.085}
+        width={0.115}
+        height={0.078}
         texture={textures.icp}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
       />
       <BezeledDisplay
-        position={[0.20, 2.51, zPanel + 0.04]}
+        position={[0.195, 2.55, zPanel + 0.035]}
         rotation={[-0.14, -0.08, 0]}
-        width={0.105}
-        height={0.085}
+        width={upFrontDisplay.width}
+        height={upFrontDisplay.height}
         texture={textures.ufdR}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
       />
 
-      {/* Middle Row: Left Secondary MFD, Center Primary MFD (8"x8"), Right Secondary MFD */}
+      {/* Middle Row: Left 6.5×6.5 in Secondary MFD, Center 8×8 in Primary MFD, Right 6.5×6.5 in Live Engine MFD */}
       <BezeledDisplay
-        position={[-0.25, 2.34, zPanel + 0.07]}
-        rotation={[-0.16, 0.14, 0]}
-        width={0.14}
-        height={0.14}
+        position={[-0.24, 2.36, zPanel + 0.065]}
+        rotation={[-0.15, 0.14, 0]}
+        width={secondaryMfd.width}
+        height={secondaryMfd.height}
         texture={textures.grid}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
       />
       <BezeledDisplay
-        position={[0, 2.34, zPanel + 0.05]}
-        rotation={[-0.16, 0, 0]}
-        width={0.19}
-        height={0.18}
+        position={[0, 2.36, zPanel + 0.045]}
+        rotation={[-0.15, 0, 0]}
+        width={primaryMfd.width}
+        height={primaryMfd.height}
         texture={textures.pri}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
       />
       <BezeledDisplay
-        position={[0.25, 2.34, zPanel + 0.07]}
-        rotation={[-0.16, -0.14, 0]}
-        width={0.14}
-        height={0.14}
-        texture={textures.eng}
+        position={[0.24, 2.36, zPanel + 0.065]}
+        rotation={[-0.15, -0.14, 0]}
+        width={secondaryMfd.width}
+        height={secondaryMfd.height}
+        texture={textures.engTex}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
       />
 
-      {/* Lower Center Secondary MFD */}
+      {/* Lower Center 6.5×6.5 in Secondary MFD (Stores) */}
       <BezeledDisplay
-        position={[0, 2.15, zPanel + 0.10]}
-        rotation={[-0.24, 0, 0]}
-        width={0.14}
-        height={0.12}
+        position={[0, 2.13, zPanel + 0.105]}
+        rotation={[-0.26, 0, 0]}
+        width={secondaryMfd.width}
+        height={secondaryMfd.height}
         texture={textures.stores}
         clippingPlanes={cp}
         onSelect={() => selectPart('cockpit-displays-hud')}
@@ -380,7 +441,7 @@ export function CockpitDetail({
 
       {/* Wide-Angle HUD Combiner Glass + Frame */}
       <group
-        position={[0, 2.74, zPanel - 0.02]}
+        position={[0, 2.75, zPanel - 0.02]}
         rotation={[0.28, 0, 0]}
         onClick={pick('cockpit-displays-hud')}
       >
@@ -406,17 +467,17 @@ export function CockpitDetail({
       </group>
 
       {/* 3. Left & Right Side Consoles */}
-      <mesh position={[-0.41, 2.26, fsToZ(4.62)]} rotation={[0, 0, -0.18]} onClick={pick('cockpit-tub')}>
+      <mesh position={[-0.41, 2.24, fsToZ(4.62)]} rotation={[0, 0, -0.18]} onClick={pick('cockpit-tub')}>
         <boxGeometry args={[0.18, 0.08, 1.15]} />
         <meshStandardMaterial color="#1f2732" roughness={0.7} metalness={0.25} clippingPlanes={cp} />
       </mesh>
-      <mesh position={[0.41, 2.26, fsToZ(4.62)]} rotation={[0, 0, 0.18]} onClick={pick('cockpit-tub')}>
+      <mesh position={[0.41, 2.24, fsToZ(4.62)]} rotation={[0, 0, 0.18]} onClick={pick('cockpit-tub')}>
         <boxGeometry args={[0.18, 0.08, 1.15]} />
         <meshStandardMaterial color="#1f2732" roughness={0.7} metalness={0.25} clippingPlanes={cp} />
       </mesh>
 
       {/* 4. Right-Hand HOTAS Side-Stick Controller */}
-      <group position={[0.37, 2.36, fsToZ(4.44)]} onClick={pick('hotas-controls')}>
+      <group position={[0.37, 2.34, fsToZ(4.44)]} onClick={pick('hotas-controls')}>
         <mesh position={[0, -0.02, 0]}>
           <cylinderGeometry args={[0.032, 0.045, 0.06, 12]} />
           <meshStandardMaterial color="#111827" roughness={0.8} clippingPlanes={cp} />
@@ -427,13 +488,13 @@ export function CockpitDetail({
         </mesh>
       </group>
 
-      {/* 5. Left-Hand Dual F119 Throttles */}
-      <group position={[-0.37, 2.34, fsToZ(4.42)]} onClick={pick('hotas-controls')}>
-        <mesh position={[-0.022, 0.04, 0]} rotation={[0.2, 0, 0]}>
+      {/* 5. Left-Hand Dual F119 Throttles (animated with live engineSim.throttle) */}
+      <group position={[-0.37, 2.32, fsToZ(4.42)]} onClick={pick('hotas-controls')}>
+        <mesh position={[-0.022, 0.04, 0]} rotation={[throttleRotX, 0, 0]}>
           <boxGeometry args={[0.022, 0.10, 0.045]} />
           <meshStandardMaterial color="#374151" metalness={0.4} roughness={0.5} clippingPlanes={cp} />
         </mesh>
-        <mesh position={[0.022, 0.04, 0]} rotation={[0.2, 0, 0]}>
+        <mesh position={[0.022, 0.04, 0]} rotation={[throttleRotX, 0, 0]}>
           <boxGeometry args={[0.022, 0.10, 0.045]} />
           <meshStandardMaterial color="#374151" metalness={0.4} roughness={0.5} clippingPlanes={cp} />
         </mesh>

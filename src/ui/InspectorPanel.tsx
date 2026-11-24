@@ -21,6 +21,11 @@ function statusLabel(status: SpecStatus): string {
   return status === 'NOT_PUBLICLY_DISCLOSED' ? 'NOT PUBLICLY DISCLOSED' : status;
 }
 
+function formatSnippet(snippet: string, verbatim?: boolean): string {
+  const clean = snippet.trim().replace(/^["'“‘]+|["'”’]+$/g, '');
+  return verbatim ? `“${clean}”` : clean;
+}
+
 function InspectorBody({ content }: { readonly content: ComponentContent | null }) {
   if (!content) {
     return (
@@ -88,7 +93,7 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
               </div>
               <div className="spec-source">
                 {spec.source}
-                {spec.snippet ? ` — "${spec.snippet}"` : ''}
+                {spec.snippet ? ` — ${formatSnippet(spec.snippet, spec.verbatim)}` : ''}
                 {spec.accessed ? ` (accessed ${spec.accessed})` : ''}
               </div>
             </div>
@@ -110,7 +115,7 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
                   {src.title} ({src.urlOrLocator})
                 </span>
               )}{' '}
-              — &ldquo;{src.snippet}&rdquo; (accessed {src.accessed})
+              — {formatSnippet(src.snippet, src.verbatim)} (accessed {src.accessed})
             </li>
           ))}
         </ul>

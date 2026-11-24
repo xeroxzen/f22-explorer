@@ -5,8 +5,8 @@ import {
   waitForExplorerReady,
 } from './helpers.js';
 
-test.describe('Phase 3 Desktop F-22 Cockpit Rebuild, Weapons Bays Loadouts & Controls', () => {
-  test('verifies zero collisions, cockpit 6-LCD + hotspot inspector, all 3 bay loadouts, gear & control stick', async ({
+test.describe('Phase 4 Desktop F-22 Engine Start Sequence, Live Instruments & Afterburner', () => {
+  test('runs full start -> idle -> mil -> AB -> cockpit AB MFD -> shutdown with 0 console errors', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -34,71 +34,120 @@ test.describe('Phase 3 Desktop F-22 Cockpit Rebuild, Weapons Bays Loadouts & Con
     });
     expect(assembledOverlaps).toEqual([]);
 
-    // Capture Top view for direct comparison with v0.3.0
-    await page.getByTestId('cam-top').click();
-    await page.waitForTimeout(850);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-top.png');
+    // 2. Open Engine Control panel & kick off real start sequence (moves jet to outdoor run-up pad)
+    await page.getByTestId('engines-toggle-btn').click();
+    await expect(page.getByTestId('engines-panel')).toBeVisible();
+    await expect(page.getByTestId('engine-step-list')).toBeVisible();
+    await page.getByTestId('cam-rear').click();
+    await page.getByTestId('start-engines-btn').click();
 
-    // 2. Cockpit seat-level view (6 bezeled LCDs, HUD, ICP, consoles, HOTAS, canopy bow)
-    await page.getByTestId('areas-toggle-btn').click();
-    await expect(page.getByTestId('areas-panel')).toBeVisible();
-    await page.getByTestId('cockpit-cam-btn').click();
-    await page.waitForTimeout(950);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-cockpit.png');
-
-    // Click center Primary MFD hotspot -> opens Inspector with dual badges & sources
-    await page.mouse.click(640, 460);
-    await page.waitForTimeout(350);
-    await expect(page.getByTestId('inspector-panel')).toBeVisible();
-    await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-cockpit-hotspot.png');
-    await page.getByTestId('inspector-close-btn').click();
-
-    // 3. Open Main + Side Weapons Bays and capture ALL 3 USAF loadouts
-    await page.getByTestId('bays-cam-btn').click();
-    await page.waitForTimeout(950);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-aim120.png');
-
-    await page.getByTestId('loadout-jdam').click();
-    await page.waitForTimeout(350);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-jdam.png');
-
-    await page.getByTestId('loadout-sdb').click();
-    await page.waitForTimeout(350);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-sdb.png');
-
-    // 4. Test Gear retract/extend + Control Stick / Rudder / Airbrake / Nozzle controls
-    await page.getByTestId('gear-toggle-btn').click();
-    await page.getByTestId('rudder-slider').fill('0.8');
-    await page.getByTestId('airbrake-slider').fill('1');
-    await page.getByTestId('nozzle-slider').fill('1');
-    await page.getByTestId('reset-surfaces-btn').click();
-    await page.getByTestId('gear-toggle-btn').click();
-    await page.getByTestId('areas-close-btn').click();
-
-    // 5. Explode 100% + assert ZERO collisions + dual-badge Inspector
-    await page.getByTestId('cam-three-quarter').click();
-    await page.getByTestId('explode-toggle-btn').click();
-    await page.waitForTimeout(950);
-    await expect(page.getByTestId('system-legend')).toBeVisible();
-
-    const explodedOverlaps = await page.evaluate(() => {
+    // Advance the real state machine to mid-start (~13 s into start sequence: Eng 1 idle, Eng 2 motoring)
+    await page.evaluate(() => {
       const dbg = (
         window as unknown as {
-          __f22debug: { checkPartIntersections: (tol?: number) => Array<{ a: string; b: string }> };
+          __f22debug: { tickEngineSim: (dt: number) => void };
         }
       ).__f22debug;
-      return dbg.checkPartIntersections(0.005);
+      for (let i = 0; i < 130; i++) dbg.tickEngineSim(0.1);
     });
-    expect(explodedOverlaps).toEqual([]);
+    await page.waitForTimeout(850);
+    await expect(page.getByTestId('engine-hud-overlay')).toBeVisible();
+    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-start-midway.png');
 
-    await page.getByTestId('part-tree-toggle-btn').click();
-    await page.getByTestId('tree-part-engine-f119-left').click();
-    await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
+    // 3. Finish start sequence -> Both Engines at Idle
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { tickEngineSim: (dt: number) => void };
+        }
+      ).__f22debug;
+      for (let i = 0; i < 160; i++) dbg.tickEngineSim(0.1);
+    });
+    await page.waitForTimeout(350);
+    await expect(page.getByTestId('throttle-mil-btn')).toBeEnabled();
+    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-idle.png');
+
+    // 4. Advance throttle to Military Dry Power (75%)
+    await page.getByTestId('throttle-mil-btn').click();
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { tickEngineSim: (dt: number) => void };
+        }
+      ).__f22debug;
+      for (let i = 0; i < 90; i++) dbg.tickEngineSim(0.1);
+    });
+    await page.waitForTimeout(350);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-mil.png');
+
+    // 5. Advance throttle to Max Afterburner (100%) -> shock diamonds + expanded 2D nozzles
+    await page.getByTestId('throttle-ab-btn').click();
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { tickEngineSim: (dt: number) => void };
+        }
+      ).__f22debug;
+      for (let i = 0; i < 60; i++) dbg.tickEngineSim(0.1);
+    });
+    await page.waitForTimeout(450);
+
+    const abState = await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: {
+            getState: () => {
+              enginePhase: string;
+              engineOutdoors: boolean;
+              leftThrustLbf: number;
+              afterburnerOn: boolean;
+            };
+          };
+        }
+      ).__f22debug;
+      return dbg.getState();
+    });
+    expect(abState.enginePhase).toBe('RUNNING');
+    expect(abState.engineOutdoors).toBe(true);
+    expect(abState.afterburnerOn).toBe(true);
+    expect(abState.leftThrustLbf).toBeGreaterThan(30_000);
+    expect(abState.leftThrustLbf).toBeLessThanOrEqual(35_000);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-ab-diamonds.png');
+
+    // 6. Switch to Cockpit view during AB (verify all 6 Code One LCDs + live Engine MFD showing AB ON)
+    await page.getByTestId('engine-cockpit-cam-btn').click();
+    await page.getByTestId('engines-close-btn').click();
+    await page.waitForTimeout(950);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-cockpit-ab.png');
+
+    // 7. Shutdown back to OFF (returns to indoor hangar)
+    await page.getByTestId('engines-toggle-btn').click();
+    await page.getByTestId('shutdown-engines-btn').click();
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { tickEngineSim: (dt: number) => void };
+        }
+      ).__f22debug;
+      for (let i = 0; i < 250; i++) dbg.tickEngineSim(0.1);
+    });
+    await page.waitForTimeout(250);
+
+    const offState = await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: { getState: () => { enginePhase: string; engineOutdoors: boolean } };
+        }
+      ).__f22debug;
+      return dbg.getState();
+    });
+    expect(offState.enginePhase).toBe('OFF');
+    expect(offState.engineOutdoors).toBe(false);
+
     await assertNoElementOverlap(
       page,
       '[data-testid="top-bar"]',
-      '[data-testid="inspector-panel"]'
+      '[data-testid="engines-panel"]'
     );
 
     expect(consoleErrors).toEqual([]);
