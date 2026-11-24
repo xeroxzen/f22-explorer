@@ -1,0 +1,68 @@
+{
+  "id": "main-bay-doors",
+  "title": "Main Weapons Bay Doors",
+  "parentId": "main-weapons-bay",
+  "category": "Weapons Bays & Gun",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Segmented ventral bi-fold bay doors with sawtooth radar-scattering edges that seal flush with the lower fuselage.",
+  "role": "Rapidly open for weapon release and close flush to preserve the aircraft's stealth mold line.",
+  "materials": "Composite honeycomb sandwich panels with serrated low-observable seam edges.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.1,
+      11.4
+    ],
+    "approxSizeM": [
+      2.15,
+      0.12,
+      4.3
+    ],
+    "proportionReference": "USAF open-bay ground inspection photographs",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -3.5,
+      0
+    ],
+    "kind": "open",
+    "motionRange": "0° (flush) to 90° (open)",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Edge Geometry",
+      "value": "Sawtooth / serrated low-observable seams",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Serrated flush ventral weapons bay doors"
+    },
+    {
+      "label": "Open Angle (Explorer)",
+      "value": "90",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Visual vertical clearance in USAF bay-open photos"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    }
+  ]
+}

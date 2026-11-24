@@ -1,0 +1,65 @@
+{
+  "id": "cockpit-displays-hud",
+  "title": "Glass Cockpit Displays & HUD",
+  "parentId": "cockpit-tub",
+  "category": "Forward Fuselage & Cockpit",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "All-glass instrument panel layout featuring a wide-angle Head-Up Display (HUD), Integrated Control Panel (ICP), and six color liquid-crystal displays (1 primary MFD, 3 secondary MFDs, 2 up-front displays) rendered as generic educational schematics.",
+  "role": "Presents flight, navigation, engine, and tactical situational awareness to the pilot.",
+  "modelingNotes": {
+    "stationRangeM": [
+      3.6,
+      4.4
+    ],
+    "approxSizeM": [
+      0.9,
+      0.65,
+      0.6
+    ],
+    "proportionReference": "Public USAF cockpit layout descriptions (generic schematic only)",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      2.3,
+      -3.2
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Display Suite",
+      "value": "Wide-angle HUD + 6 color LCDs (1 primary, 3 secondary, 2 up-front) + ICP",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Six liquid crystal displays plus HUD and ICP"
+    },
+    {
+      "label": "Operational Symbology & Software",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; explorer shows generic educational labels only"
+    }
+  ],
+  "sources": [
+    {
+      "title": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Six color LCDs: primary MFD, secondary MFDs, up-front displays"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
+  ]
+}

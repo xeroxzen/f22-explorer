@@ -26,12 +26,11 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
     return (
       <div className="inspector-empty" data-testid="inspector-empty">
         <p className="inspector-summary">
-          No aircraft part is loaded yet. Part definitions, dimensions, and cited
-          public specifications will be added in Phase 1 (Research &amp; Data) and
-          linked to the 3D model in Phase 2.
+          Select any part on the F-22 model or in the part tree to inspect its
+          function, public materials, specifications, and cited sources.
         </p>
         <p className="inspector-note">
-          Every specification will carry an explicit provenance badge:{' '}
+          Every part displays dual provenance badges (Existence &amp; Geometry):{' '}
           <span className="spec-badge badge-sourced">SOURCED</span>,{' '}
           <span className="spec-badge badge-approximate">APPROXIMATE</span>,{' '}
           <span className="spec-badge badge-assumed">ASSUMED</span>, or{' '}
@@ -43,6 +42,21 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
 
   return (
     <div className="inspector-content">
+      <div className="dual-label-bar" data-testid="inspector-dual-labels">
+        <span className="dual-label-item">
+          <span className="dual-label-key">Existence:</span>
+          <span className={`spec-badge ${statusBadgeClass(content.existenceLabel)}`}>
+            {statusLabel(content.existenceLabel)}
+          </span>
+        </span>
+        <span className="dual-label-item">
+          <span className="dual-label-key">Geometry:</span>
+          <span className={`spec-badge ${statusBadgeClass(content.geometryLabel)}`}>
+            {statusLabel(content.geometryLabel)}
+          </span>
+        </span>
+      </div>
+
       <p className="inspector-summary">{content.summary}</p>
 
       <section className="inspector-section">
@@ -72,7 +86,11 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
                 {spec.value}
                 {spec.unit ? ` ${spec.unit}` : ''}
               </div>
-              <div className="spec-source">{spec.source}</div>
+              <div className="spec-source">
+                {spec.source}
+                {spec.snippet ? ` — "${spec.snippet}"` : ''}
+                {spec.accessed ? ` (accessed ${spec.accessed})` : ''}
+              </div>
             </div>
           ))}
         </div>
@@ -82,7 +100,18 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
         <h3 className="inspector-section-title">Sources</h3>
         <ul className="source-list">
           {content.sources.map((src, i) => (
-            <li key={i}>{src}</li>
+            <li key={i}>
+              {src.urlOrLocator.startsWith('http') ? (
+                <a href={src.urlOrLocator} target="_blank" rel="noreferrer">
+                  {src.title}
+                </a>
+              ) : (
+                <span>
+                  {src.title} ({src.urlOrLocator})
+                </span>
+              )}{' '}
+              — &ldquo;{src.snippet}&rdquo; (accessed {src.accessed})
+            </li>
           ))}
         </ul>
       </section>

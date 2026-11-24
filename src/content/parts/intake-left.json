@@ -1,0 +1,66 @@
+{
+  "id": "intake-left",
+  "title": "Left Caret Air Intake & S-Duct",
+  "parentId": "center-fuselage",
+  "category": "Center Fuselage & Intakes",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Fixed-geometry diamond/caret supersonic air inlet and serpentine S-duct feeding the left F119 engine while hiding the compressor face from frontal radar.",
+  "role": "Decelerates supersonic airflow efficiently without moving ramps and shields engine fan blades for low observability.",
+  "materials": "Composite ducting with radar-absorbent internal liner (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      5.9,
+      12.6
+    ],
+    "approxSizeM": [
+      1.05,
+      0.85,
+      6.7
+    ],
+    "proportionReference": "Public front/top 3-view proportions",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -2.4,
+      0.2,
+      -0.4
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Inlet Type",
+      "value": "Fixed-geometry caret inlet + S-duct",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "NASA NTRS / Virginia Tech F-22 Aerodynamic Planform Reference",
+      "urlOrLocator": "https://ntrs.nasa.gov/search?q=F-22+wing+sweep+42",
+      "accessed": "2026-11-24",
+      "snippet": "Fixed-geometry caret supersonic inlets with S-ducts"
+    },
+    {
+      "label": "Internal RAM Attenuation",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "NASA NTRS / Virginia Tech F-22 Aerodynamic Planform Reference",
+      "urlOrLocator": "https://ntrs.nasa.gov/search?q=F-22+wing+sweep+42",
+      "accessed": "2026-11-24",
+      "snippet": "42-degree leading-edge sweep, 840 sq ft wing, 28-degree tail cant"
+    }
+  ]
+}

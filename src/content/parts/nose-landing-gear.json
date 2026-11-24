@@ -1,0 +1,68 @@
+{
+  "id": "nose-landing-gear",
+  "title": "Nose Landing Gear & Bay Doors",
+  "parentId": "forward-fuselage",
+  "category": "Landing Gear",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Retractable single-strut dual-wheel nose landing gear with steerable oleo shock strut and flush serrated bay doors.",
+  "role": "Supports forward aircraft weight on the ground, provides taxi steering, and retracts cleanly into the forward fuselage.",
+  "materials": "High-strength aerospace steel/titanium strut with composite bay doors.",
+  "modelingNotes": {
+    "stationRangeM": [
+      3.6,
+      5
+    ],
+    "approxSizeM": [
+      0.65,
+      1.25,
+      1.4
+    ],
+    "proportionReference": "USAF hangar/ramp photographs (wheelbase ~6.4 m assumed)",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -1.8,
+      -2.5
+    ],
+    "kind": "retract",
+    "motionRange": "0° (extended) to 90° (retracted)",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Layout",
+      "value": "Retractable tricycle nose gear (dual wheels)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Retractable tricycle landing gear with dual nose wheels"
+    },
+    {
+      "label": "Wheelbase (Nose to Main)",
+      "value": "~6.40",
+      "unit": "m",
+      "status": "ASSUMED",
+      "source": "Proportioned from public side-view; official figure omitted"
+    }
+  ],
+  "sources": [
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    },
+    {
+      "title": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Airframe dimensions, 39% titanium / composite structure overview"
+    }
+  ]
+}

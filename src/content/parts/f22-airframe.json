@@ -1,0 +1,132 @@
+{
+  "id": "f22-airframe",
+  "title": "F-22 Raptor Airframe",
+  "parentId": null,
+  "category": "Airframe",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "SOURCED",
+  "summary": "Fifth-generation twin-engine air-dominance fighter airframe combining low-observable shaping, internal weapons carriage, supercruise aerodynamics, and thrust vectoring.",
+  "role": "Primary structural and aerodynamic envelope integrating all major airframe sections, propulsion, avionics, and internal payload bays.",
+  "materials": "Approximately 39% titanium alloys, 24% carbon-fiber composites (24–35% across production summaries), 16% aluminum alloys, and ~1% thermoplastics by structural weight.",
+  "modelingNotes": {
+    "stationRangeM": [
+      0,
+      18.92
+    ],
+    "approxSizeM": [
+      13.56,
+      5.08,
+      18.92
+    ],
+    "proportionReference": "USAF Fact Sheet envelope dimensions (62 ft 1 in × 44 ft 6 in × 16 ft 8 in)",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": false,
+    "explodeVectorM": [
+      0,
+      0,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Length",
+      "value": "18.92 (62 ft 1 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Length: 62 feet, 1 inch (18.9 meters)"
+    },
+    {
+      "label": "Wingspan",
+      "value": "13.56 (44 ft 6 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Wingspan: 44 feet, 6 inches (13.6 meters)"
+    },
+    {
+      "label": "Height",
+      "value": "5.08 (16 ft 8 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Height: 16 feet, 8 inches (5.1 meters)"
+    },
+    {
+      "label": "Empty Weight",
+      "value": "19,700 (43,340 lb)",
+      "unit": "kg",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Weight: 43,340 pounds (19,700 kilograms)"
+    },
+    {
+      "label": "Max Takeoff Weight",
+      "value": "38,000 (83,500 lb)",
+      "unit": "kg",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Maximum Takeoff Weight: 83,500 pounds (38,000 kilograms)"
+    },
+    {
+      "label": "Supercruise Speed",
+      "value": "Greater than Mach 1.5 (dry)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "cruise at supersonic airspeeds (greater than 1.5 Mach) without afterburner"
+    },
+    {
+      "label": "Service Ceiling",
+      "value": "Above 15,240 (50,000+ ft)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Ceiling: Above 50,000 feet (15 kilometers)"
+    },
+    {
+      "label": "Radar Cross Section (RCS)",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Airframe dimensions, 39% titanium / composite structure overview"
+    }
+  ]
+}

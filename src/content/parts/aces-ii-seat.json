@@ -1,0 +1,69 @@
+{
+  "id": "aces-ii-seat",
+  "title": "ACES II Ejection Seat",
+  "parentId": "cockpit-tub",
+  "category": "Forward Fuselage & Cockpit",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Collins Aerospace Advanced Concept Ejection Seat (ACES II) providing zero-altitude, zero-airspeed emergency escape.",
+  "role": "Supports the pilot during high-G maneuvering and provides automated multi-mode emergency extraction.",
+  "materials": "Aerospace aluminum structure with survival kit and drogue parachute assembly.",
+  "modelingNotes": {
+    "stationRangeM": [
+      4.5,
+      5.5
+    ],
+    "approxSizeM": [
+      0.65,
+      1.25,
+      0.85
+    ],
+    "proportionReference": "Collins Aerospace ACES II public overview & USAF cockpit photos",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      2.7,
+      -2.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Model",
+      "value": "Collins Aerospace ACES II",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Collins Aerospace — ACES II Ejection Seat",
+      "urlOrLocator": "https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats",
+      "accessed": "2026-11-24",
+      "snippet": "ACES II ejection seat on F-22 Raptor"
+    },
+    {
+      "label": "Escape Envelope",
+      "value": "Zero-zero (0 kt, 0 ft) capable",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Collins Aerospace — ACES II Ejection Seat",
+      "urlOrLocator": "https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats",
+      "accessed": "2026-11-24",
+      "snippet": "Zero-altitude, zero-airspeed escape capability"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Collins Aerospace — ACES II Ejection Seat",
+      "urlOrLocator": "https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats",
+      "accessed": "2026-11-24",
+      "snippet": "ACES II zero-zero ejection seat for USAF fighters"
+    },
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    }
+  ]
+}

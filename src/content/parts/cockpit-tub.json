@@ -1,0 +1,72 @@
+{
+  "id": "cockpit-tub",
+  "title": "Cockpit Pressure Tub",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Cockpit",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Single-seat pressurized pilot station containing the ejection seat, glass-cockpit instrument panel, and HOTAS controls.",
+  "role": "Houses and protects the single pilot with environmental control, pressurization, and ergonomic all-round visibility.",
+  "materials": "Structural aluminum/titanium pressure shell (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      3.4,
+      6.2
+    ],
+    "approxSizeM": [
+      1.1,
+      1.2,
+      2.8
+    ],
+    "proportionReference": "Public USAF cockpit & side-profile photos",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      1.6,
+      -2.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Crew",
+      "value": "1 pilot",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Crew: One"
+    },
+    {
+      "label": "Station Span",
+      "value": "3.40 – 6.20",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Public 3-view proportional measurement"
+    }
+  ],
+  "sources": [
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
+  ]
+}

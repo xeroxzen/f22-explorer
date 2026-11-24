@@ -1,0 +1,66 @@
+{
+  "id": "aft-fuselage",
+  "title": "Aft Fuselage & Engine Nacelles",
+  "parentId": "f22-airframe",
+  "category": "Aft Fuselage & Empennage",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "High-temperature titanium-intensive aft fuselage enclosing the side-by-side twin F119 engine bays and supporting the empennage.",
+  "role": "Houses the twin powerplants, carries tail loads, and withstands thermal exposure near the exhaust bays.",
+  "materials": "Predominantly titanium alloy structure and heat-resistant frames.",
+  "modelingNotes": {
+    "stationRangeM": [
+      12.6,
+      16.9
+    ],
+    "approxSizeM": [
+      3.7,
+      1.45,
+      4.3
+    ],
+    "proportionReference": "Public 3-view aft fuselage & nacelle proportions",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      0.4,
+      2.6
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Station Span",
+      "value": "12.60 – 16.90",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Public 3-view proportional measurement"
+    },
+    {
+      "label": "Primary Material",
+      "value": "Titanium alloy high-temperature structure",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Titanium alloys in high-temperature aft fuselage zones"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Airframe dimensions, 39% titanium / composite structure overview"
+    }
+  ]
+}

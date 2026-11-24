@@ -305,6 +305,38 @@ body,
   line-height: 1.5;
 }
 
+.source-list a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.source-list a:hover {
+  text-decoration: underline;
+}
+
+.dual-label-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+}
+
+.dual-label-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+}
+
+.dual-label-key {
+  color: var(--muted);
+  font-weight: 600;
+}
+
 /* Mobile Portrait Bottom Sheet */
 .bottom-sheet {
   position: fixed;

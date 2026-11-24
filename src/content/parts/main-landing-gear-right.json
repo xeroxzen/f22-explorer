@@ -1,0 +1,65 @@
+{
+  "id": "main-landing-gear-right",
+  "title": "Right Main Landing Gear & Bay Doors",
+  "parentId": "center-fuselage",
+  "category": "Landing Gear",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Retractable heavy-duty right main landing gear strut, wheel/brake assembly, and flush serrated bay doors.",
+  "role": "Absorbs landing impact loads and retracts flush into the right center-fuselage gear well.",
+  "materials": "High-strength aerospace steel/titanium strut with carbon brakes.",
+  "modelingNotes": {
+    "stationRangeM": [
+      9.8,
+      11.4
+    ],
+    "approxSizeM": [
+      0.85,
+      1.25,
+      1.6
+    ],
+    "proportionReference": "Main gear track ~3.23 m (10 ft 7 in) & USAF ramp photos",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      2,
+      -1.8,
+      0.5
+    ],
+    "kind": "retract",
+    "motionRange": "0° (extended) to 90° (retracted)",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Main Gear Track",
+      "value": "3.23 (10 ft 7 in)",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Open aerospace reference compilations; not on USAF fact sheet"
+    },
+    {
+      "label": "Retraction Kinematics (Explorer)",
+      "value": "0° to 90°",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Standard tricycle retraction kinematics"
+    }
+  ],
+  "sources": [
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    },
+    {
+      "title": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Airframe dimensions, 39% titanium / composite structure overview"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { ALL_COMPONENTS } from '../src/content/registry.js';
 import {
   VALID_SPEC_STATUSES,
   validateComponentContent,
+  validatePartsHierarchy,
 } from '../src/content/schema.js';
 
 function collectJsonFiles(dir: string): string[] {
@@ -21,15 +22,29 @@ function collectJsonFiles(dir: string): string[] {
   return out;
 }
 
-describe('Component content JSON schema validation', () => {
-  it('accepts valid SOURCED, APPROXIMATE, ASSUMED, and NOT_PUBLICLY_DISCLOSED specs', () => {
+describe('Component content JSON schema & hierarchy validation', () => {
+  it('accepts valid dual-labeled parts with traceable SOURCED citations', () => {
     const sample = {
       id: 'sample-part',
       title: 'Sample Part',
+      parentId: null,
       category: 'Airframe',
+      existenceLabel: 'SOURCED',
+      geometryLabel: 'APPROXIMATE',
       summary: 'Sample educational description.',
       role: 'Demonstrates schema validation.',
       materials: 'Titanium alloy and composite skins (public overview).',
+      modelingNotes: {
+        stationRangeM: [0, 18.92],
+        approxSizeM: [13.56, 5.08, 18.92],
+        proportionReference: 'USAF F-22 Fact Sheet',
+        confidence: 'HIGH',
+      },
+      interaction: {
+        explodes: false,
+        explodeVectorM: [0, 0, 0],
+        kind: 'static',
+      },
       specs: [
         {
           label: 'Span',
@@ -37,6 +52,9 @@ describe('Component content JSON schema validation', () => {
           unit: 'm',
           status: 'SOURCED',
           source: 'USAF F-22 Fact Sheet',
+          urlOrLocator: 'https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/',
+          accessed: '2026-11-24',
+          snippet: 'Wingspan: 44 feet, 6 inches (13.6 meters)',
         },
         {
           label: 'Radar Cross Section',
@@ -46,57 +64,100 @@ describe('Component content JSON schema validation', () => {
           source: 'Classified; not released by USAF',
         },
       ],
-      sources: ['USAF F-22 Raptor Fact Sheet'],
+      sources: [
+        {
+          title: 'USAF F-22 Raptor Fact Sheet',
+          urlOrLocator: 'https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/',
+          accessed: '2026-11-24',
+          snippet: 'General Characteristics: Length, Wingspan, Height',
+        },
+      ],
     };
 
     const validated = validateComponentContent(sample, 'sample.json');
     expect(validated.id).toBe('sample-part');
-    expect(validated.specs.length).toBe(2);
+    expect(validated.existenceLabel).toBe('SOURCED');
+    expect(validated.geometryLabel).toBe('APPROXIMATE');
   });
 
-  it('rejects uncited specs or unknown status labels', () => {
+  it('rejects SOURCED specs missing traceable urlOrLocator, accessed date, or snippet', () => {
     expect(() =>
       validateComponentContent(
         {
           id: 'bad',
           title: 'Bad',
+          parentId: null,
           category: 'Test',
+          existenceLabel: 'SOURCED',
+          geometryLabel: 'ASSUMED',
           summary: 'Summary',
           role: 'Role',
+          modelingNotes: {
+            stationRangeM: [0, 1],
+            approxSizeM: [1, 1, 1],
+            proportionReference: 'Test',
+            confidence: 'LOW',
+          },
+          interaction: {
+            explodes: false,
+            explodeVectorM: [0, 0, 0],
+            kind: 'static',
+          },
           specs: [
             {
               label: 'Foo',
               value: '10',
               unit: 'm',
-              status: 'INVENTED',
-              source: 'None',
+              status: 'SOURCED',
+              source: 'Missing URL',
             },
           ],
-          sources: ['Some source'],
+          sources: [
+            {
+              title: 'Test',
+              urlOrLocator: 'https://example.com',
+              accessed: '2026-11-24',
+              snippet: 'Short snippet',
+            },
+          ],
         },
         'bad.json'
       )
-    ).toThrow(/status/);
+    ).toThrow(/urlOrLocator/);
   });
 
-  it('validates every JSON file in src/content/ with no duplicate ids or uncited specs', () => {
+  it('validates all 30–50 F-22 parts JSON files on disk, dual labels, and tree integrity', () => {
     const dir = path.resolve(process.cwd(), 'src/content');
     const files = collectJsonFiles(dir);
-    const seenIds = new Set<string>();
+    expect(files.length).toBeGreaterThanOrEqual(30);
+    expect(files.length).toBeLessThanOrEqual(50);
 
-    for (const file of files) {
+    const validatedParts = files.map((file) => {
       const rel = path.relative(process.cwd(), file);
       const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
       const validated = validateComponentContent(raw, rel);
-      expect(seenIds.has(validated.id)).toBe(false);
-      seenIds.add(validated.id);
       expect(validated.sources.length).toBeGreaterThan(0);
       for (const spec of validated.specs) {
         expect(spec.source.trim().length).toBeGreaterThan(0);
         expect(VALID_SPEC_STATUSES).toContain(spec.status);
       }
-    }
+      return validated;
+    });
 
+    validatePartsHierarchy(validatedParts);
     expect(ALL_COMPONENTS.length).toBe(files.length);
+
+    // Geometry honesty check: inferred parts must NOT all be labeled SOURCED
+    const approxOrAssumedGeom = ALL_COMPONENTS.filter(
+      (p) => p.geometryLabel === 'APPROXIMATE' || p.geometryLabel === 'ASSUMED'
+    );
+    expect(approxOrAssumedGeom.length).toBeGreaterThanOrEqual(40);
+
+    // Classified areas must explicitly include NOT_PUBLICLY_DISCLOSED entries
+    const allSpecs = ALL_COMPONENTS.flatMap((p) => p.specs);
+    const classifiedSpecs = allSpecs.filter(
+      (s) => s.status === 'NOT_PUBLICLY_DISCLOSED'
+    );
+    expect(classifiedSpecs.length).toBeGreaterThanOrEqual(4);
   });
 });

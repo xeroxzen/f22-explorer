@@ -1,0 +1,66 @@
+{
+  "id": "nose-avionics-bay",
+  "title": "Forward Avionics & Radar Bay",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Cockpit",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Forward equipment volume housing the AN/APG-77 AESA radar aperture and integrated avionics processors (educational overview only).",
+  "role": "Provides sensor fusion, radar search/track, and electronic warfare processing at a conceptual level.",
+  "materials": "Liquid-cooled modular avionics racks (public overview; internal architecture classified).",
+  "modelingNotes": {
+    "stationRangeM": [
+      2.3,
+      3.4
+    ],
+    "approxSizeM": [
+      1.6,
+      1.1,
+      1.1
+    ],
+    "proportionReference": "Public cutaway & 3-view station behind radome bulkhead",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      0,
+      -4.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Radar Designation",
+      "value": "AN/APG-77 AESA",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "AN/APG-77 active electronically scanned array radar"
+    },
+    {
+      "label": "Detection Range / T/R Element Count / Modes",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
+  ]
+}

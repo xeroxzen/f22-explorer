@@ -1,0 +1,64 @@
+{
+  "id": "lef-left",
+  "title": "Left Leading-Edge Flap",
+  "parentId": "wing-left",
+  "category": "Wings & Control Surfaces",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Full-span hinged leading-edge flap along the left 42° wing leading edge, scheduled automatically by the flight-control computer.",
+  "role": "Increases wing camber and delays stall during high-AoA maneuvers and low-speed approach.",
+  "modelingNotes": {
+    "stationRangeM": [
+      6.8,
+      11
+    ],
+    "approxSizeM": [
+      4.4,
+      0.2,
+      0.75
+    ],
+    "proportionReference": "Public planform & high-AoA flight photographs",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -4.2,
+      0,
+      -1.2
+    ],
+    "kind": "articulate",
+    "motionRange": "0° to +30° down",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Actual DoD Deflection Limit",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified flight-control specification"
+    },
+    {
+      "label": "Explorer Educational Range",
+      "value": "0 to +30",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Representative educational animation range"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "NASA NTRS / Virginia Tech F-22 Aerodynamic Planform Reference",
+      "urlOrLocator": "https://ntrs.nasa.gov/search?q=F-22+wing+sweep+42",
+      "accessed": "2026-11-24",
+      "snippet": "42-degree leading-edge sweep, 840 sq ft wing, 28-degree tail cant"
+    }
+  ]
+}

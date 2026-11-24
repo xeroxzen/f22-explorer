@@ -1,0 +1,85 @@
+{
+  "id": "main-weapons-bay",
+  "title": "Main Centerline Weapons Bay",
+  "parentId": "center-fuselage",
+  "category": "Weapons Bays & Gun",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Large ventral internal weapons bay along the fuselage centerline housing air-to-air or air-to-ground ordnance behind flush doors.",
+  "role": "Carries primary beyond-visual-range missiles or precision-guided munitions internally to maintain stealth and low supersonic drag.",
+  "materials": "Titanium/composite structural bay framing with pneumatic ejection launchers.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.1,
+      11.4
+    ],
+    "approxSizeM": [
+      2.1,
+      0.75,
+      4.3
+    ],
+    "proportionReference": "USAF open-bay photos & AIM-120 length (3.66 m) clearance",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -1.8,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Air-to-Air Loadout",
+      "value": "6 × AIM-120 AMRAAM",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Six AIM-120 AMRAAM in main internal weapons bay"
+    },
+    {
+      "label": "Air-to-Ground JDAM Loadout",
+      "value": "2 × 1,000 lb GBU-32 JDAM + 2 × AIM-120",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "two 1,000-pound GBU-32 JDAMs and two AIM-120s"
+    },
+    {
+      "label": "Small Diameter Bomb Loadout",
+      "value": "Up to 8 × GBU-39 SDB",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Up to eight GBU-39 Small Diameter Bombs"
+    }
+  ],
+  "sources": [
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    },
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "radome",
+  "title": "Nose Radome",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Cockpit",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Pointed, chined composite nose cone covering the forward AESA radar antenna while maintaining a continuous low-observable mold line.",
+  "role": "Protects the radar aperture aerodynamically while allowing radio-frequency transmission in the radar operating band (bandpass details classified).",
+  "materials": "Radar-transparent composite shell (exact dielectric stackup not publicly disclosed).",
+  "modelingNotes": {
+    "stationRangeM": [
+      0,
+      2.3
+    ],
+    "approxSizeM": [
+      1.45,
+      1.1,
+      2.3
+    ],
+    "proportionReference": "Public 3-view nose proportion (~12% of overall length)",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      0,
+      -6.2
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Approx. Length",
+      "value": "2.30",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Public 3-view proportional measurement"
+    },
+    {
+      "label": "RF Bandpass Characteristics",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    }
+  ]
+}

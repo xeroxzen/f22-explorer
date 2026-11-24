@@ -1,0 +1,62 @@
+{
+  "id": "apu-bay",
+  "title": "Auxiliary Power Unit (APU)",
+  "parentId": "center-fuselage",
+  "category": "Center Fuselage & Intakes",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "AlliedSignal (now Honeywell Aerospace) G-250 gas-turbine Auxiliary Power Unit housed in the center/aft fuselage spine for autonomous ground electrical and engine-start power.",
+  "role": "Drives ground electrical/environmental systems and provides pneumatic/shaft start power to spool the F119 engines without external carts.",
+  "modelingNotes": {
+    "stationRangeM": [
+      10.8,
+      12.2
+    ],
+    "approxSizeM": [
+      0.7,
+      0.55,
+      1.4
+    ],
+    "proportionReference": "Honeywell defense APU overview & USAF ramp-start exhaust location",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      2.3,
+      1.2
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Manufacturer & Model",
+      "value": "AlliedSignal (now Honeywell Aerospace) G-250 APU",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Honeywell Aerospace — Defense Auxiliary Power Units (G250 / AlliedSignal)",
+      "urlOrLocator": "https://aerospace.honeywell.com/us/en/products-and-services/product/hardware-and-systems/auxiliary-power-units",
+      "accessed": "2026-11-24",
+      "snippet": "AlliedSignal/Honeywell G250 defense APU supporting F-22"
+    },
+    {
+      "label": "Role in Engine Start",
+      "value": "Supplies ground electrical & start air/power",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Honeywell Aerospace — Defense Auxiliary Power Units (G250 / AlliedSignal)",
+      "urlOrLocator": "https://aerospace.honeywell.com/us/en/products-and-services/product/hardware-and-systems/auxiliary-power-units",
+      "accessed": "2026-11-24",
+      "snippet": "Autonomous ground electrical and main engine start power"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Honeywell Aerospace — Defense Auxiliary Power Units (G250 / AlliedSignal)",
+      "urlOrLocator": "https://aerospace.honeywell.com/us/en/products-and-services/product/hardware-and-systems/auxiliary-power-units",
+      "accessed": "2026-11-24",
+      "snippet": "AlliedSignal/Honeywell G250 defense gas-turbine APU family"
+    }
+  ]
+}
