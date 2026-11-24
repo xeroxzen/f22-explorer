@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { savePhaseScreenshot, waitForExplorerReady } from './helpers.js';
 
-test.describe('Phase 0 Mobile Layout & Immersive Mode', () => {
-  test('renders mobile bottom sheet and immersive toggle cleanly', async ({
+test.describe('Phase 2 Mobile Layout, Disassembly & Immersive Mode', () => {
+  test('renders F-22 hangar, explode toggle, part tree/inspector sheets, and immersive UI', async ({
     page,
   }, testInfo) => {
     const pageErrors: string[] = [];
@@ -11,18 +11,28 @@ test.describe('Phase 0 Mobile Layout & Immersive Mode', () => {
     const state = await waitForExplorerReady(page);
     expect(state.sceneReady).toBe(true);
     expect(state.qualityTier).toBe('low');
+    expect(state.registeredHitboxes.length).toBe(44);
 
     await expect(page.locator('canvas')).toBeVisible();
+    await savePhaseScreenshot(
+      page,
+      `docs/screenshots/phase2/mobile-${testInfo.project.name}-assembled.png`
+    );
 
-    // Open inspector bottom sheet
-    await page.getByTestId('inspector-toggle-btn').click();
+    // Explode & open inspector via part tree
+    await page.getByTestId('explode-toggle-btn').click();
+    await page.waitForTimeout(800);
+    await page.getByTestId('part-tree-toggle-btn').click();
+    await expect(page.getByTestId('part-tree-panel')).toBeVisible();
+    await page.getByTestId('tree-part-canopy').click();
+
     const sheet = page.getByTestId('inspector-panel');
     await expect(sheet).toBeVisible();
-    await expect(sheet).toHaveClass(/bottom-sheet/);
+    await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
 
     await savePhaseScreenshot(
       page,
-      `docs/screenshots/phase0/mobile-${testInfo.project.name}-sheet.png`
+      `docs/screenshots/phase2/mobile-${testInfo.project.name}-exploded-sheet.png`
     );
 
     // Close sheet and verify immersive hide/restore UI
