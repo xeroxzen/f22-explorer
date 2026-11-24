@@ -3,7 +3,7 @@ import { soundEngine } from '../audio/soundEngine.js';
 
 export type QualityTier = 'low' | 'med' | 'high';
 export type ClipAxis = 'none' | 'x' | 'y' | 'z';
-export type CameraPresetId = 'three-quarter' | 'top' | 'side' | 'rear' | 'cockpit';
+export type CameraPresetId = 'three-quarter' | 'front' | 'top' | 'side' | 'rear' | 'cockpit';
 
 export interface QualityPreset {
   readonly dpr: number | [number, number];

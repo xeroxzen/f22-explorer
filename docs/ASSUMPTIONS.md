@@ -33,10 +33,10 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `F22_LENGTH_M` | `18.92 m` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet & Lockheed Martin (62 ft 1 in = 18.923 m) |
 | `F22_WINGSPAN_M` | `13.56 m` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet & Lockheed Martin (44 ft 6 in) |
 | `F22_HEIGHT_M` | `5.08 m` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet & Lockheed Martin (16 ft 8 in) |
-| `F22_WING_AREA_M2` | `78.04 m^2` | `SOURCED` | — | `phase1` | Lockheed Martin / USAF public data (840 sq ft) |
-| `F22_WING_LE_SWEEP_DEG` | `42 deg` | `SOURCED` | — | `phase1` | Lockheed Martin / NASA-AIAA public fighter planform literature |
+| `F22_WING_AREA_M2` | `78.04 m^2` | `SOURCED` | — | `phase1` | Wikipedia F-22A Specifications (citing Jay Miller, Aerofax 2005) & DVIDS (840 sq ft) |
+| `F22_WING_LE_SWEEP_DEG` | `42 deg` | `SOURCED` | — | `phase1` | Wikipedia F-22A Specifications (citing Jay Miller, Aerofax 2005): 42° leading-edge sweep |
 | `F22_WING_TE_SWEEP_DEG` | `-17 deg` | `APPROXIMATE` | — | `phase1` | Forward trailing-edge sweep measured from public 3-view planform alignment |
-| `F22_VTAIL_CANT_DEG` | `28 deg` | `SOURCED` | — | `phase1` | Outward vertical tail cant angle from public NASA/AIAA & open aerodynamic literature |
+| `F22_VTAIL_CANT_DEG` | `28 deg` | `SOURCED` | — | `phase1` | Wikipedia F-22A Specifications (citing Jay Miller, Aerofax 2005): 28° outward tail cant |
 | `F22_WING_ROOT_CHORD_CL_M` | `9.85 m` | `APPROXIMATE` | — | `phase1` | Trapezoidal centerline root chord derived to match 78.04 m² wing area with 42° LE and -17° TE sweep |
 | `F22_WING_TIP_CHORD_M` | `1.67 m` | `APPROXIMATE` | — | `phase1` | Wingtip chord consistent with 9.85 m centerline chord, 6.78 m half-span, 42° LE and -17° TE sweep |
 | `F22_WING_ROOT_X_M` | `1.85 m` | `APPROXIMATE` | — | `phase1` | Fuselage-to-wing junction lateral station from public 3-view proportions |

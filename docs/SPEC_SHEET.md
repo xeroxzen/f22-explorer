@@ -9,17 +9,19 @@
 Every value in this repository is cited using the following strict precedence order:
 
 1. **Tier 1 — Official USAF & Prime Contractor Public Material**
-   - **[USAF-FS]** U.S. Air Force Official Fact Sheet: *F-22 Raptor* (`af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/`)
-   - **[LM-PUB]** Lockheed Martin Public Product Overview: *F-22 Raptor* (`lockheedmartin.com`)
-   - **[PW-F119]** Pratt & Whitney / RTX Public Engine Material: *F119 Engine* (`prattwhitney.com` / `rtx.com`)
-2. **Tier 2 — Government Reports & Public Technical Literature**
-   - **[DVIDS]** Defense Visual Information Distribution Service / USAF Public Affairs releases (`dvidshub.net`)
-   - **[NASA-AIAA]** Public NASA / AIAA / DTIC technical abstracts and academic aerodynamic studies (e.g., wind-tunnel & OpenVSP fighter planform references)
-   - **[OEM-SUB]** Sub-tier OEM public product pages: Collins Aerospace (*ACES II Ejection Seat*), Honeywell Aerospace (*Auxiliary Power Units*)
-3. **Tier 3 — Openly Accessible Aerospace References**
-   - **[ASFM]** *Air & Space Forces Magazine* USAF Almanac — F-22 Raptor (`https://www.airandspaceforces.com/weapons-platforms/f-22/`, accessed 2026-11-24)
-   - **[NMUSAF]** National Museum of the U.S. Air Force — F-22A Raptor (`https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/`, accessed 2026-11-24)
-   - **[HSW-COCKPIT]** HowStuffWorks — F-22 Raptor Glass Cockpit Overview (`https://science.howstuffworks.com/f-22-raptor.htm`, accessed 2026-11-24)
+   - **[USAF-FS]** U.S. Air Force Official Fact Sheet: *F-22 Raptor* (`https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/`, 2015 rev., accessed 2026-11-24)
+   - **[ACC-FS]** Air Combat Command Official Fact Sheet: *F-22 Raptor* (`https://www.acc.af.mil/About-Us/Fact-Sheets/Display/Article/660143/f-22-raptor/`, accessed 2026-11-24)
+   - **[LM-PUB]** Lockheed Martin Public Product Page: *F-22 Raptor* (`https://www.lockheedmartin.com/en-us/products/f-22.html`, accessed 2026-11-24)
+   - **[PW-F119]** Pratt & Whitney / RTX Public Engine Page: *F119 Engine* (`https://www.rtx.com/prattwhitney/products/military-engines/f119`, accessed 2026-11-24)
+2. **Tier 2 — Government Archives & Sub-Tier OEM Public Material**
+   - **[DVIDS]** Defense Visual Information Distribution Service / USAF Public Affairs (`https://www.dvidshub.net/tags/image/f-22-raptor`, accessed 2026-11-24)
+   - **[NMUSAF]** National Museum of the U.S. Air Force: *Lockheed Martin F-22A Raptor* (`https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/`, accessed 2026-11-24)
+   - **[COLLINS]** Collins Aerospace: *ACES II Ejection Seat* (`https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats`, accessed 2026-11-24)
+   - **[HONEYWELL]** Honeywell Aerospace: *Defense Auxiliary Power Units (G250 for F-22)* (`https://aerospace.honeywell.com/us/en/products-and-services/product/hardware-and-systems/auxiliary-power-units`, accessed 2026-11-24)
+3. **Tier 3 — Specific Openly Accessible Aerospace References**
+   - **[ASFM]** *Air & Space Forces Magazine* USAF Almanac — *F-22 Raptor* (`https://www.airandspaceforces.com/weapons-platforms/f-22/`, accessed 2026-11-24)
+   - **[WIKI-F22]** Wikipedia — *Lockheed Martin F-22 Raptor* Specifications (citing Jay Miller, *Lockheed Martin F/A-22 Raptor: Stealth Fighter*, Aerofax, 2005) (`https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor#Specifications_(F-22A)`, accessed 2026-11-24)
+   - **[HSW-COCKPIT]** HowStuffWorks — *How the F/A-22 Raptor Works: Cockpit* (`https://science.howstuffworks.com/f-22-raptor.htm`, accessed 2026-11-24)
 
 ---
 
@@ -32,9 +34,9 @@ Every value in this repository is cited using the following strict precedence or
 | Length | 18.92 (62 ft 1 in) | m | `SOURCED` | [USAF-FS], [LM-PUB] | Exact metric conversion of 62 ft 1 in; see §8 Conflicts |
 | Wingspan | 13.56 (44 ft 6 in) | m | `SOURCED` | [USAF-FS], [LM-PUB] | Trapezoidal / clipped-diamond planform |
 | Height | 5.08 (16 ft 8 in) | m | `SOURCED` | [USAF-FS], [LM-PUB] | Measured to top of outward-canted vertical tails |
-| Wing Area | 78.04 (840 sq ft) | m² | `SOURCED` | [NASA-AIAA], [DVIDS] | NASA NTRS / Virginia Tech & USAF public references |
-| Wing Leading-Edge Sweep | 42 | deg | `SOURCED` | [NASA-AIAA] | Planform edge alignment for low observability |
-| Vertical Tail Cant Angle | 28 | deg | `SOURCED` | [NASA-AIAA] | Outward cant from vertical to avoid 90° corner reflectors |
+| Wing Area | 78.04 (840 sq ft) | m² | `SOURCED` | [WIKI-F22], [DVIDS] | Open specifications citing Aerofax (2005) & USAF releases |
+| Wing Leading-Edge Sweep | 42 | deg | `SOURCED` | [WIKI-F22] | Planform edge alignment for low observability |
+| Vertical Tail Cant Angle | 28 | deg | `SOURCED` | [WIKI-F22] | Outward cant from vertical to avoid 90° corner reflectors |
 | Main Landing Gear Track | 3.23 (10 ft 7 in) | m | `APPROXIMATE` | Open aerospace reference | Secondary reference; exact USAF drawing not published |
 | Landing Gear Wheelbase | ~6.4 | m | `ASSUMED` | Derived from public 3-view proportions | Official wheelbase omitted from unclassified USAF fact sheet |
 
@@ -57,7 +59,7 @@ Every value in this repository is cited using the following strict precedence or
 | Specification | Value | Unit | Label | Primary Source | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Maximum Speed | Mach 2 class | Mach | `SOURCED` | [USAF-FS] | Publicly stated class; exact Vmax not officially disclosed (see §8) |
-| Supercruise Speed | Mach 1.5+ (without afterburner) | Mach | `SOURCED` | [USAF-FS], [LM-PUB] | Sustained supersonic cruise on dry military power |
+| Supercruise Speed | Greater than Mach 1.5 (without afterburner) | Mach | `SOURCED` | [USAF-FS], [ACC-FS] | "cruise at supersonic airspeeds (greater than 1.5 Mach) without using afterburner" |
 | Service Ceiling | Above 15,240 (50,000+ ft) | m | `SOURCED` | [USAF-FS] | Press estimates cite 65,000+ ft (see §8) |
 | Ferry Range | >2,960 (>1,600 nmi / >1,850 mi) | km | `SOURCED` | [USAF-FS] | With two external wing fuel tanks |
 | Combat Radius | Not publicly disclosed | — | `NOT_PUBLICLY_DISCLOSED` | [USAF-FS] | Exact mission radius classified; press cites ~500+ mi class |
@@ -76,7 +78,7 @@ Every value in this repository is cited using the following strict precedence or
 | Bypass Ratio | ~0.3:1 | ratio | `APPROXIMATE` | Open academic turbofan models | Low bypass ratio typical of supercruise fighter turbofans |
 | 2D Thrust Vectoring Range | ±20 (pitch axis) | deg | `SOURCED` | [PW-F119] | Convergent-divergent rectangular stealth nozzles |
 | Engine Control | Dual-redundant FADEC | — | `SOURCED` | [PW-F119] | Integrated with aircraft flight control system |
-| Auxiliary Power Unit (APU) | AlliedSignal (now Honeywell Aerospace) G-250 gas-turbine APU | — | `SOURCED` | [OEM-SUB] | Provides ground electrical/pneumatic power for self-start |
+| Auxiliary Power Unit (APU) | AlliedSignal (now Honeywell Aerospace) G250 gas-turbine APU | — | `SOURCED` | [HONEYWELL] | Honeywell Aerospace public APU page explicitly lists G250 for F-22 |
 | Exact EGT / SFC / Compressor Maps | Not publicly disclosed | — | `NOT_PUBLICLY_DISCLOSED` | [PW-F119] | Phase 4 engine start model will use `ASSUMED` educational curves |
 
 ---
@@ -86,7 +88,7 @@ Every value in this repository is cited using the following strict precedence or
 | Specification | Value | Unit | Label | Primary Source | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Canopy | Frameless one-piece polycarbonate with conductive gold/ITO tint | — | `SOURCED` | [NMUSAF], [HSW-COCKPIT] | Shielding prevents radar waves entering the cockpit cavity |
-| Ejection Seat | Collins Aerospace ACES II | — | `SOURCED` | [OEM-SUB], [USAF-FS] | Zero-zero third-generation ejection seat |
+| Ejection Seat | Collins Aerospace ACES II | — | `SOURCED` | [COLLINS], [USAF-FS] | Zero-zero third-generation ejection seat |
 | Cockpit Displays | Glass cockpit: wide-angle HUD + 6 color LCDs (1 primary MFD, 3 secondary MFDs, 2 up-front displays) + ICP | — | `SOURCED` | [HSW-COCKPIT], [ASFM] | Generic educational schematic only; real symbology is classified |
 | Flight Controls | Side-stick controller + dual throttles (HOTAS) | — | `SOURCED` | [LM-PUB], [ASFM] | Digital fly-by-wire integrated with thrust vectoring |
 
@@ -97,7 +99,7 @@ Every value in this repository is cited using the following strict precedence or
 | Specification | Value | Unit | Label | Primary Source | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Internal Gun | 1 × M61A2 20 mm 6-barrel rotary cannon (480 rounds) | — | `SOURCED` | [USAF-FS], [ASFM] | Mounted internally above right wing root behind flush door |
-| Main (Centerline) Weapons Bay | 6 × AIM-120 AMRAAM (air-to-air); 2 × AIM-120 + 2 × 1,000 lb GBU-32 JDAM (USAF Fact Sheet); up to 8 × GBU-39 SDB ([ASFM]) | — | `SOURCED` | [USAF-FS], [ASFM] | 8 × SDB count attributed to [ASFM] (USAF Fact Sheet notes SDB integration without count) |
+| Main (Centerline) Weapons Bay | 6 × AIM-120 AMRAAM (air-to-air); 2 × AIM-120 + 2 × 1,000 lb GBU-32 JDAM or up to 8 × GBU-39 SDB (air-to-ground) | — | `SOURCED` | [USAF-FS], [ASFM] | Both JDAM and "up to eight small diameter bombs" appear in [USAF-FS] (2015, Art. 104506); [ASFM] secondary |
 | Side Weapons Bays (2 ×) | 1 × AIM-9 Sidewinder per side bay (2 total) | — | `SOURCED` | [USAF-FS], [ASFM] | Located beside engine intakes; trapeze extension rail |
 | Radar System | AN/APG-77 AESA radar (public designation only) | — | `SOURCED` | [USAF-FS], [ASFM] | Range, modes, and T/R count are `NOT_PUBLICLY_DISCLOSED` |
 | Radar Cross Section (RCS) | Not publicly disclosed | m² / dBsm | `NOT_PUBLICLY_DISCLOSED` | [USAF-FS] | Never fabricated; stealth shaping explained qualitatively only |
@@ -111,6 +113,6 @@ Every value in this repository is cited using the following strict precedence or
 | --- | --- | --- |
 | **Overall Length** | USAF Fact Sheet gives `62 ft 1 in (18.9 m)` (exact imperial conversion = `18.923 m`); some USAF/DVIDS summaries print `18.90 m` while Lockheed Martin / Milavia print `18.92 m`. | **`18.92 m`** (`SOURCED`). Matches exact conversion of `62 ft 1 in = 745 in = 18.923 m` rounded to 2 decimal places. |
 | **Service Ceiling** | USAF Fact Sheet states `Above 50,000 feet (15,240 m)`; multiple aerospace press outlets cite `65,000+ ft`. | **`Above 50,000 ft (15,240 m)`** (`SOURCED` to Tier 1 USAF Fact Sheet). Press figure noted as unverified secondary estimate only. |
-| **Maximum Speed & Supercruise** | USAF Fact Sheet states `Mach 2 class with supercruise capability` (USAF/LM summaries cite `Mach 1.5+` supercruise); secondary press cites `Mach 2.25` max / `Mach 1.82` supercruise. | **`Mach 2 class` / `Mach 1.5+ supercruise`** (`SOURCED` to Tier 1 USAF Fact Sheet). Secondary figures are not treated as official specs. |
+| **Maximum Speed & Supercruise** | [USAF-FS] (Art. 104506) & [ACC-FS] (Art. 660143) state `Mach 2 class` and `greater than 1.5 Mach` supercruise without afterburner; secondary press cites `Mach 2.25` max / `Mach 1.82` supercruise. | **`Mach 2 class` max / `>Mach 1.5` supercruise** (`SOURCED` to Tier 1 [USAF-FS] & [ACC-FS]). Secondary press figures are not treated as official specs. |
 | **Composite Weight Share** | Lockheed Martin historical materials breakdown cites `~39% Ti, ~24% composites, ~16% Al, ~1% thermoplastics`; some later summaries quote `24%–35%` composites depending on whether doors/fairings are counted. | **`~39% titanium, ~24% composites, ~16% aluminum`** (`APPROXIMATE`), noting the 24–35% composite range across production summaries. |
 | **Control Surface Deflection Limits** | Exact mechanical/software deflection limits are classified by DoD; academic wind-tunnel/OpenVSP papers test illustrative ranges (e.g., ±20°–30°). | **Actual limits marked `NOT_PUBLICLY_DISCLOSED`** in specs; interactive animation ranges in `docs/INTERACTION_MAP.md` explicitly labeled `ASSUMED` (except 2D nozzle vectoring `±20°`, which is `SOURCED` from Pratt & Whitney). |

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { HangarCanvas } from './scene/HangarCanvas.js';
+import { SYSTEM_GROUP_COLORS, type SystemGroup } from './scene/f22Geometry.js';
 import {
   useExplorerStore,
   type CameraPresetId,
@@ -14,10 +15,12 @@ const QUALITY_TIERS: readonly QualityTier[] = ['low', 'med', 'high'];
 const CLIP_AXES: readonly ClipAxis[] = ['none', 'x', 'y', 'z'];
 const CAMERA_PRESETS: readonly { id: CameraPresetId; label: string }[] = [
   { id: 'three-quarter', label: '3/4' },
+  { id: 'front', label: 'Front' },
   { id: 'top', label: 'Top' },
   { id: 'side', label: 'Side' },
   { id: 'rear', label: 'Rear' },
 ];
+const SYSTEM_GROUPS = Object.keys(SYSTEM_GROUP_COLORS) as SystemGroup[];
 
 export function App() {
   const { isPhone } = useViewport();
@@ -159,6 +162,20 @@ export function App() {
 
       <PartTreePanel />
       <InspectorPanel />
+
+      {!hideChrome && !isPhone && explodeFactor > 0.1 && (
+        <div className="system-legend" data-testid="system-legend">
+          {SYSTEM_GROUPS.map((g) => (
+            <span key={g} className="legend-item">
+              <span
+                className="legend-swatch"
+                style={{ background: SYSTEM_GROUP_COLORS[g].tint }}
+              />
+              {SYSTEM_GROUP_COLORS[g].label}
+            </span>
+          ))}
+        </div>
+      )}
 
       {!hideChrome && !(isPhone && (showInspector || showPartTree)) && (
         <section className="bottom-dock" data-testid="disassembly-dock">

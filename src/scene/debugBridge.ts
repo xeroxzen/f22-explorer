@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { soundEngine } from '../audio/soundEngine.js';
+import { findExactPartCollisionsAtExplode } from './f22Geometry.js';
 import {
   useExplorerStore,
   type CameraPresetId,
@@ -82,20 +83,6 @@ export function updateDebugFrame(
   if (elapsed >= 500) {
     lastMeasuredFps = (fpsFrames * 1000) / elapsed;
   }
-}
-
-function collectLeafBoxes(root: THREE.Object3D, toleranceM: number): THREE.Box3[] {
-  const boxes: THREE.Box3[] = [];
-  root.traverse((obj) => {
-    if ((obj as THREE.Mesh).isMesh) {
-      const box = new THREE.Box3().setFromObject(obj);
-      if (!box.isEmpty()) {
-        box.expandByScalar(-toleranceM);
-        boxes.push(box);
-      }
-    }
-  });
-  return boxes;
 }
 
 export function installDebugHook(): void {
@@ -236,42 +223,13 @@ export function installDebugHook(): void {
       };
     },
     /**
-     * Check leaf-mesh world AABB intersections among all visible registered parts.
-     * Used in Phase 2+ E2E tests to assert zero unintended interpenetration in the
-     * assembled state and zero collisions along explode vectors.
+     * Exact 3D Separating Axis Theorem (SAT) collision check across all 44 parts
+     * at the current explode factor.
      */
     checkPartIntersections(toleranceM = 0.005) {
       if (!activeScene) return [];
-      activeScene.updateMatrixWorld(true);
-      const entries = Array.from(hitboxes.values()).filter(
-        (e) => e.boundsMesh.visible
-      );
-      const partBoxes = entries.map((e) => ({
-        partId: e.partId,
-        boxes: collectLeafBoxes(e.boundsMesh, toleranceM),
-      }));
-
-      const overlaps: Array<{ a: string; b: string }> = [];
-      for (let i = 0; i < partBoxes.length; i++) {
-        for (let j = i + 1; j < partBoxes.length; j++) {
-          const pa = partBoxes[i]!;
-          const pb = partBoxes[j]!;
-          let hit = false;
-          for (const ba of pa.boxes) {
-            for (const bb of pb.boxes) {
-              if (ba.intersectsBox(bb)) {
-                hit = true;
-                break;
-              }
-            }
-            if (hit) break;
-          }
-          if (hit) {
-            overlaps.push({ a: pa.partId, b: pb.partId });
-          }
-        }
-      }
-      return overlaps;
+      const factor = useExplorerStore.getState().explodeFactor;
+      return findExactPartCollisionsAtExplode(factor, toleranceM);
     },
   };
 }

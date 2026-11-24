@@ -6,7 +6,7 @@ import {
 } from './helpers.js';
 
 test.describe('Phase 2 Desktop F-22 Hangar, Disassembly & Collision Checks', () => {
-  test('renders 44-part F-22 with zero assembled/explode collisions, inspector dual badges, and X-ray/section views', async ({
+  test('renders lofted 44-part F-22 from front/top/side/3-4 views, zero collisions, system-tinted explode & leader labels', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -34,11 +34,29 @@ test.describe('Phase 2 Desktop F-22 Hangar, Disassembly & Collision Checks', () 
     });
     expect(assembledOverlaps).toEqual([]);
 
+    // Capture 3/4, Front (28° tail cant), Top (42° diamond wing), Side (chined profile + canopy)
     await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-assembled.png');
 
-    // 2. Explode to 100%, let smooth interpolation settle, assert ZERO collisions
+    await page.getByTestId('cam-front').click();
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-front.png');
+
+    await page.getByTestId('cam-top').click();
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-top.png');
+
+    await page.getByTestId('cam-side').click();
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase2/desktop-side.png');
+
+    await page.getByTestId('cam-three-quarter').click();
+    await page.waitForTimeout(750);
+
+    // 2. Explode to 100%, let smooth directional explode + camera auto-fit settle, assert ZERO collisions
     await page.getByTestId('explode-toggle-btn').click();
-    await page.waitForTimeout(900);
+    await page.waitForTimeout(950);
+    await expect(page.getByTestId('system-legend')).toBeVisible();
+
     const explodedOverlaps = await page.evaluate(() => {
       const dbg = (
         window as unknown as {
@@ -49,12 +67,13 @@ test.describe('Phase 2 Desktop F-22 Hangar, Disassembly & Collision Checks', () 
     });
     expect(explodedOverlaps).toEqual([]);
 
-    // 3. Open Part Tree, select engine-f119-left, verify Inspector dual labels + sources
+    // 3. Open Part Tree, select engine-f119-left, verify leader-line label + dual-badge Inspector
     await page.getByTestId('part-tree-toggle-btn').click();
     await expect(page.getByTestId('part-tree-panel')).toBeVisible();
     await page.getByTestId('tree-part-engine-f119-left').click();
     await expect(page.getByTestId('inspector-panel')).toBeVisible();
     await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
+    await expect(page.getByTestId('leader-label-engine-f119-left')).toBeVisible();
     await assertNoElementOverlap(
       page,
       '[data-testid="top-bar"]',

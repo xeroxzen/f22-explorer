@@ -14,31 +14,29 @@ const CAMERA_PRESETS: Record<
   CameraPresetId,
   { pos: [number, number, number]; target: [number, number, number] }
 > = {
-  'three-quarter': { pos: [14, 6.2, -13.5], target: [0, 1.9, 0] },
-  top: { pos: [0, 23, -0.01], target: [0, 1.8, 0] },
-  side: { pos: [20, 3.2, 0], target: [0, 2.0, 0] },
-  rear: { pos: [7.5, 4.2, 16.5], target: [0, 1.9, 2.0] },
+  'three-quarter': { pos: [14.5, 6.2, -13.5], target: [0, 2.0, 0] },
+  front: { pos: [0, 3.0, -21.0], target: [0, 2.2, 0] },
+  top: { pos: [0, 31.0, -0.01], target: [0, 1.8, 0] },
+  side: { pos: [22.0, 3.0, 0], target: [0, 2.1, 0] },
+  rear: { pos: [7.5, 4.4, 17.5], target: [0, 2.0, 1.5] },
   cockpit: { pos: [2.8, 4.0, -5.8], target: [0, 2.6, -4.6] },
 };
 
 function HangarStructure({ shadows }: { readonly shadows: boolean }) {
   return (
     <group name="hangar-environment">
-      {/* Epoxy hangar concrete floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow={shadows}>
         <planeGeometry args={[140, 140]} />
         <meshStandardMaterial color="#141b24" roughness={0.82} metalness={0.16} />
       </mesh>
 
-      {/* Safety bay outline around aircraft */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
         <ringGeometry args={[11.2, 11.38, 64]} />
         <meshBasicMaterial color="#d97706" transparent opacity={0.35} />
       </mesh>
 
-      {/* Overhead hangar steel roof trusses & light strips */}
       {[-14, 0, 14].map((z, idx) => (
-        <group key={idx} position={[0, 11.5, z]}>
+        <group key={idx} position={[0, 34, z]}>
           <mesh>
             <boxGeometry args={[36, 0.35, 0.35]} />
             <meshStandardMaterial color="#1f2937" metalness={0.6} roughness={0.5} />
@@ -54,14 +52,16 @@ function HangarStructure({ shadows }: { readonly shadows: boolean }) {
 }
 
 function SceneController() {
-  const { camera, gl, scene } = useThree();
+  const { camera, gl, scene, size } = useThree();
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const setSceneReady = useExplorerStore((s) => s.setSceneReady);
   const cameraPreset = useExplorerStore((s) => s.cameraPreset);
   const cameraPresetNonce = useExplorerStore((s) => s.cameraPresetNonce);
+  const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const animatingRef = useRef(false);
-  const goalPosRef = useRef(new THREE.Vector3(14, 6.2, -13.5));
-  const goalTargetRef = useRef(new THREE.Vector3(0, 1.9, 0));
+  const goalPosRef = useRef(new THREE.Vector3(14.5, 6.2, -13.5));
+  const goalTargetRef = useRef(new THREE.Vector3(0, 2.0, 0));
+  const prevExplodeRef = useRef(0);
 
   useEffect(() => {
     gl.localClippingEnabled = true;
@@ -70,17 +70,38 @@ function SceneController() {
     return () => setSceneReady(false);
   }, [gl, setSceneReady]);
 
+  // Camera preset transitions
   useEffect(() => {
     if (cameraPresetNonce === 0) return;
     const p = CAMERA_PRESETS[cameraPreset];
-    goalPosRef.current.set(...p.pos);
+    const aspectScale = size.width < size.height ? 1.38 : 1.0;
+    const explodeScale = 1 + useExplorerStore.getState().explodeFactor * 0.58;
     goalTargetRef.current.set(...p.target);
+    const dir = new THREE.Vector3(...p.pos).sub(goalTargetRef.current);
+    goalPosRef.current
+      .copy(goalTargetRef.current)
+      .addScaledVector(dir, aspectScale * explodeScale);
     animatingRef.current = true;
-  }, [cameraPreset, cameraPresetNonce]);
+  }, [cameraPreset, cameraPresetNonce, size.width, size.height]);
+
+  // Auto-fit camera bounding box when exploding on all viewports
+  useEffect(() => {
+    if (Math.abs(explodeFactor - prevExplodeRef.current) < 0.01) return;
+    prevExplodeRef.current = explodeFactor;
+    const p = CAMERA_PRESETS[useExplorerStore.getState().cameraPreset];
+    const aspectScale = size.width < size.height ? 1.42 : 1.0;
+    const explodeScale = 1 + explodeFactor * 0.62;
+    goalTargetRef.current.set(p.target[0], p.target[1] + explodeFactor * 0.3, p.target[2]);
+    const dir = new THREE.Vector3(...p.pos).sub(new THREE.Vector3(...p.target));
+    goalPosRef.current
+      .copy(goalTargetRef.current)
+      .addScaledVector(dir, aspectScale * explodeScale);
+    animatingRef.current = true;
+  }, [explodeFactor, size.width, size.height]);
 
   useFrame((_, delta) => {
     if (animatingRef.current && controlsRef.current) {
-      const alpha = Math.min(1, delta * 6);
+      const alpha = Math.min(1, delta * 7);
       camera.position.lerp(goalPosRef.current, alpha);
       controlsRef.current.target.lerp(goalTargetRef.current, alpha);
       controlsRef.current.update();
@@ -107,9 +128,9 @@ function SceneController() {
       enableDamping
       dampingFactor={0.08}
       minDistance={3}
-      maxDistance={55}
+      maxDistance={65}
       maxPolarAngle={Math.PI / 2 - 0.02}
-      target={[0, 1.9, 0]}
+      target={[0, 2.0, 0]}
       onStart={() => {
         animatingRef.current = false;
       }}
@@ -128,11 +149,11 @@ export function HangarCanvas() {
         dpr={preset.dpr}
         shadows={preset.shadows}
         gl={{ antialias: preset.antialias, powerPreference: 'high-performance' }}
-        camera={{ position: [14, 6.2, -13.5], fov: 40, near: 0.1, far: 300 }}
+        camera={{ position: [14.5, 6.2, -13.5], fov: 40, near: 0.1, far: 320 }}
         onPointerMissed={() => selectPart(null)}
       >
         <color attach="background" args={['#0c1118']} />
-        <fog attach="fog" args={['#0c1118', 42, 120]} />
+        <fog attach="fog" args={['#0c1118', 48, 130]} />
 
         <ambientLight intensity={0.55} />
         <hemisphereLight args={['#c8dcff', '#1b2430', 0.55]} />
