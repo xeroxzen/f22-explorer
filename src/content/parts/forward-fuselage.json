@@ -1,0 +1,52 @@
+{
+  "id": "forward-fuselage",
+  "title": "Forward Fuselage",
+  "parentId": "f22-airframe",
+  "category": "Forward Fuselage & Cockpit",
+  "label": "SOURCED",
+  "summary": "Chined diamond-section forward fuselage housing the nose radome, avionics bays, cockpit pressure tub, and nose landing gear well.",
+  "role": "Provides low-observable forward shaping, aerodynamic chine vortex generation at high angle of attack, and structural support for the cockpit and nose gear.",
+  "materials": "Titanium bulkheads, aluminum-alloy frames, and composite outer skins with radar-absorbent edge treatments (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      2.3,
+      6.4
+    ],
+    "approxSizeM": [
+      2.4,
+      1.5,
+      4.1
+    ],
+    "proportionReference": "Public 3-view side & planform proportions",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      0,
+      -2.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Station Span",
+      "value": "2.30 – 6.40",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Public 3-view proportional measurement"
+    },
+    {
+      "label": "Shaping Feature",
+      "value": "Continuous lateral chines aligned with wing edges",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+  ]
+}

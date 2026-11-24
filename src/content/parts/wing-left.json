@@ -1,0 +1,60 @@
+{
+  "id": "wing-left",
+  "title": "Left Main Wing",
+  "parentId": "center-fuselage",
+  "category": "Wings & Control Surfaces",
+  "label": "SOURCED",
+  "summary": "Clipped-diamond / trapezoidal left main wing with 42° leading-edge sweep, forward-swept trailing edge, and integral fuel volume.",
+  "role": "Generates primary lift for high-altitude supercruise and high-G agility while aligning planform edges for stealth.",
+  "materials": "Titanium spars and root fittings with composite intermediate spars and monolithic carbon-composite skins.",
+  "modelingNotes": {
+    "stationRangeM": [
+      6.6,
+      14.3
+    ],
+    "approxSizeM": [
+      4.93,
+      0.45,
+      7.7
+    ],
+    "proportionReference": "USAF wingspan (13.56 m), wing area (78.04 m²), 42° LE sweep",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -3.2,
+      0,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Total Wingspan (both wings)",
+      "value": "13.56 (44 ft 6 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Total Wing Area",
+      "value": "78.04 (840 sq ft)",
+      "unit": "m²",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+    },
+    {
+      "label": "Leading-Edge Sweep",
+      "value": "42",
+      "unit": "deg",
+      "status": "SOURCED",
+      "source": "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

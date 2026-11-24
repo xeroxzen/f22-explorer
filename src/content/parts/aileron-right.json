@@ -1,0 +1,53 @@
+{
+  "id": "aileron-right",
+  "title": "Right Outboard Aileron",
+  "parentId": "wing-right",
+  "category": "Wings & Control Surfaces",
+  "label": "SOURCED",
+  "summary": "Outboard trailing-edge roll control surface on the right wing.",
+  "role": "Commands primary roll rate and assists symmetric wingtip load alleviation.",
+  "modelingNotes": {
+    "stationRangeM": [
+      12.1,
+      13.5
+    ],
+    "approxSizeM": [
+      2,
+      0.15,
+      0.9
+    ],
+    "proportionReference": "Public top/bottom planform proportions",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      4.6,
+      0,
+      1.2
+    ],
+    "kind": "articulate",
+    "motionRange": "±25°",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Actual DoD Deflection Limit",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified flight-control specification"
+    },
+    {
+      "label": "Explorer Educational Range",
+      "value": "±25",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Representative educational animation range"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

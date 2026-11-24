@@ -1,0 +1,52 @@
+{
+  "id": "nose-avionics-bay",
+  "title": "Forward Avionics & Radar Bay",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Cockpit",
+  "label": "SOURCED",
+  "summary": "Forward equipment volume housing the AN/APG-77 AESA radar aperture and integrated avionics processors (educational overview only).",
+  "role": "Provides sensor fusion, radar search/track, and electronic warfare processing at a conceptual level.",
+  "materials": "Liquid-cooled modular avionics racks (public overview; internal architecture classified).",
+  "modelingNotes": {
+    "stationRangeM": [
+      2.3,
+      3.4
+    ],
+    "approxSizeM": [
+      1.6,
+      1.1,
+      1.1
+    ],
+    "proportionReference": "Public cutaway & 3-view station behind radome bulkhead",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      0,
+      -4.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Radar Designation",
+      "value": "AN/APG-77 AESA",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Detection Range / T/R Element Count / Modes",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+  ]
+}

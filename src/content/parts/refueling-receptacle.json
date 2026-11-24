@@ -1,0 +1,53 @@
+{
+  "id": "refueling-receptacle",
+  "title": "Dorsal Aerial Refueling Receptacle",
+  "parentId": "center-fuselage",
+  "category": "Center Fuselage & Intakes",
+  "label": "SOURCED",
+  "summary": "Flush dorsal spine slipway receptacle covered by a low-observable clamshell door for USAF flying-boom aerial refueling.",
+  "role": "Connects to KC-135 / KC-46 tanker booms in flight to extend mission range and endurance.",
+  "modelingNotes": {
+    "stationRangeM": [
+      8.4,
+      9.6
+    ],
+    "approxSizeM": [
+      0.55,
+      0.25,
+      1.2
+    ],
+    "proportionReference": "USAF KC-135/KC-46 aerial refueling photographs",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      2.9,
+      0
+    ],
+    "kind": "open",
+    "motionRange": "0° (flush) to 40° (open)",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Refueling Method",
+      "value": "USAF flying-boom slipway receptacle",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)"
+    },
+    {
+      "label": "Door Open Angle (Explorer)",
+      "value": "40",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Estimated from USAF aerial refueling photos"
+    }
+  ],
+  "sources": [
+    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)",
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "intake-right",
+  "title": "Right Caret Air Intake & S-Duct",
+  "parentId": "center-fuselage",
+  "category": "Center Fuselage & Intakes",
+  "label": "SOURCED",
+  "summary": "Fixed-geometry diamond/caret supersonic air inlet and serpentine S-duct feeding the right F119 engine while shielding the fan face.",
+  "role": "Supplies conditioned intake air to the right F119-PW-100 engine while minimizing frontal radar return.",
+  "materials": "Composite ducting with radar-absorbent internal liner (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      5.9,
+      12.6
+    ],
+    "approxSizeM": [
+      1.05,
+      0.85,
+      6.7
+    ],
+    "proportionReference": "Public front/top 3-view proportions (symmetric to left intake)",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      2.4,
+      0.2,
+      -0.4
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Inlet Type",
+      "value": "Fixed-geometry caret inlet + S-duct",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+    },
+    {
+      "label": "Internal RAM Attenuation",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

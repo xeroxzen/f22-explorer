@@ -1,0 +1,53 @@
+{
+  "id": "flaperon-left",
+  "title": "Left Inboard Flaperon",
+  "parentId": "wing-left",
+  "category": "Wings & Control Surfaces",
+  "label": "SOURCED",
+  "summary": "Inboard trailing-edge control surface on the left wing combining symmetric flap lift augmentation with differential roll control.",
+  "role": "Provides high-lift cambering on takeoff/landing, assists roll authority, and participates in speedbrake/load alleviation.",
+  "modelingNotes": {
+    "stationRangeM": [
+      12.9,
+      14.3
+    ],
+    "approxSizeM": [
+      2.4,
+      0.18,
+      1.15
+    ],
+    "proportionReference": "Public top/bottom planform proportions",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -3.9,
+      0,
+      1.2
+    ],
+    "kind": "articulate",
+    "motionRange": "-20° up to +30° down",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Actual DoD Deflection Limit",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified flight-control specification"
+    },
+    {
+      "label": "Explorer Educational Range",
+      "value": "-20 to +30",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Representative educational animation range"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

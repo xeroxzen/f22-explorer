@@ -1,0 +1,52 @@
+{
+  "id": "aces-ii-seat",
+  "title": "ACES II Ejection Seat",
+  "parentId": "cockpit-tub",
+  "category": "Forward Fuselage & Cockpit",
+  "label": "SOURCED",
+  "summary": "Collins Aerospace Advanced Concept Ejection Seat (ACES II) providing zero-altitude, zero-airspeed emergency escape.",
+  "role": "Supports the pilot during high-G maneuvering and provides automated multi-mode emergency extraction.",
+  "materials": "Aerospace aluminum structure with survival kit and drogue parachute assembly.",
+  "modelingNotes": {
+    "stationRangeM": [
+      4.5,
+      5.5
+    ],
+    "approxSizeM": [
+      0.65,
+      1.25,
+      0.85
+    ],
+    "proportionReference": "Collins Aerospace ACES II public overview & USAF cockpit photos",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      2.7,
+      -2.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Model",
+      "value": "Collins Aerospace ACES II",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Collins Aerospace — ACES II Ejection Seat Public Overview"
+    },
+    {
+      "label": "Escape Envelope",
+      "value": "Zero-zero (0 kt, 0 ft) capable",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Collins Aerospace — ACES II Ejection Seat Public Overview"
+    }
+  ],
+  "sources": [
+    "Collins Aerospace — ACES II Ejection Seat Public Overview",
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+  ]
+}

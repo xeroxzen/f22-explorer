@@ -1,0 +1,54 @@
+{
+  "id": "stabilator-left",
+  "title": "Left All-Moving Stabilator",
+  "parentId": "tail-booms",
+  "category": "Aft Fuselage & Empennage",
+  "label": "SOURCED",
+  "summary": "All-moving left horizontal tail surface mounted on the left tail boom, operating symmetrically for pitch and differentially for roll.",
+  "role": "Provides primary pitch authority (coupled with 2D thrust vectoring) and high-speed differential roll control.",
+  "materials": "Composite skins with titanium pivot spindle.",
+  "modelingNotes": {
+    "stationRangeM": [
+      14.9,
+      18.7
+    ],
+    "approxSizeM": [
+      2.7,
+      0.2,
+      3.8
+    ],
+    "proportionReference": "Public top 3-view planform (~8.8 m total stabilator span)",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -3,
+      0.2,
+      4.2
+    ],
+    "kind": "articulate",
+    "motionRange": "±25° pitch & differential roll",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Actual DoD Deflection Limit",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified flight-control specification"
+    },
+    {
+      "label": "Explorer Educational Range",
+      "value": "±25",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Representative educational animation range"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

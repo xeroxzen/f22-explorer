@@ -1,0 +1,54 @@
+{
+  "id": "nozzle-2d-right",
+  "title": "Right 2D Thrust-Vectoring Nozzle",
+  "parentId": "engine-f119-right",
+  "category": "Propulsion",
+  "label": "SOURCED",
+  "summary": "Right-hand rectangular 2D convergent-divergent exhaust nozzle with ±20° pitch vectoring integrated with the flight-control system.",
+  "role": "Vectors thrust ±20° symmetrically for pitch or differentially for roll assist while flattening exhaust plume for IR reduction.",
+  "materials": "High-temperature titanium/ceramic-matrix thermal tiles (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      16.9,
+      18.45
+    ],
+    "approxSizeM": [
+      1.15,
+      0.72,
+      1.55
+    ],
+    "proportionReference": "Pratt & Whitney F119 nozzle photos (symmetric to left nozzle)",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      1.1,
+      -0.4,
+      6.8
+    ],
+    "kind": "articulate",
+    "motionRange": "±20° pitch vectoring",
+    "motionLabel": "SOURCED"
+  },
+  "specs": [
+    {
+      "label": "Pitch Vectoring Range",
+      "value": "±20",
+      "unit": "deg",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+    },
+    {
+      "label": "Nozzle Geometry",
+      "value": "2D convergent-divergent rectangular stealth nozzle",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+    }
+  ],
+  "sources": [
+    "Pratt & Whitney / RTX F119 Public Material (rtx.com)",
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+  ]
+}

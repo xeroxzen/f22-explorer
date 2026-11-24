@@ -1,0 +1,52 @@
+{
+  "id": "center-fuselage",
+  "title": "Center Fuselage Structure",
+  "parentId": "f22-airframe",
+  "category": "Center Fuselage & Intakes",
+  "label": "SOURCED",
+  "summary": "Primary load-bearing structural core connecting the wings, engine intakes, internal fuel tanks, and internal weapons bays.",
+  "role": "Carries wing-box bending loads, houses S-shaped engine ducts and weapons bays, and anchors the disassembled view.",
+  "materials": "Heavy titanium alloy bulkheads (~39% airframe Ti share) with composite fuselage skins.",
+  "modelingNotes": {
+    "stationRangeM": [
+      6.4,
+      12.6
+    ],
+    "approxSizeM": [
+      4,
+      1.55,
+      6.2
+    ],
+    "proportionReference": "Public 3-view planform & Lockheed Martin structural overview",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": false,
+    "explodeVectorM": [
+      0,
+      0,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Station Span",
+      "value": "6.40 – 12.60",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Public 3-view proportional measurement"
+    },
+    {
+      "label": "Primary Structural Material",
+      "value": "Titanium bulkheads & composite skins",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+  ]
+}

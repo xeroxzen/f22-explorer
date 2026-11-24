@@ -1,0 +1,95 @@
+{
+  "id": "f22-airframe",
+  "title": "F-22 Raptor Airframe",
+  "parentId": null,
+  "category": "Airframe",
+  "label": "SOURCED",
+  "summary": "Fifth-generation twin-engine air-dominance fighter airframe combining low-observable shaping, internal weapons carriage, supercruise aerodynamics, and thrust vectoring.",
+  "role": "Primary structural and aerodynamic envelope integrating all major airframe sections, propulsion, avionics, and internal payload bays.",
+  "materials": "Approximately 39% titanium alloys, 24% carbon-fiber composites (24–35% across production summaries), 16% aluminum alloys, and ~1% thermoplastics by structural weight.",
+  "modelingNotes": {
+    "stationRangeM": [
+      0,
+      18.92
+    ],
+    "approxSizeM": [
+      13.56,
+      5.08,
+      18.92
+    ],
+    "proportionReference": "USAF Fact Sheet envelope dimensions (62 ft 1 in × 44 ft 6 in × 16 ft 8 in)",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": false,
+    "explodeVectorM": [
+      0,
+      0,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Length",
+      "value": "18.92 (62 ft 1 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Wingspan",
+      "value": "13.56 (44 ft 6 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Height",
+      "value": "5.08 (16 ft 8 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Empty Weight",
+      "value": "19,700 (43,340 lb)",
+      "unit": "kg",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Max Takeoff Weight",
+      "value": "38,000 (83,500 lb)",
+      "unit": "kg",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Maximum Speed",
+      "value": "Mach 2 class (Mach 1.5+ supercruise)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Service Ceiling",
+      "value": "Above 15,240 (50,000+ ft)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Radar Cross Section (RCS)",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified; not released by USAF"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "rudder-left",
+  "title": "Left Rudder",
+  "parentId": "vertical-stabilizer-left",
+  "category": "Aft Fuselage & Empennage",
+  "label": "SOURCED",
+  "summary": "Trailing-edge directional control surface on the left vertical tail; also deflects outward in tandem with the right rudder as an aerodynamic speedbrake.",
+  "role": "Provides yaw control and split-rudder aerodynamic braking without requiring a dedicated dorsal speedbrake door.",
+  "modelingNotes": {
+    "stationRangeM": [
+      15.6,
+      16.9
+    ],
+    "approxSizeM": [
+      0.65,
+      2.4,
+      1.15
+    ],
+    "proportionReference": "Public side-profile & airshow photographs",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -2.6,
+      2.4,
+      3.8
+    ],
+    "kind": "articulate",
+    "motionRange": "±30° yaw / split airbrake",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Airbrake Function",
+      "value": "Outward split-rudder drag mode",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+    },
+    {
+      "label": "Actual DoD Deflection Limit",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified flight-control specification"
+    },
+    {
+      "label": "Explorer Educational Range",
+      "value": "±30",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Representative educational animation range"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

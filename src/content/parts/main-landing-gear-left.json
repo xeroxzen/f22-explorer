@@ -1,0 +1,54 @@
+{
+  "id": "main-landing-gear-left",
+  "title": "Left Main Landing Gear & Bay Doors",
+  "parentId": "center-fuselage",
+  "category": "Landing Gear",
+  "label": "SOURCED",
+  "summary": "Retractable heavy-duty left main landing gear strut, wheel/brake assembly, and serrated low-observable bay doors.",
+  "role": "Absorbs landing impact loads and supports main fuselage weight on the ground before retracting flush into the center fuselage.",
+  "materials": "High-strength aerospace steel/titanium strut with carbon brakes.",
+  "modelingNotes": {
+    "stationRangeM": [
+      9.8,
+      11.4
+    ],
+    "approxSizeM": [
+      0.85,
+      1.25,
+      1.6
+    ],
+    "proportionReference": "Main gear track ~3.23 m (10 ft 7 in) & USAF ramp photos",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -2,
+      -1.8,
+      0.5
+    ],
+    "kind": "retract",
+    "motionRange": "0° (extended) to 90° (retracted)",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Main Gear Track",
+      "value": "3.23 (10 ft 7 in)",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+    },
+    {
+      "label": "Retraction Kinematics (Explorer)",
+      "value": "0° to 90°",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Standard tricycle retraction kinematics"
+    }
+  ],
+  "sources": [
+    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)",
+    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+  ]
+}

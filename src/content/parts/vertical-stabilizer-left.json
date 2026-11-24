@@ -1,0 +1,52 @@
+{
+  "id": "vertical-stabilizer-left",
+  "title": "Left Canted Vertical Stabilizer",
+  "parentId": "aft-fuselage",
+  "category": "Aft Fuselage & Empennage",
+  "label": "SOURCED",
+  "summary": "Outward-canted (28°) left vertical tail fin aligned with the wing planform sweep to eliminate 90° radar corner reflections.",
+  "role": "Provides directional stability and houses the left rudder and internal antennas.",
+  "materials": "Composite skins over multi-spar structural box.",
+  "modelingNotes": {
+    "stationRangeM": [
+      13,
+      16.9
+    ],
+    "approxSizeM": [
+      1.3,
+      2.63,
+      3.9
+    ],
+    "proportionReference": "USAF height (5.08 m) & 28° outward cant angle",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -2.2,
+      2.2,
+      2.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Outward Cant Angle",
+      "value": "28",
+      "unit": "deg",
+      "status": "SOURCED",
+      "source": "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+    },
+    {
+      "label": "Tip Height Above Ground",
+      "value": "5.08 (16 ft 8 in)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

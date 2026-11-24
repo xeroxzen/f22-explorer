@@ -1,0 +1,67 @@
+{
+  "id": "engine-f119-right",
+  "title": "Right F119-PW-100 Turbofan Engine",
+  "parentId": "aft-fuselage",
+  "category": "Propulsion",
+  "label": "SOURCED",
+  "summary": "Right-hand Pratt & Whitney F119-PW-100 twin-spool low-bypass augmented turbofan engine.",
+  "role": "Provides half of the F-22's twin-engine thrust, redundancy, and integrated pitch/roll thrust vectoring.",
+  "materials": "Integrally bladed titanium rotors and superalloy hot section (public PW overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      12.6,
+      16.9
+    ],
+    "approxSizeM": [
+      1.15,
+      1.15,
+      4.3
+    ],
+    "proportionReference": "Pratt & Whitney F119 public photos (symmetric to left engine)",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      1.1,
+      -0.4,
+      4.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Afterburning Thrust Class",
+      "value": "35,000+ lbf (~156+ kN)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+    },
+    {
+      "label": "Dry Military Thrust (Est.)",
+      "value": "~22,000–26,000 lbf (~98–116 kN)",
+      "unit": "",
+      "status": "APPROXIMATE",
+      "source": "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+    },
+    {
+      "label": "Architecture",
+      "value": "3-stage fan, 6-stage HPC, 1-stage HPT, 1-stage LPT",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+    },
+    {
+      "label": "Exact EGT / SFC / Compressor Maps",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified / proprietary; Phase 4 uses ASSUMED teaching curves"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Pratt & Whitney / RTX F119 Public Material (rtx.com)",
+    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+  ]
+}

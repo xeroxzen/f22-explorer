@@ -1,0 +1,53 @@
+{
+  "id": "main-weapons-bay",
+  "title": "Main Centerline Weapons Bay",
+  "parentId": "center-fuselage",
+  "category": "Weapons Bays & Gun",
+  "label": "SOURCED",
+  "summary": "Large ventral internal weapons bay along the fuselage centerline housing air-to-air or air-to-ground ordnance behind flush doors.",
+  "role": "Carries primary beyond-visual-range missiles or precision-guided munitions internally to maintain stealth and low supersonic drag.",
+  "materials": "Titanium/composite structural bay framing with pneumatic ejection launchers (LAU-142/A class).",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.1,
+      11.4
+    ],
+    "approxSizeM": [
+      2.1,
+      0.75,
+      4.3
+    ],
+    "proportionReference": "USAF open-bay photos & AIM-120 length (3.66 m) clearance",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -1.8,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Air-to-Air Loadout",
+      "value": "6 × AIM-120 AMRAAM",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Air-to-Ground Loadout",
+      "value": "2 × AIM-120 + 2 × 1,000 lb GBU-32 JDAM (or 8 × SDB)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)",
+    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)"
+  ]
+}

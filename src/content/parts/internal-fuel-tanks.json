@@ -1,0 +1,50 @@
+{
+  "id": "internal-fuel-tanks",
+  "title": "Internal Fuel Tanks",
+  "parentId": "center-fuselage",
+  "category": "Center Fuselage & Intakes",
+  "label": "SOURCED",
+  "summary": "Integral fuselage and wing fuel cells holding approximately 18,000 lb (~8,200 kg) of jet fuel internally to preserve stealth.",
+  "role": "Provides internal fuel capacity for air-dominance missions and supercruise without external drag or radar signature.",
+  "modelingNotes": {
+    "stationRangeM": [
+      6.8,
+      12.4
+    ],
+    "approxSizeM": [
+      2.8,
+      0.75,
+      5.4
+    ],
+    "proportionReference": "USAF Fact Sheet internal fuel volume & center-fuselage cutaway layout",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      1.9,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Internal Fuel Capacity",
+      "value": "8,200 (18,000 lb)",
+      "unit": "kg",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "With 2 External 600-gal Tanks",
+      "value": "11,900 (26,000 lb)",
+      "unit": "kg",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+  ]
+}

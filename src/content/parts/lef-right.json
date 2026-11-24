@@ -1,0 +1,53 @@
+{
+  "id": "lef-right",
+  "title": "Right Leading-Edge Flap",
+  "parentId": "wing-right",
+  "category": "Wings & Control Surfaces",
+  "label": "SOURCED",
+  "summary": "Full-span hinged leading-edge flap along the right 42° wing leading edge.",
+  "role": "Optimizes lift and vortex stability across Mach and angle-of-attack regimes.",
+  "modelingNotes": {
+    "stationRangeM": [
+      6.8,
+      11
+    ],
+    "approxSizeM": [
+      4.4,
+      0.2,
+      0.75
+    ],
+    "proportionReference": "Public planform & high-AoA flight photographs",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      4.2,
+      0,
+      -1.2
+    ],
+    "kind": "articulate",
+    "motionRange": "0° to +30° down",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Actual DoD Deflection Limit",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified flight-control specification"
+    },
+    {
+      "label": "Explorer Educational Range",
+      "value": "0 to +30",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Representative educational animation range"
+    }
+  ],
+  "sources": [
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+  ]
+}

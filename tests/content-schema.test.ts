@@ -5,6 +5,7 @@ import { ALL_COMPONENTS } from '../src/content/registry.js';
 import {
   VALID_SPEC_STATUSES,
   validateComponentContent,
+  validatePartsHierarchy,
 } from '../src/content/schema.js';
 
 function collectJsonFiles(dir: string): string[] {
@@ -21,15 +22,28 @@ function collectJsonFiles(dir: string): string[] {
   return out;
 }
 
-describe('Component content JSON schema validation', () => {
+describe('Component content JSON schema & hierarchy validation', () => {
   it('accepts valid SOURCED, APPROXIMATE, ASSUMED, and NOT_PUBLICLY_DISCLOSED specs', () => {
     const sample = {
       id: 'sample-part',
       title: 'Sample Part',
+      parentId: null,
       category: 'Airframe',
+      label: 'SOURCED',
       summary: 'Sample educational description.',
       role: 'Demonstrates schema validation.',
       materials: 'Titanium alloy and composite skins (public overview).',
+      modelingNotes: {
+        stationRangeM: [0, 18.92],
+        approxSizeM: [13.56, 5.08, 18.92],
+        proportionReference: 'USAF F-22 Fact Sheet',
+        confidence: 'HIGH',
+      },
+      interaction: {
+        explodes: false,
+        explodeVectorM: [0, 0, 0],
+        kind: 'static',
+      },
       specs: [
         {
           label: 'Span',
@@ -60,9 +74,22 @@ describe('Component content JSON schema validation', () => {
         {
           id: 'bad',
           title: 'Bad',
+          parentId: null,
           category: 'Test',
+          label: 'SOURCED',
           summary: 'Summary',
           role: 'Role',
+          modelingNotes: {
+            stationRangeM: [0, 1],
+            approxSizeM: [1, 1, 1],
+            proportionReference: 'Test',
+            confidence: 'LOW',
+          },
+          interaction: {
+            explodes: false,
+            explodeVectorM: [0, 0, 0],
+            kind: 'static',
+          },
           specs: [
             {
               label: 'Foo',
@@ -79,24 +106,34 @@ describe('Component content JSON schema validation', () => {
     ).toThrow(/status/);
   });
 
-  it('validates every JSON file in src/content/ with no duplicate ids or uncited specs', () => {
+  it('validates all 30–50 F-22 parts JSON files on disk and verifies tree integrity', () => {
     const dir = path.resolve(process.cwd(), 'src/content');
     const files = collectJsonFiles(dir);
-    const seenIds = new Set<string>();
+    expect(files.length).toBeGreaterThanOrEqual(30);
+    expect(files.length).toBeLessThanOrEqual(50);
 
-    for (const file of files) {
+    const validatedParts = files.map((file) => {
       const rel = path.relative(process.cwd(), file);
       const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
       const validated = validateComponentContent(raw, rel);
-      expect(seenIds.has(validated.id)).toBe(false);
-      seenIds.add(validated.id);
       expect(validated.sources.length).toBeGreaterThan(0);
       for (const spec of validated.specs) {
         expect(spec.source.trim().length).toBeGreaterThan(0);
         expect(VALID_SPEC_STATUSES).toContain(spec.status);
       }
-    }
+      return validated;
+    });
 
+    validatePartsHierarchy(validatedParts);
+
+    // Registry covers every JSON file on disk
     expect(ALL_COMPONENTS.length).toBe(files.length);
+
+    // Classified areas must explicitly include NOT_PUBLICLY_DISCLOSED entries
+    const allSpecs = ALL_COMPONENTS.flatMap((p) => p.specs);
+    const classifiedSpecs = allSpecs.filter(
+      (s) => s.status === 'NOT_PUBLICLY_DISCLOSED'
+    );
+    expect(classifiedSpecs.length).toBeGreaterThanOrEqual(4);
   });
 });

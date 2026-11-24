@@ -1,0 +1,58 @@
+{
+  "id": "internal-ordnance-display",
+  "title": "Internal Carriage Overview (AIM-120 / JDAM)",
+  "parentId": "main-weapons-bay",
+  "category": "Weapons Bays & Gun",
+  "label": "SOURCED",
+  "summary": "Educational schematic shapes representing the publicly documented internal air-to-air (6 × AIM-120) and air-to-ground (2 × JDAM + 2 × AIM-120) carriage layouts.",
+  "role": "Illustrates internal bay volume and carriage geometry at a public-overview level with no classified weapons detail.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.4,
+      11.1
+    ],
+    "approxSizeM": [
+      1.85,
+      0.45,
+      3.7
+    ],
+    "proportionReference": "USAF public fact sheet loadout & public AIM-120/JDAM gross dimensions",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -2.7,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Air-to-Air Configuration",
+      "value": "6 × AIM-120 AMRAAM (public overview)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Air-to-Ground Configuration",
+      "value": "2 × GBU-32 JDAM + 2 × AIM-120 (public overview)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Guidance / Seeker Performance",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Out of scope / classified"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+  ]
+}

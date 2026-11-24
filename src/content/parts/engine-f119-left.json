@@ -1,0 +1,74 @@
+{
+  "id": "engine-f119-left",
+  "title": "Left F119-PW-100 Turbofan Engine",
+  "parentId": "aft-fuselage",
+  "category": "Propulsion",
+  "label": "SOURCED",
+  "summary": "Pratt & Whitney F119-PW-100 twin-spool, low-bypass augmented turbofan delivering 35,000+ lbf class thrust and enabling Mach 1.5+ supercruise.",
+  "role": "Provides primary propulsive thrust, electrical/hydraulic power extraction, and FADEC-integrated thrust vectoring.",
+  "materials": "Integrally bladed titanium fan/compressor rotors (IBRs) and single-crystal superalloy turbine blades (public PW overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      12.6,
+      16.9
+    ],
+    "approxSizeM": [
+      1.15,
+      1.15,
+      4.3
+    ],
+    "proportionReference": "Pratt & Whitney F119 public photos & aft nacelle spacing",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -1.1,
+      -0.4,
+      4.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Afterburning Thrust Class",
+      "value": "35,000+ lbf (~156+ kN)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+    },
+    {
+      "label": "Dry Military Thrust (Est.)",
+      "value": "~22,000–26,000 lbf (~98–116 kN)",
+      "unit": "",
+      "status": "APPROXIMATE",
+      "source": "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+    },
+    {
+      "label": "Architecture",
+      "value": "3-stage fan, 6-stage HPC, 1-stage HPT, 1-stage LPT",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+    },
+    {
+      "label": "Bypass Ratio (Est.)",
+      "value": "~0.3:1",
+      "unit": "",
+      "status": "APPROXIMATE",
+      "source": "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+    },
+    {
+      "label": "Exact EGT / SFC / Compressor Maps",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified / proprietary; Phase 4 uses ASSUMED teaching curves"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Pratt & Whitney / RTX F119 Public Material (rtx.com)",
+    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+  ]
+}

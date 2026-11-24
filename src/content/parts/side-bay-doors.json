@@ -1,0 +1,47 @@
+{
+  "id": "side-bay-doors",
+  "title": "Side Weapons Bay Doors & Trapeze Rails",
+  "parentId": "center-fuselage",
+  "category": "Weapons Bays & Gun",
+  "label": "SOURCED",
+  "summary": "Left and right flush side-bay doors paired with articulated trapeze rails that extend AIM-9 missiles outward for launch.",
+  "role": "Keep side bays sealed in cruise and rapidly swing open to expose the AIM-9 seeker head.",
+  "materials": "Composite panels with low-observable edge alignment.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.2,
+      10.6
+    ],
+    "approxSizeM": [
+      4.2,
+      0.55,
+      3.4
+    ],
+    "proportionReference": "USAF public side-bay firing & ramp photographs",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -1.2,
+      0
+    ],
+    "kind": "open",
+    "motionRange": "Doors 0° to 95°; trapeze rail 0° to 25°",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Door / Rail Motion (Explorer)",
+      "value": "Doors 95°, rail 25°",
+      "unit": "deg",
+      "status": "ASSUMED",
+      "source": "Estimated from USAF side-bay open photos"
+    }
+  ],
+  "sources": [
+    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+  ]
+}

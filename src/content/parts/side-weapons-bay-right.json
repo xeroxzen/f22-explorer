@@ -1,0 +1,51 @@
+{
+  "id": "side-weapons-bay-right",
+  "title": "Right Side Weapons Bay",
+  "parentId": "center-fuselage",
+  "category": "Weapons Bays & Gun",
+  "label": "SOURCED",
+  "summary": "Lateral internal weapons bay located along the right intake shoulder housing one short-range AIM-9 Sidewinder.",
+  "role": "Carries one infrared-guided AIM-9 missile internally on an extending trapeze rail.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.2,
+      10.6
+    ],
+    "approxSizeM": [
+      0.55,
+      0.5,
+      3.4
+    ],
+    "proportionReference": "USAF side-bay open photos (symmetric to left side bay)",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      3.1,
+      -0.8,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Carriage",
+      "value": "1 × AIM-9 Sidewinder",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Launcher Mechanism",
+      "value": "Extending trapeze rail",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+  ]
+}

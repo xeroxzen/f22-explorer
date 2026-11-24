@@ -1,0 +1,53 @@
+{
+  "id": "cockpit-tub",
+  "title": "Cockpit Pressure Tub",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Cockpit",
+  "label": "SOURCED",
+  "summary": "Single-seat pressurized pilot station containing the ejection seat, glass-cockpit instrument panel, and HOTAS controls.",
+  "role": "Houses and protects the single pilot with environmental control, pressurization, and ergonomic all-round visibility.",
+  "materials": "Structural aluminum/titanium pressure shell (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      3.4,
+      6.2
+    ],
+    "approxSizeM": [
+      1.1,
+      1.2,
+      2.8
+    ],
+    "proportionReference": "Public USAF cockpit & side-profile photos",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      1.6,
+      -2.5
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Crew",
+      "value": "1 pilot",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Station Span",
+      "value": "3.40 – 6.20",
+      "unit": "m",
+      "status": "APPROXIMATE",
+      "source": "Public 3-view proportional measurement"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+  ]
+}

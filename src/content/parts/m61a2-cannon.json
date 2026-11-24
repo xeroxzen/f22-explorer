@@ -1,0 +1,60 @@
+{
+  "id": "m61a2-cannon",
+  "title": "M61A2 20 mm Vulcan Cannon",
+  "parentId": "center-fuselage",
+  "category": "Weapons Bays & Gun",
+  "label": "SOURCED",
+  "summary": "Internal 20 mm six-barrel Gatling rotary cannon mounted above the right wing root behind a flush retractable muzzle door.",
+  "role": "Provides close-range air-to-air and strafing capability with 480 rounds of linkless ammunition.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.8,
+      10.1
+    ],
+    "approxSizeM": [
+      0.45,
+      0.45,
+      2.3
+    ],
+    "proportionReference": "USAF Fact Sheet & public right-wing-root gun port photos",
+    "confidence": "HIGH"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      2.2,
+      1.4,
+      -0.3
+    ],
+    "kind": "open",
+    "motionRange": "Muzzle door 0° (flush) to 45° (open)",
+    "motionLabel": "ASSUMED"
+  },
+  "specs": [
+    {
+      "label": "Weapon",
+      "value": "M61A2 20 mm 6-barrel rotary cannon",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    },
+    {
+      "label": "Ammunition Capacity",
+      "value": "480",
+      "unit": "rounds",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    },
+    {
+      "label": "Location",
+      "value": "Internal, above right wing root",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    }
+  ],
+  "sources": [
+    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
+    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+  ]
+}
