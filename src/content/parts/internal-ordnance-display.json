@@ -42,13 +42,13 @@
     },
     {
       "label": "AIM-9X Sidewinder Length",
-      "value": "3.02 (9 ft 11 in)",
+      "value": "3.02 (9.9 ft)",
       "unit": "m",
       "status": "SOURCED",
-      "source": "USAF AIM-9 Sidewinder Fact Sheet",
-      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104577/aim-9-sidewinder/",
+      "source": "NAVAIR — AIM-9X Sidewinder Product Page",
+      "urlOrLocator": "https://www.navair.navy.mil/product/AIM-9X-Sidewinder",
       "accessed": "2026-11-24",
-      "snippet": "Length: 9 feet 11 inches (3.02 meters)"
+      "snippet": "Length: 9.9 feet (3.02 meters)"
     },
     {
       "label": "GBU-32 1,000-lb JDAM Length",
@@ -86,10 +86,10 @@
       "snippet": "AIM-120 length 12 ft (3.66 m)"
     },
     {
-      "title": "USAF AIM-9 Sidewinder Fact Sheet",
-      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104577/aim-9-sidewinder/",
+      "title": "NAVAIR — AIM-9X Sidewinder Product Page",
+      "urlOrLocator": "https://www.navair.navy.mil/product/AIM-9X-Sidewinder",
       "accessed": "2026-11-24",
-      "snippet": "AIM-9X length 9 ft 11 in (3.02 m)"
+      "snippet": "AIM-9X length 9.9 ft (3.02 m)"
     },
     {
       "title": "USAF Joint Direct Attack Munition (GBU-31/32/38) Fact Sheet",

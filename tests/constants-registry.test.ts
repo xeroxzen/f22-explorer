@@ -191,4 +191,26 @@ describe('Constants Registry & Label Audit', () => {
       `Unregistered numeric literals found in src/sim/** — move to src/sim/config/registry.ts:\n${violations.join('\n')}`
     ).toEqual([]);
   });
+
+  it('ensures no physical quantity appears twice in CONSTANTS_REGISTRY (single source of truth)', () => {
+    // Strip trailing unit suffixes so e.g. F119_AB_THRUST_CLASS_LBF and F119_AB_THRUST_CLASS_KN collide
+    const UNIT_SUFFIX_RE = /_(LBF|KN|N|KG|LB|M|FT|IN|M2|DEG|RAD|S|MS|PCT|KG_M3)$/;
+    const seen = new Map<string, string>();
+    const duplicates: string[] = [];
+
+    for (const entry of REGISTRY_ENTRIES) {
+      const stem = entry.id.replace(UNIT_SUFFIX_RE, '');
+      const prev = seen.get(stem);
+      if (prev) {
+        duplicates.push(`${prev} <-> ${entry.id} (shared quantity stem: ${stem})`);
+      } else {
+        seen.set(stem, entry.id);
+      }
+    }
+
+    expect(duplicates).toEqual([]);
+    expect('F119_AB_THRUST_CLASS_KN' in CONSTANTS_REGISTRY).toBe(false);
+    expect('F119_DRY_THRUST_CLASS_KN' in CONSTANTS_REGISTRY).toBe(false);
+    expect(CONSTANTS_REGISTRY.F119_AB_THRUST_CLASS_LBF.label).toBe('SOURCED');
+  });
 });

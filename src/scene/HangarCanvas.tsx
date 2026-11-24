@@ -116,6 +116,9 @@ function SceneController() {
   const goalPosRef = useRef(new THREE.Vector3(14.5, 6.2, -13.5));
   const goalTargetRef = useRef(new THREE.Vector3(0, 2.0, 0));
   const prevExplodeRef = useRef(0);
+  const perfWindowSRef = useRef(0);
+  const perfFramesRef = useRef(0);
+  const perfSlowFramesRef = useRef(0);
 
   useEffect(() => {
     gl.localClippingEnabled = true;
@@ -123,6 +126,16 @@ function SceneController() {
     setSceneReady(true);
     return () => setSceneReady(false);
   }, [gl, setSceneReady]);
+
+  // Listen for OS prefers-reduced-motion changes
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = () => useExplorerStore.getState().setReducedMotion(mq.matches);
+    onChange();
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   // Offset camera frustum center when mobile bottom sheet or landscape drawer is open
   // so no exploded or assembled parts are hidden behind the sheet!
@@ -224,13 +237,38 @@ function SceneController() {
       apuSpoolFraction: es.apuSpoolFrac,
     });
 
+    // Adaptive quality: step down one tier on sustained frame drops (>70% frames >36 ms over 2.5 s)
+    if (!store.qualityLockedByUser && store.qualityTier !== 'low' && delta < 0.5) {
+      perfWindowSRef.current += delta;
+      perfFramesRef.current += 1;
+      if (delta > 0.036) perfSlowFramesRef.current += 1;
+      if (perfWindowSRef.current >= 2.5) {
+        if (
+          perfFramesRef.current >= 15 &&
+          perfSlowFramesRef.current / perfFramesRef.current > 0.7
+        ) {
+          store.stepDownQualityAdaptive();
+        }
+        perfWindowSRef.current = 0;
+        perfFramesRef.current = 0;
+        perfSlowFramesRef.current = 0;
+      }
+    }
+
     if (animatingRef.current && controlsRef.current) {
-      const alpha = Math.min(1, delta * 7);
-      camera.position.lerp(goalPosRef.current, alpha);
-      controlsRef.current.target.lerp(goalTargetRef.current, alpha);
-      controlsRef.current.update();
-      if (camera.position.distanceTo(goalPosRef.current) < 0.05) {
+      if (store.reducedMotion) {
+        camera.position.copy(goalPosRef.current);
+        controlsRef.current.target.copy(goalTargetRef.current);
+        controlsRef.current.update();
         animatingRef.current = false;
+      } else {
+        const alpha = Math.min(1, delta * 7);
+        camera.position.lerp(goalPosRef.current, alpha);
+        controlsRef.current.target.lerp(goalTargetRef.current, alpha);
+        controlsRef.current.update();
+        if (camera.position.distanceTo(goalPosRef.current) < 0.05) {
+          animatingRef.current = false;
+        }
       }
     }
 

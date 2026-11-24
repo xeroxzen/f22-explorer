@@ -16,7 +16,7 @@ Classified specifications (such as exact RCS, avionics internals, and detailed e
 
 ## Constants Registry (Single Source of Truth)
 
-Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (64 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
+Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (62 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
 
 ### Physical & Atmosphere
 
@@ -54,8 +54,6 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | Constant | Value | Label | Calibrated On | Commit | Source / Derivation |
 | --- | --- | --- | --- | --- | --- |
 | `F119_ENGINE_COUNT` | `2` | `SOURCED` | — | `phase1` | USAF F-22 Fact Sheet & Pratt & Whitney (twin F119-PW-100) |
-| `F119_AB_THRUST_CLASS_KN` | `156 kN` | `APPROXIMATE` | — | `phase1` | USAF Fact Sheet & Pratt & Whitney public 35,000+ lbf afterburning thrust class per engine *(uncertainty: 35,000+ lbf class; exact static thrust not publicly disclosed)* |
-| `F119_DRY_THRUST_CLASS_KN` | `107 kN` | `APPROXIMATE` | — | `phase1` | Public aerospace reference range (~22,000–26,000 lbf / 98–116 kN dry military thrust) *(uncertainty: ±9 kN public estimate range)* |
 | `F119_BYPASS_RATIO_APPROX` | `0.3` | `APPROXIMATE` | — | `phase1` | Jane's / public academic low-bypass turbofan reference (~0.3:1) |
 | `F119_NOZZLE_VECTOR_MAX_DEG` | `20 deg` | `SOURCED` | — | `phase1` | Pratt & Whitney F119 public specification (±20° 2D pitch thrust vectoring) |
 | `F119_AB_THRUST_CLASS_LBF` | `35,000 lbf` | `SOURCED` | — | `phase4` | USAF F-22 Fact Sheet & Pratt & Whitney public 35,000-pound thrust class per engine *(uncertainty: 35,000-lbf class; exact static thrust not publicly disclosed)* |
@@ -99,7 +97,7 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | Constant | Value | Label | Calibrated On | Commit | Source / Derivation |
 | --- | --- | --- | --- | --- | --- |
 | `AIM120_LENGTH_M` | `3.66 m` | `SOURCED` | — | `phase1` | USAF AIM-120 AMRAAM Fact Sheet (12 ft / 3.66 m) for main bay clearance check |
-| `AIM9_LENGTH_M` | `3.02 m` | `SOURCED` | — | `phase1` | USAF AIM-9 Sidewinder Fact Sheet (9 ft 11 in / 3.02 m) for side bay clearance check |
+| `AIM9_LENGTH_M` | `3.02 m` | `SOURCED` | — | `phase5` | NAVAIR AIM-9X Sidewinder product page (9.9 ft / 3.02 m) for side bay clearance check |
 | `GBU32_LENGTH_M` | `3.04 m` | `SOURCED` | — | `phase4` | USAF Joint Direct Attack Munition (GBU-31/32/38) Fact Sheet: GBU-32 length 119.5 in (3.04 m) |
 | `GBU39_LENGTH_M` | `1.8 m` | `SOURCED` | — | `phase4` | USAF GBU-39B Small Diameter Bomb Fact Sheet: length 70.8 in (1.80 m) |
 | `GBU39_PER_RACK` | `4` | `SOURCED` | — | `phase4` | USAF GBU-39B Small Diameter Bomb Fact Sheet: 4 bombs per BRU-61/A carriage rack |
