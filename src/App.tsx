@@ -7,6 +7,7 @@ import {
   type ClipAxis,
   type QualityTier,
 } from './store/explorerStore.js';
+import { AreasControlPanel } from './ui/AreasControlPanel.js';
 import { InspectorPanel } from './ui/InspectorPanel.js';
 import { PartTreePanel } from './ui/PartTreePanel.js';
 import { useViewport } from './ui/useViewport.js';
@@ -19,6 +20,7 @@ const CAMERA_PRESETS: readonly { id: CameraPresetId; label: string }[] = [
   { id: 'top', label: 'Top' },
   { id: 'side', label: 'Side' },
   { id: 'rear', label: 'Rear' },
+  { id: 'cockpit', label: 'Cockpit' },
 ];
 const SYSTEM_GROUPS = Object.keys(SYSTEM_GROUP_COLORS) as SystemGroup[];
 
@@ -28,6 +30,7 @@ export function App() {
   const soundMuted = useExplorerStore((s) => s.soundMuted);
   const showInspector = useExplorerStore((s) => s.showInspector);
   const showPartTree = useExplorerStore((s) => s.showPartTree);
+  const showAreasPanel = useExplorerStore((s) => s.showAreasPanel);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
   const clipAxis = useExplorerStore((s) => s.clipAxis);
@@ -39,6 +42,7 @@ export function App() {
   const toggleSoundMute = useExplorerStore((s) => s.toggleSoundMute);
   const setShowInspector = useExplorerStore((s) => s.setShowInspector);
   const setShowPartTree = useExplorerStore((s) => s.setShowPartTree);
+  const setShowAreasPanel = useExplorerStore((s) => s.setShowAreasPanel);
   const setExplodeFactor = useExplorerStore((s) => s.setExplodeFactor);
   const toggleExplode = useExplorerStore((s) => s.toggleExplode);
   const setXrayMode = useExplorerStore((s) => s.setXrayMode);
@@ -53,7 +57,8 @@ export function App() {
     }
   }, [isPhone, mobileControlsHidden, setMobileControlsHidden]);
 
-  const hideChrome = isPhone && mobileControlsHidden && !showInspector && !showPartTree;
+  const hideChrome =
+    isPhone && mobileControlsHidden && !showInspector && !showPartTree && !showAreasPanel;
 
   return (
     <div className={`app-root ${hideChrome ? 'immersive' : ''}`}>
@@ -96,6 +101,20 @@ export function App() {
                 </button>
               ))}
             </div>
+
+            <button
+              type="button"
+              className={`ctrl-btn ${showAreasPanel ? 'active' : ''}`}
+              onClick={() => {
+                const next = !showAreasPanel;
+                setShowAreasPanel(next);
+                if (isPhone && next) setShowInspector(false);
+              }}
+              data-testid="areas-toggle-btn"
+              aria-pressed={showAreasPanel}
+            >
+              Areas &amp; Stick
+            </button>
 
             <button
               type="button"
@@ -160,6 +179,7 @@ export function App() {
         </button>
       )}
 
+      <AreasControlPanel />
       <PartTreePanel />
       <InspectorPanel />
 
@@ -177,7 +197,7 @@ export function App() {
         </div>
       )}
 
-      {!hideChrome && !(isPhone && (showInspector || showPartTree)) && (
+      {!hideChrome && !(isPhone && (showInspector || showPartTree || showAreasPanel)) && (
         <section className="bottom-dock" data-testid="disassembly-dock">
           <button
             type="button"

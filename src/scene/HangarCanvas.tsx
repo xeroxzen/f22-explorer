@@ -9,6 +9,7 @@ import {
 } from '../store/explorerStore.js';
 import { installDebugHook, updateDebugFrame } from './debugBridge.js';
 import { F22Model } from './F22Model.js';
+import { fsToZ } from './f22Geometry.js';
 
 const CAMERA_PRESETS: Record<
   CameraPresetId,
@@ -19,7 +20,10 @@ const CAMERA_PRESETS: Record<
   top: { pos: [0, 31.0, -0.01], target: [0, 1.8, 0] },
   side: { pos: [22.0, 3.0, 0], target: [0, 2.1, 0] },
   rear: { pos: [7.5, 4.4, 17.5], target: [0, 2.0, 1.5] },
-  cockpit: { pos: [2.8, 4.0, -5.8], target: [0, 2.6, -4.6] },
+  // Seat-level pilot eye camera looking forward at all 6 bezeled LCDs + HUD + ICP + consoles + HOTAS
+  cockpit: { pos: [0, 2.70, fsToZ(5.26)], target: [0, 2.38, fsToZ(3.96)] },
+  // Below-belly forward-outboard camera looking unobstructed into the open main bay & side bay stores
+  bays: { pos: [0.55, 0.22, fsToZ(5.45)], target: [0.05, 1.32, fsToZ(9.35)] },
 };
 
 function HangarStructure({ shadows }: { readonly shadows: boolean }) {
@@ -58,6 +62,8 @@ function SceneController() {
   const cameraPreset = useExplorerStore((s) => s.cameraPreset);
   const cameraPresetNonce = useExplorerStore((s) => s.cameraPresetNonce);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
+  const bottomSheetHeightPx = useExplorerStore((s) => s.bottomSheetHeightPx);
+  const rightDrawerWidthPx = useExplorerStore((s) => s.rightDrawerWidthPx);
   const animatingRef = useRef(false);
   const goalPosRef = useRef(new THREE.Vector3(14.5, 6.2, -13.5));
   const goalTargetRef = useRef(new THREE.Vector3(0, 2.0, 0));
@@ -70,34 +76,72 @@ function SceneController() {
     return () => setSceneReady(false);
   }, [gl, setSceneReady]);
 
+  // Offset camera frustum center when mobile bottom sheet or landscape drawer is open
+  // so no exploded or assembled parts are hidden behind the sheet!
+  useEffect(() => {
+    const persp = camera as THREE.PerspectiveCamera;
+    if (!persp.isPerspectiveCamera) return;
+    if (bottomSheetHeightPx > 0 || rightDrawerWidthPx > 0) {
+      persp.setViewOffset(
+        size.width,
+        size.height,
+        rightDrawerWidthPx * 0.5,
+        bottomSheetHeightPx * 0.5,
+        size.width,
+        size.height
+      );
+    } else {
+      persp.clearViewOffset();
+    }
+    persp.updateProjectionMatrix();
+  }, [camera, size.width, size.height, bottomSheetHeightPx, rightDrawerWidthPx]);
+
   // Camera preset transitions
   useEffect(() => {
     if (cameraPresetNonce === 0) return;
     const p = CAMERA_PRESETS[cameraPreset];
-    const aspectScale = size.width < size.height ? 1.38 : 1.0;
-    const explodeScale = 1 + useExplorerStore.getState().explodeFactor * 0.58;
+    const isCloseView = cameraPreset === 'cockpit' || cameraPreset === 'bays';
+    const aspectScale = !isCloseView && size.width < size.height ? 1.48 : 1.0;
+    const sheetScale =
+      !isCloseView && bottomSheetHeightPx > 0
+        ? 1 + (bottomSheetHeightPx / Math.max(300, size.height)) * 0.65
+        : 1.0;
+    const explodeScale = isCloseView
+      ? 1.0
+      : 1 + useExplorerStore.getState().explodeFactor * 0.62;
     goalTargetRef.current.set(...p.target);
     const dir = new THREE.Vector3(...p.pos).sub(goalTargetRef.current);
     goalPosRef.current
       .copy(goalTargetRef.current)
-      .addScaledVector(dir, aspectScale * explodeScale);
+      .addScaledVector(dir, aspectScale * sheetScale * explodeScale);
     animatingRef.current = true;
-  }, [cameraPreset, cameraPresetNonce, size.width, size.height]);
+  }, [cameraPreset, cameraPresetNonce, size.width, size.height, bottomSheetHeightPx]);
 
-  // Auto-fit camera bounding box when exploding on all viewports
+  // Auto-fit camera bounding box when exploding or when mobile sheet opens/closes
   useEffect(() => {
-    if (Math.abs(explodeFactor - prevExplodeRef.current) < 0.01) return;
+    if (
+      Math.abs(explodeFactor - prevExplodeRef.current) < 0.01 &&
+      bottomSheetHeightPx === 0
+    ) {
+      return;
+    }
     prevExplodeRef.current = explodeFactor;
-    const p = CAMERA_PRESETS[useExplorerStore.getState().cameraPreset];
-    const aspectScale = size.width < size.height ? 1.42 : 1.0;
-    const explodeScale = 1 + explodeFactor * 0.62;
+    const curPreset = useExplorerStore.getState().cameraPreset;
+    if (curPreset === 'cockpit' || curPreset === 'bays') return;
+    const p = CAMERA_PRESETS[curPreset];
+    const aspectScale = size.width < size.height ? 1.52 : 1.0;
+    const sheetScale =
+      bottomSheetHeightPx > 0
+        ? 1 + (bottomSheetHeightPx / Math.max(300, size.height)) * 0.65
+        : 1.0;
+    const explodeScale = 1 + explodeFactor * 0.65;
     goalTargetRef.current.set(p.target[0], p.target[1] + explodeFactor * 0.3, p.target[2]);
     const dir = new THREE.Vector3(...p.pos).sub(new THREE.Vector3(...p.target));
     goalPosRef.current
       .copy(goalTargetRef.current)
-      .addScaledVector(dir, aspectScale * explodeScale);
+      .addScaledVector(dir, aspectScale * sheetScale * explodeScale);
     animatingRef.current = true;
-  }, [explodeFactor, size.width, size.height]);
+  }, [explodeFactor, size.width, size.height, bottomSheetHeightPx]);
 
   useFrame((_, delta) => {
     if (animatingRef.current && controlsRef.current) {
@@ -105,7 +149,7 @@ function SceneController() {
       camera.position.lerp(goalPosRef.current, alpha);
       controlsRef.current.target.lerp(goalTargetRef.current, alpha);
       controlsRef.current.update();
-      if (camera.position.distanceTo(goalPosRef.current) < 0.08) {
+      if (camera.position.distanceTo(goalPosRef.current) < 0.05) {
         animatingRef.current = false;
       }
     }
@@ -121,15 +165,23 @@ function SceneController() {
     );
   });
 
+  const isCockpitView = cameraPreset === 'cockpit';
+  const isBaysView = cameraPreset === 'bays';
+
   return (
     <OrbitControls
       ref={controlsRef}
       makeDefault
       enableDamping
       dampingFactor={0.08}
-      minDistance={3}
-      maxDistance={65}
-      maxPolarAngle={Math.PI / 2 - 0.02}
+      minDistance={isCockpitView ? 0.45 : isBaysView ? 1.5 : 2.5}
+      maxDistance={isCockpitView ? 2.2 : 75}
+      minAzimuthAngle={isCockpitView ? -Math.PI / 3 : -Infinity}
+      maxAzimuthAngle={isCockpitView ? Math.PI / 3 : Infinity}
+      minPolarAngle={isCockpitView ? Math.PI / 3 : 0.05}
+      maxPolarAngle={
+        isCockpitView ? (Math.PI * 2) / 3 : isBaysView ? Math.PI * 0.72 : Math.PI / 2 - 0.01
+      }
       target={[0, 2.0, 0]}
       onStart={() => {
         animatingRef.current = false;
@@ -149,11 +201,11 @@ export function HangarCanvas() {
         dpr={preset.dpr}
         shadows={preset.shadows}
         gl={{ antialias: preset.antialias, powerPreference: 'high-performance' }}
-        camera={{ position: [14.5, 6.2, -13.5], fov: 40, near: 0.1, far: 320 }}
+        camera={{ position: [14.5, 6.2, -13.5], fov: 40, near: 0.08, far: 320 }}
         onPointerMissed={() => selectPart(null)}
       >
         <color attach="background" args={['#0c1118']} />
-        <fog attach="fog" args={['#0c1118', 48, 130]} />
+        <fog attach="fog" args={['#0c1118', 48, 135]} />
 
         <ambientLight intensity={0.55} />
         <hemisphereLight args={['#c8dcff', '#1b2430', 0.55]} />

@@ -2,16 +2,22 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
+import { CockpitDetail } from './CockpitDetail.js';
+import { WeaponsBaysDetail } from './WeaponsBaysDetail.js';
 import {
   F22_BUILT_PARTS,
   SYSTEM_GROUP_COLORS,
+  fsToZ,
   type BuiltPartMesh,
   type MaterialRole,
 } from './f22Geometry.js';
 import { registerDebugHitbox } from './debugBridge.js';
 import { getComponentContent } from '../content/registry.js';
+import { CONSTANTS_REGISTRY as R } from '../sim/config/registry.js';
 import { useExplorerStore } from '../store/explorerStore.js';
 import { useViewport } from '../ui/useViewport.js';
+
+const DEG = Math.PI / 180;
 
 const MATERIAL_PALETTE: Record<
   MaterialRole,
@@ -29,6 +35,102 @@ const MATERIAL_PALETTE: Record<
   'cockpit-dark': { color: '#262d36', metalness: 0.30, roughness: 0.65 },
 };
 
+/**
+ * Compute physical hinge pivot & target Euler [rx, ry, rz] for Phase 3 articulating parts.
+ */
+function getArticulationTarget(partId: string): {
+  pivot: [number, number, number];
+  rot: [number, number, number];
+} | null {
+  const s = useExplorerStore.getState();
+  if (s.explodeFactor > 0.05) return null;
+
+  switch (partId) {
+    case 'canopy':
+      return {
+        pivot: [0, 2.55, fsToZ(6.39)],
+        rot: [s.canopyOpen ? R.F22_CANOPY_OPEN_DEG.value * DEG : 0, 0, 0],
+      };
+    case 'nose-landing-gear':
+      return {
+        pivot: [0, 1.20, fsToZ(4.30)],
+        rot: [s.gearDeployed ? 0 : -88 * DEG, 0, 0],
+      };
+    case 'main-landing-gear-left':
+      return {
+        pivot: [-1.615, 1.18, fsToZ(11.20)],
+        rot: [0, 0, s.gearDeployed ? 0 : 88 * DEG],
+      };
+    case 'main-landing-gear-right':
+      return {
+        pivot: [1.615, 1.18, fsToZ(11.20)],
+        rot: [0, 0, s.gearDeployed ? 0 : -88 * DEG],
+      };
+    case 'lef-left':
+    case 'lef-right':
+      return {
+        pivot: [partId === 'lef-left' ? -4.3 : 4.3, 1.90, fsToZ(8.8)],
+        rot: [-(s.flaps * R.F22_LEF_MAX_DEG.value) * DEG, 0, 0],
+      };
+    case 'flaperon-left':
+      return {
+        pivot: [-3.15, 1.92, fsToZ(13.1)],
+        rot: [(s.flaps * 28 - s.stickRoll * 18) * DEG, 0, 0],
+      };
+    case 'flaperon-right':
+      return {
+        pivot: [3.15, 1.92, fsToZ(13.1)],
+        rot: [(s.flaps * 28 + s.stickRoll * 18) * DEG, 0, 0],
+      };
+    case 'aileron-left':
+      return {
+        pivot: [-5.5, 1.87, fsToZ(12.6)],
+        rot: [(-s.stickRoll * R.F22_AILERON_MAX_DEG.value) * DEG, 0, 0],
+      };
+    case 'aileron-right':
+      return {
+        pivot: [5.5, 1.87, fsToZ(12.6)],
+        rot: [(s.stickRoll * R.F22_AILERON_MAX_DEG.value) * DEG, 0, 0],
+      };
+    case 'stabilator-left':
+      return {
+        pivot: [-1.80, 1.86, fsToZ(16.70)],
+        rot: [
+          ((s.stickPitch - s.stickRoll * 0.4) * R.F22_STABILATOR_MAX_DEG.value) * DEG,
+          0,
+          0,
+        ],
+      };
+    case 'stabilator-right':
+      return {
+        pivot: [1.80, 1.86, fsToZ(16.70)],
+        rot: [
+          ((s.stickPitch + s.stickRoll * 0.4) * R.F22_STABILATOR_MAX_DEG.value) * DEG,
+          0,
+          0,
+        ],
+      };
+    case 'rudder-left':
+      return {
+        pivot: [-2.15, 3.76, fsToZ(15.92)],
+        rot: [0, (s.rudderYaw * R.F22_RUDDER_MAX_DEG.value - s.airbrake * 28) * DEG, 0],
+      };
+    case 'rudder-right':
+      return {
+        pivot: [2.15, 3.76, fsToZ(15.92)],
+        rot: [0, (s.rudderYaw * R.F22_RUDDER_MAX_DEG.value + s.airbrake * 28) * DEG, 0],
+      };
+    case 'nozzle-2d-left':
+    case 'nozzle-2d-right':
+      return {
+        pivot: [partId === 'nozzle-2d-left' ? -0.72 : 0.72, 1.72, fsToZ(16.92)],
+        rot: [(-s.nozzlePitch * R.F119_NOZZLE_VECTOR_MAX_DEG.value) * DEG, 0, 0],
+      };
+    default:
+      return null;
+  }
+}
+
 interface PartNodeProps {
   readonly part: BuiltPartMesh;
   readonly clippingPlanes: readonly THREE.Plane[];
@@ -36,11 +138,15 @@ interface PartNodeProps {
 }
 
 function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
-  const groupRef = useRef<THREE.Group>(null);
+  const explodeGroupRef = useRef<THREE.Group>(null);
+  const pivotRef = useRef<THREE.Group>(null);
   const selectedPartId = useExplorerStore((s) => s.selectedPartId);
   const hoveredPartId = useExplorerStore((s) => s.hoveredPartId);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
+  const cameraPreset = useExplorerStore((s) => s.cameraPreset);
+  const mainBayOpen = useExplorerStore((s) => s.mainBayOpen);
+  const sideBaysOpen = useExplorerStore((s) => s.sideBaysOpen);
   const hiddenPartIds = useExplorerStore((s) => s.hiddenPartIds);
   const isolatedPartId = useExplorerStore((s) => s.isolatedPartId);
   const selectPart = useExplorerStore((s) => s.selectPart);
@@ -48,26 +154,51 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
 
   const isSelected = selectedPartId === part.id;
   const isHovered = hoveredPartId === part.id;
+
+  // Hide coarse placeholder cockpit boxes when inside detailed Cockpit Seat View
+  const replacedByCockpitDetail =
+    explodeFactor <= 0.05 &&
+    cameraPreset === 'cockpit' &&
+    (part.id === 'hotas-controls' || part.id === 'cockpit-displays-hud');
+
+  // Hide static closed door / generic ordnance cylinder when detailed open-bay stores take over
+  const replacedByAnimatedBay =
+    explodeFactor <= 0.05 &&
+    ((part.id === 'main-bay-doors' && mainBayOpen) ||
+      (part.id === 'side-bay-doors' && sideBaysOpen) ||
+      (part.id === 'internal-ordnance-display' && mainBayOpen));
+
   const isHidden =
+    replacedByAnimatedBay ||
     hiddenPartIds.includes(part.id) ||
     (isolatedPartId !== null && isolatedPartId !== part.id);
 
-  // Smooth directional explode displacement
+  // Smooth directional explode + Phase 3 hinge articulation
   useFrame((_, delta) => {
-    const g = groupRef.current;
-    if (!g) return;
-    const f = useExplorerStore.getState().explodeFactor;
-    const tx = part.explode[0] * f;
-    const ty = part.explode[1] * f;
-    const tz = part.explode[2] * f;
-    const alpha = Math.min(1, delta * 10);
-    g.position.x += (tx - g.position.x) * alpha;
-    g.position.y += (ty - g.position.y) * alpha;
-    g.position.z += (tz - g.position.z) * alpha;
+    const g = explodeGroupRef.current;
+    if (g) {
+      const f = useExplorerStore.getState().explodeFactor;
+      const alpha = Math.min(1, delta * 10);
+      g.position.x += (part.explode[0] * f - g.position.x) * alpha;
+      g.position.y += (part.explode[1] * f - g.position.y) * alpha;
+      g.position.z += (part.explode[2] * f - g.position.z) * alpha;
+    }
+
+    const p = pivotRef.current;
+    if (p) {
+      const art = getArticulationTarget(part.id);
+      const alpha = Math.min(1, delta * 9);
+      const rx = art ? art.rot[0] : 0;
+      const ry = art ? art.rot[1] : 0;
+      const rz = art ? art.rot[2] : 0;
+      p.rotation.x += (rx - p.rotation.x) * alpha;
+      p.rotation.y += (ry - p.rotation.y) * alpha;
+      p.rotation.z += (rz - p.rotation.z) * alpha;
+    }
   });
 
   useEffect(() => {
-    registerDebugHitbox(part.id, groupRef.current, groupRef.current);
+    registerDebugHitbox(part.id, explodeGroupRef.current, explodeGroupRef.current);
     return () => registerDebugHitbox(part.id, null, null);
   }, [part.id]);
 
@@ -85,7 +216,6 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
   const pal = MATERIAL_PALETTE[part.material];
   const groupInfo = SYSTEM_GROUP_COLORS[part.systemGroup];
 
-  // Blend base metallic color toward educational system-group tint as explode increases
   const blendedColor = useMemo(() => {
     const base = new THREE.Color(pal.color);
     if (explodeFactor > 0.04) {
@@ -103,8 +233,12 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
 
   const showLeaderLabel =
     !isHidden &&
+    cameraPreset !== 'cockpit' &&
     (isSelected || (!isPhone && isHovered && explodeFactor > 0.05));
   const content = showLeaderLabel ? getComponentContent(part.id) : null;
+
+  const initArt = getArticulationTarget(part.id);
+  const pivot: [number, number, number] = initArt ? initArt.pivot : [0, 0, 0];
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
@@ -127,50 +261,59 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
 
   return (
     <group
-      ref={groupRef}
+      ref={explodeGroupRef}
       name={part.id}
       visible={!isHidden}
       onClick={handleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <mesh geometry={geometry} castShadow receiveShadow>
-        {part.material === 'canopy-gold' ? (
-          <meshPhysicalMaterial
-            color={blendedColor}
-            metalness={0.68}
-            roughness={0.12}
-            clearcoat={1}
-            clearcoatRoughness={0.1}
-            transparent
-            opacity={xrayGhost ? 0.16 : 0.64}
-            emissive={emissive}
-            emissiveIntensity={emissiveIntensity}
-            clippingPlanes={clippingPlanes as THREE.Plane[]}
-            side={THREE.DoubleSide}
-          />
-        ) : (
-          <meshStandardMaterial
-            color={blendedColor}
-            metalness={pal.metalness}
-            roughness={pal.roughness}
-            transparent={transparent}
-            opacity={opacity}
-            depthWrite={!xrayGhost}
-            emissive={emissive}
-            emissiveIntensity={emissiveIntensity}
-            clippingPlanes={clippingPlanes as THREE.Plane[]}
-            clipShadows
-            side={clippingPlanes.length > 0 ? THREE.DoubleSide : THREE.FrontSide}
-          />
-        )}
-      </mesh>
+      <group position={pivot} ref={pivotRef}>
+        <group position={[-pivot[0], -pivot[1], -pivot[2]]}>
+          {!replacedByCockpitDetail && (
+            <mesh geometry={geometry} castShadow receiveShadow>
+              {part.material === 'canopy-gold' ? (
+                <meshPhysicalMaterial
+                  color={blendedColor}
+                  metalness={0.68}
+                  roughness={0.12}
+                  clearcoat={1}
+                  clearcoatRoughness={0.1}
+                  transparent
+                  opacity={xrayGhost ? 0.16 : 0.64}
+                  emissive={emissive}
+                  emissiveIntensity={emissiveIntensity}
+                  clippingPlanes={clippingPlanes as THREE.Plane[]}
+                  side={THREE.DoubleSide}
+                />
+              ) : (
+                <meshStandardMaterial
+                  color={blendedColor}
+                  metalness={pal.metalness}
+                  roughness={pal.roughness}
+                  transparent={transparent}
+                  opacity={opacity}
+                  depthWrite={!xrayGhost}
+                  emissive={emissive}
+                  emissiveIntensity={emissiveIntensity}
+                  clippingPlanes={clippingPlanes as THREE.Plane[]}
+                  clipShadows
+                  side={clippingPlanes.length > 0 ? THREE.DoubleSide : THREE.FrontSide}
+                />
+              )}
+            </mesh>
+          )}
+
+          {part.id === 'cockpit-displays-hud' && (
+            <CockpitDetail clippingPlanes={clippingPlanes} />
+          )}
+        </group>
+      </group>
 
       {showLeaderLabel && content && (
         <Html
           position={[part.anchor[0], part.anchor[1] + 0.45, part.anchor[2]]}
           center
-          distanceFactor={16}
           style={{ pointerEvents: 'none' }}
         >
           <div className="leader-callout" data-testid={`leader-label-${part.id}`}>
@@ -212,6 +355,7 @@ export function F22Model() {
           isPhone={isPhone}
         />
       ))}
+      <WeaponsBaysDetail clippingPlanes={clippingPlanes} />
     </group>
   );
 }

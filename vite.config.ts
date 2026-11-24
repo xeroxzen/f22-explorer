@@ -22,7 +22,7 @@ function validateComponentsPlugin(): Plugin {
   return {
     name: 'validate-component-content',
     buildStart() {
-      const dir = path.resolve(process.cwd(), 'src/content');
+      const dir = path.resolve(process.cwd(), 'src/content/parts');
       const files = collectJsonFiles(dir);
       const seen = new Set<string>();
       for (const file of files) {

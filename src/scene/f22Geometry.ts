@@ -371,29 +371,96 @@ function buildCylinderZ(
 }
 
 /**
- * Build a multi-station lofted teardrop bubble canopy dome seated directly on the cockpit sill.
+ * Build an octagonal wheel/cylinder along X (for realistic landing gear tires).
+ */
+function buildCylinderX(
+  xStart: number,
+  xEnd: number,
+  cy: number,
+  cz: number,
+  radius: number,
+  segs = 12
+): { tris: number[]; hull: ConvexHull } {
+  const tris: number[] = [];
+  const lRing: Vec3Tuple[] = [];
+  const rRing: Vec3Tuple[] = [];
+  for (let i = 0; i < segs; i++) {
+    const a = (i / segs) * Math.PI * 2;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    lRing.push([xStart, cy + ca * radius, cz + sa * radius]);
+    rRing.push([xEnd, cy + ca * radius, cz + sa * radius]);
+  }
+  const normals: Vec3Tuple[] = [
+    [-1, 0, 0],
+    [1, 0, 0],
+  ];
+  for (let i = 0; i < segs; i++) {
+    const j = (i + 1) % segs;
+    pushQuad(tris, lRing[i]!, rRing[i]!, rRing[j]!, lRing[j]!);
+    normals.push(normalize(cross(sub(rRing[i]!, lRing[i]!), sub(rRing[j]!, lRing[i]!))));
+    tris.push(xStart, cy, cz, lRing[j]![0], lRing[j]![1], lRing[j]![2], lRing[i]![0], lRing[i]![1], lRing[i]![2]);
+    tris.push(xEnd, cy, cz, rRing[i]![0], rRing[i]![1], rRing[i]![2], rRing[j]![0], rRing[j]![1], rRing[j]![2]);
+  }
+  return { tris, hull: { vertices: [...lRing, ...rRing], normals } };
+}
+
+/**
+ * Build a vertical cylindrical strut along Y (for landing gear oleo struts).
+ */
+function buildCylinderY(
+  cx: number,
+  cz: number,
+  yBot: number,
+  yTop: number,
+  radius: number,
+  segs = 10
+): { tris: number[]; hull: ConvexHull } {
+  const tris: number[] = [];
+  const bRing: Vec3Tuple[] = [];
+  const tRing: Vec3Tuple[] = [];
+  for (let i = 0; i < segs; i++) {
+    const a = (i / segs) * Math.PI * 2;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    bRing.push([cx + ca * radius, yBot, cz + sa * radius]);
+    tRing.push([cx + ca * radius, yTop, cz + sa * radius]);
+  }
+  const normals: Vec3Tuple[] = [
+    [0, -1, 0],
+    [0, 1, 0],
+  ];
+  for (let i = 0; i < segs; i++) {
+    const j = (i + 1) % segs;
+    pushQuad(tris, bRing[i]!, bRing[j]!, tRing[j]!, tRing[i]!);
+    normals.push(normalize(cross(sub(bRing[j]!, bRing[i]!), sub(tRing[i]!, bRing[i]!))));
+  }
+  return { tris, hull: { vertices: [...bRing, ...tRing], normals } };
+}
+
+/**
+ * Build a multi-station lofted long, low-profile teardrop bubble canopy seated flush on the spine.
  */
 function buildBubbleCanopy(fsStart: number, fsEnd: number, yBase: number, maxH: number, maxHW: number): {
   tris: number[];
   hulls: ConvexHull[];
 } {
   const stations: ChineStation[] = [];
-  const steps = 8;
+  const steps = 10;
   for (let i = 0; i <= steps; i++) {
     const t = i / steps;
     const fs = fsStart + t * (fsEnd - fsStart);
-    // Asymmetric teardrop arch: steeper forward windscreen, sleek aft taper into spine
-    const arch = Math.sin(Math.PI * Math.pow(t, 0.82));
-    const hw = Math.max(0.06, maxHW * Math.pow(arch, 0.7));
-    const h = Math.max(0.04, maxH * arch);
+    const arch = Math.sin(Math.PI * Math.pow(t, 0.78));
+    const hw = Math.max(0.05, maxHW * Math.pow(arch, 0.65));
+    const h = Math.max(0.03, maxH * arch);
     stations.push({
       fs,
       hw,
       yTop: yBase + h,
-      yChine: yBase + h * 0.45,
+      yChine: yBase + h * 0.42,
       yBot: yBase,
-      topFrac: 0.45,
-      botFrac: 0.96,
+      topFrac: 0.44,
+      botFrac: 0.98,
     });
   }
   return buildChinedLoft(stations);
@@ -444,87 +511,99 @@ export function buildAllF22Parts(): readonly BuiltPartMesh[] {
   const parts: BuiltPartMesh[] = [];
 
   // =========================================================================
-  // 1. FORWARD FUSELAGE & COCKPIT (FS 0.00 -> 6.40)
+  // 1. FORWARD FUSELAGE & COCKPIT (FS 0.00 -> 6.40, deep chined sides + flush canopy)
   // =========================================================================
   {
     const rad = buildChinedLoft([
-      { fs: 0.0, hw: 0.03, yTop: 1.72, yChine: 1.70, yBot: 1.68 },
-      { fs: 0.75, hw: 0.38, yTop: 1.92, yChine: 1.72, yBot: 1.50 },
-      { fs: 1.55, hw: 0.64, yTop: 2.08, yChine: 1.74, yBot: 1.38 },
-      { fs: 2.26, hw: 0.82, yTop: 2.20, yChine: 1.76, yBot: 1.32 },
+      { fs: 0.0, hw: 0.06, yTop: 1.74, yChine: 1.70, yBot: 1.66 },
+      { fs: 0.65, hw: 0.46, yTop: 1.98, yChine: 1.74, yBot: 1.44 },
+      { fs: 1.45, hw: 0.74, yTop: 2.16, yChine: 1.76, yBot: 1.32 },
+      { fs: 2.26, hw: 0.92, yTop: 2.28, yChine: 1.78, yBot: 1.26 },
     ]);
     parts.push(makePart('radome', 'airframe', 'stealth-dark', true, [0, 0, -5.6], rad.tris, rad.hulls));
   }
 
   {
     const av = buildChinedLoft([
-      { fs: 2.30, hw: 0.83, yTop: 2.20, yChine: 1.76, yBot: 1.32 },
-      { fs: 3.36, hw: 1.04, yTop: 2.34, yChine: 1.80, yBot: 1.24 },
+      { fs: 2.30, hw: 0.93, yTop: 2.28, yChine: 1.78, yBot: 1.26 },
+      { fs: 3.36, hw: 1.16, yTop: 2.48, yChine: 1.82, yBot: 1.24 },
     ]);
     parts.push(makePart('nose-avionics-bay', 'airframe', 'stealth-skin', true, [0, 0, -3.8], av.tris, av.hulls));
   }
 
   {
-    // Forward fuselage lower hull below cockpit sill (Y <= 2.06)
-    const fwd = buildChinedLoft([
-      { fs: 3.40, hw: 1.05, yTop: 2.06, yChine: 1.78, yBot: 1.24, topFrac: 0.86, botFrac: 0.68 },
-      { fs: 4.90, hw: 1.24, yTop: 2.06, yChine: 1.80, yBot: 1.24, topFrac: 0.88, botFrac: 0.72 },
-      { fs: 6.38, hw: 1.34, yTop: 2.06, yChine: 1.82, yBot: 1.24, topFrac: 0.90, botFrac: 0.74 },
+    // Forward fuselage: deep lower hull + left & right sculpted cheek walls up to canopy sill (Y = 2.52)
+    const belly = buildChinedLoft([
+      { fs: 3.40, hw: 1.17, yTop: 1.98, yChine: 1.78, yBot: 1.24, topFrac: 0.90, botFrac: 0.72 },
+      { fs: 4.90, hw: 1.36, yTop: 1.98, yChine: 1.80, yBot: 1.24, topFrac: 0.92, botFrac: 0.76 },
+      { fs: 6.38, hw: 1.36, yTop: 1.98, yChine: 1.82, yBot: 1.24, topFrac: 0.92, botFrac: 0.76 },
     ]);
-    parts.push(makePart('forward-fuselage', 'airframe', 'stealth-skin', true, [0, -0.4, -2.0], fwd.tris, fwd.hulls));
+    const cheekL = buildSweptPanel(-1, 0.62, 1.34, 3.40, 6.38, 3.40, 6.38, 2.26, 2.26, 0.50, 0.46);
+    const cheekR = buildSweptPanel(1, 0.62, 1.34, 3.40, 6.38, 3.40, 6.38, 2.26, 2.26, 0.50, 0.46);
+    parts.push(
+      makePart(
+        'forward-fuselage',
+        'airframe',
+        'stealth-skin',
+        true,
+        [0, -0.4, -2.0],
+        [...belly.tris, ...cheekL.tris, ...cheekR.tris],
+        [...belly.hulls, cheekL.hull, cheekR.hull]
+      )
+    );
   }
 
   {
-    const tub = makeBox(0, 2.20, fsToZ(4.85), 1.12, 0.22, 2.76);
+    // Cockpit tub recessed cleanly inside forward fuselage cheeks (|X| <= 0.58)
+    const tub = makeBox(0, 2.11, fsToZ(4.85), 1.12, 0.20, 2.74);
     parts.push(makePart('cockpit-tub', 'cockpit', 'cockpit-dark', false, [0, 1.1, -2.0], tub.tris, [tub.hull]));
   }
   {
-    const disp = makeBox(0, 2.48, fsToZ(3.86), 0.78, 0.28, 0.56);
+    const disp = makeBox(0, 2.38, fsToZ(3.86), 0.76, 0.26, 0.54);
     parts.push(makePart('cockpit-displays-hud', 'cockpit', 'cockpit-dark', false, [0, 1.9, -2.4], disp.tris, [disp.hull]));
   }
   {
-    const hotas = makeBox(0, 2.45, fsToZ(4.48), 0.86, 0.20, 0.46);
+    const hotas = makeBox(0, 2.34, fsToZ(4.48), 0.84, 0.18, 0.46);
     parts.push(makePart('hotas-controls', 'cockpit', 'cockpit-dark', false, [0, 1.7, -2.0], hotas.tris, [hotas.hull]));
   }
   {
-    const seat = makeBox(0, 2.52, fsToZ(5.18), 0.58, 0.36, 0.72);
+    const seat = makeBox(0, 2.39, fsToZ(5.18), 0.56, 0.30, 0.70);
     parts.push(makePart('aces-ii-seat', 'cockpit', 'cockpit-dark', false, [0, 2.3, -1.9], seat.tris, [seat.hull]));
   }
   {
-    // Bubble canopy seated smoothly into cockpit spine (Y = 2.74 -> 3.44)
-    const can = buildBubbleCanopy(3.26, 6.46, 2.74, 0.70, 0.62);
+    // Long low-profile bubble canopy seated FLUSH on the fuselage spine (Y = 2.55 -> 3.30)
+    const can = buildBubbleCanopy(3.22, 6.39, 2.55, 0.74, 0.60);
     parts.push(makePart('canopy', 'cockpit', 'canopy-gold', true, [0, 3.6, -1.8], can.tris, can.hulls));
   }
 
   // =========================================================================
-  // 2. CENTER FUSELAGE, CARET INTAKES, FUEL & APU (FS 6.40 -> 12.60)
+  // 2. CENTER FUSELAGE, CARET INTAKES (FLANKING COCKPIT), FUEL & APU
   // =========================================================================
   {
-    // Blended dorsal fuselage spine & chine fairing (above fuel & weapons bays)
     const ctr = buildChinedLoft([
-      { fs: 6.42, hw: 1.32, yTop: 2.72, yChine: 2.48, yBot: 2.30, topFrac: 0.56, botFrac: 0.94 },
-      { fs: 8.50, hw: 1.36, yTop: 2.76, yChine: 2.50, yBot: 2.30, topFrac: 0.60, botFrac: 0.94 },
-      { fs: 10.50, hw: 1.36, yTop: 2.72, yChine: 2.48, yBot: 2.30, topFrac: 0.60, botFrac: 0.94 },
-      { fs: 12.56, hw: 1.44, yTop: 2.66, yChine: 2.46, yBot: 2.30, topFrac: 0.66, botFrac: 0.94 },
+      { fs: 6.42, hw: 1.34, yTop: 2.68, yChine: 2.48, yBot: 2.30, topFrac: 0.58, botFrac: 0.94 },
+      { fs: 8.50, hw: 1.36, yTop: 2.72, yChine: 2.50, yBot: 2.30, topFrac: 0.60, botFrac: 0.94 },
+      { fs: 10.50, hw: 1.36, yTop: 2.68, yChine: 2.48, yBot: 2.30, topFrac: 0.60, botFrac: 0.94 },
+      { fs: 12.56, hw: 1.44, yTop: 2.64, yChine: 2.46, yBot: 2.30, topFrac: 0.66, botFrac: 0.94 },
     ]);
     parts.push(makePart('center-fuselage', 'airframe', 'stealth-skin', true, [0, 1.8, 0], ctr.tris, ctr.hulls));
   }
 
-  // Left & Right Caret Air Intakes (flanking center fuselage, blending smoothly into wings)
+  // Left & Right Caret Air Intakes extending forward to FS 5.45 flanking the aft cockpit!
   for (const side of [-1, 1] as const) {
     const id = side === -1 ? 'intake-left' : 'intake-right';
     const intake = buildSweptPanel(
       side,
       1.39,
-      1.82,
-      6.42,
+      1.84,
+      5.45,
       12.56,
-      6.80,
+      6.05,
       12.56,
       1.96,
       1.96,
-      0.72,
-      0.52
+      0.74,
+      0.56
     );
     parts.push(
       makePart(
@@ -794,12 +873,15 @@ export function buildAllF22Parts(): readonly BuiltPartMesh[] {
   }
 
   // =========================================================================
-  // 6. TRICYCLE LANDING GEAR (Tire contact at Y = 0.00 m)
+  // 6. TRICYCLE LANDING GEAR (Cylindrical oleo struts, round tires, bay doors)
   // =========================================================================
   {
-    const strut = makeBox(0, 0.80, fsToZ(4.30), 0.16, 0.78, 0.18);
-    const wL = makeBox(-0.16, 0.22, fsToZ(4.30), 0.12, 0.44, 0.44);
-    const wR = makeBox(0.16, 0.22, fsToZ(4.30), 0.12, 0.44, 0.44);
+    const zN = fsToZ(4.30);
+    const strut = buildCylinderY(0, zN, 0.24, 1.20, 0.085, 10);
+    const axle = buildCylinderX(-0.20, 0.20, 0.22, zN, 0.045, 8);
+    const wL = buildCylinderX(-0.21, -0.09, 0.22, zN, 0.22, 14);
+    const wR = buildCylinderX(0.09, 0.21, 0.22, zN, 0.22, 14);
+    const door = makeBox(0.20, 0.98, zN, 0.03, 0.36, 0.84);
     parts.push(
       makePart(
         'nose-landing-gear',
@@ -807,16 +889,18 @@ export function buildAllF22Parts(): readonly BuiltPartMesh[] {
         'gear-strut',
         false,
         [0, -2.0, -1.2],
-        [...strut.tris, ...wL.tris, ...wR.tris],
-        [strut.hull, wL.hull, wR.hull]
+        [...strut.tris, ...axle.tris, ...wL.tris, ...wR.tris, ...door.tris],
+        [strut.hull, axle.hull, wL.hull, wR.hull, door.hull]
       )
     );
   }
   for (const side of [-1, 1] as const) {
     const lr = side === -1 ? 'left' : 'right';
     const x = side * 1.615;
-    const strut = makeBox(x, 0.86, fsToZ(11.20), 0.18, 0.60, 0.20);
-    const wheel = makeBox(x, 0.30, fsToZ(11.20), 0.22, 0.60, 0.60);
+    const zM = fsToZ(11.20);
+    const strut = buildCylinderY(x, zM, 0.30, 1.18, 0.10, 10);
+    const wheel = buildCylinderX(x - 0.12, x + 0.12, 0.30, zM, 0.30, 16);
+    const door = makeBox(x + side * 0.12, 0.96, zM, 0.03, 0.38, 0.92);
     parts.push(
       makePart(
         `main-landing-gear-${lr}`,
@@ -824,8 +908,8 @@ export function buildAllF22Parts(): readonly BuiltPartMesh[] {
         'gear-strut',
         false,
         [side * 1.2, -2.0, 0],
-        [...strut.tris, ...wheel.tris],
-        [strut.hull, wheel.hull]
+        [...strut.tris, ...wheel.tris, ...door.tris],
+        [strut.hull, wheel.hull, door.hull]
       )
     );
   }
