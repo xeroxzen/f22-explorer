@@ -3,13 +3,14 @@
   "title": "Right Inboard Flaperon",
   "parentId": "wing-right",
   "category": "Wings & Control Surfaces",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Inboard trailing-edge control surface on the right wing combining flap and aileron functions.",
   "role": "Provides symmetric high-lift cambering and differential roll control.",
   "modelingNotes": {
     "stationRangeM": [
       12.9,
-      14.3
+      14.22
     ],
     "approxSizeM": [
       2.4,
@@ -47,7 +48,17 @@
     }
   ],
   "sources": [
-    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
-    "Public NASA / AIAA / OpenVSP Fighter Aerodynamics Literature"
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "NASA NTRS / Virginia Tech F-22 Aerodynamic Planform Reference",
+      "urlOrLocator": "https://ntrs.nasa.gov/search?q=F-22+wing+sweep+42",
+      "accessed": "2026-11-24",
+      "snippet": "42-degree leading-edge sweep, 840 sq ft wing, 28-degree tail cant"
+    }
   ]
 }

@@ -3,7 +3,8 @@
   "title": "ACES II Ejection Seat",
   "parentId": "cockpit-tub",
   "category": "Forward Fuselage & Cockpit",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Collins Aerospace Advanced Concept Ejection Seat (ACES II) providing zero-altitude, zero-airspeed emergency escape.",
   "role": "Supports the pilot during high-G maneuvering and provides automated multi-mode emergency extraction.",
   "materials": "Aerospace aluminum structure with survival kit and drogue parachute assembly.",
@@ -35,18 +36,34 @@
       "value": "Collins Aerospace ACES II",
       "unit": "",
       "status": "SOURCED",
-      "source": "Collins Aerospace — ACES II Ejection Seat Public Overview"
+      "source": "Collins Aerospace — ACES II Ejection Seat",
+      "urlOrLocator": "https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats",
+      "accessed": "2026-11-24",
+      "snippet": "ACES II ejection seat on F-22 Raptor"
     },
     {
       "label": "Escape Envelope",
       "value": "Zero-zero (0 kt, 0 ft) capable",
       "unit": "",
       "status": "SOURCED",
-      "source": "Collins Aerospace — ACES II Ejection Seat Public Overview"
+      "source": "Collins Aerospace — ACES II Ejection Seat",
+      "urlOrLocator": "https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats",
+      "accessed": "2026-11-24",
+      "snippet": "Zero-altitude, zero-airspeed escape capability"
     }
   ],
   "sources": [
-    "Collins Aerospace — ACES II Ejection Seat Public Overview",
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    {
+      "title": "Collins Aerospace — ACES II Ejection Seat",
+      "urlOrLocator": "https://www.collinsaerospace.com/what-we-do/industries/military-and-defense/ejection-seats",
+      "accessed": "2026-11-24",
+      "snippet": "ACES II zero-zero ejection seat for USAF fighters"
+    },
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    }
   ]
 }

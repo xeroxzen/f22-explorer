@@ -16,7 +16,7 @@ Classified specifications (such as exact RCS, avionics internals, and detailed e
 
 ## Constants Registry (Single Source of Truth)
 
-Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (27 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
+Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (36 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
 
 ### Physical & Atmosphere
 
@@ -36,7 +36,14 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `F22_WING_AREA_M2` | `78.04 m^2` | `SOURCED` | — | `phase1` | Lockheed Martin / USAF public data (840 sq ft) |
 | `F22_WING_LE_SWEEP_DEG` | `42 deg` | `SOURCED` | — | `phase1` | Lockheed Martin / NASA-AIAA public fighter planform literature |
 | `F22_WING_TE_SWEEP_DEG` | `-17 deg` | `APPROXIMATE` | — | `phase1` | Forward trailing-edge sweep measured from public 3-view planform alignment |
-| `F22_VTAIL_CANT_DEG` | `28 deg` | `SOURCED` | — | `phase1` | Outward vertical tail cant angle from public aerodynamic/stealth literature |
+| `F22_VTAIL_CANT_DEG` | `28 deg` | `SOURCED` | — | `phase1` | Outward vertical tail cant angle from public NASA/AIAA & open aerodynamic literature |
+| `F22_WING_ROOT_CHORD_CL_M` | `9.85 m` | `APPROXIMATE` | — | `phase1` | Trapezoidal centerline root chord derived to match 78.04 m² wing area with 42° LE and -17° TE sweep |
+| `F22_WING_TIP_CHORD_M` | `1.67 m` | `APPROXIMATE` | — | `phase1` | Wingtip chord consistent with 9.85 m centerline chord, 6.78 m half-span, 42° LE and -17° TE sweep |
+| `F22_WING_ROOT_X_M` | `1.85 m` | `APPROXIMATE` | — | `phase1` | Fuselage-to-wing junction lateral station from public 3-view proportions |
+| `F22_VTAIL_ROOT_X_M` | `1.45 m` | `APPROXIMATE` | — | `phase1` | Vertical stabilizer root lateral offset from public 3-view proportions |
+| `F22_VTAIL_ROOT_Y_M` | `2.45 m` | `APPROXIMATE` | — | `phase1` | Vertical stabilizer root height above ground plane from public side-profile proportions |
+| `F22_VTAIL_TIP_X_M` | `2.85 m` | `APPROXIMATE` | — | `phase1` | Vertical stabilizer tip lateral station: rootX + (5.08 - 2.45) * tan(28°) = 2.85 m |
+| `F22_VTAIL_TIP_Y_M` | `5.08 m` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet overall aircraft height (16 ft 8 in) |
 | `F22_EMPTY_WEIGHT_KG` | `19,700 kg` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet (43,340 lb) |
 | `F22_MTOW_KG` | `38,000 kg` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet (83,500 lb) |
 | `F22_INTERNAL_FUEL_KG` | `8,200 kg` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet (18,000 lb internal fuel) |
@@ -67,6 +74,8 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 
 | Constant | Value | Label | Calibrated On | Commit | Source / Derivation |
 | --- | --- | --- | --- | --- | --- |
+| `AIM120_LENGTH_M` | `3.66 m` | `SOURCED` | — | `phase1` | USAF AIM-120 AMRAAM Fact Sheet (12 ft / 3.66 m) for main bay clearance check |
+| `AIM9_LENGTH_M` | `3.02 m` | `SOURCED` | — | `phase1` | USAF AIM-9 Sidewinder Fact Sheet (9 ft 11 in / 3.02 m) for side bay clearance check |
 | `F22_CANOPY_OPEN_DEG` | `38 deg` | `ASSUMED` | — | `phase1` | Visual proportion from USAF ramp photos; exact canopy hinge angle not published |
 | `F22_M61A2_AMMO_ROUNDS` | `480 rounds` | `SOURCED` | — | `phase1` | USAF F-22 Fact Sheet & Air & Space Forces Magazine (20 mm M61A2 internal cannon) |
 

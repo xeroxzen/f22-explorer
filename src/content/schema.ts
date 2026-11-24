@@ -28,12 +28,28 @@ export const VALID_INTERACTION_KINDS: readonly InteractionKind[] = [
   'articulate',
 ];
 
+export interface SourceCitation {
+  readonly title: string;
+  /** Open-access URL or print edition/page locator. */
+  readonly urlOrLocator: string;
+  /** ISO date YYYY-MM-DD when the source was accessed/verified. */
+  readonly accessed: string;
+  /** Short supporting snippet (< 15 words) or section locator. */
+  readonly snippet: string;
+}
+
 export interface ComponentSpec {
   readonly label: string;
   readonly value: string;
   readonly unit: string;
   readonly status: SpecStatus;
   readonly source: string;
+  /** Required for SOURCED specs: open-access URL or print edition/page locator. */
+  readonly urlOrLocator?: string;
+  /** Required for SOURCED specs: YYYY-MM-DD access date. */
+  readonly accessed?: string;
+  /** Required for SOURCED specs: short supporting snippet (< 15 words) or locator. */
+  readonly snippet?: string;
 }
 
 export interface ModelingNotes {
@@ -60,15 +76,20 @@ export interface ComponentContent {
   readonly title: string;
   readonly parentId: string | null;
   readonly category: string;
-  readonly label: SpecStatus;
+  /** Provenance that the part exists and serves its stated function. */
+  readonly existenceLabel: SpecStatus;
+  /** Provenance of the part's modeled shape, dimensions, and station. */
+  readonly geometryLabel: SpecStatus;
   readonly summary: string;
   readonly role: string;
   readonly materials?: string;
   readonly modelingNotes: ModelingNotes;
   readonly interaction: PartInteraction;
   readonly specs: readonly ComponentSpec[];
-  readonly sources: readonly string[];
+  readonly sources: readonly SourceCitation[];
 }
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function isTupleOfNumbers(val: unknown, len: number): boolean {
   return (
@@ -76,6 +97,10 @@ function isTupleOfNumbers(val: unknown, len: number): boolean {
     val.length === len &&
     val.every((n) => typeof n === 'number' && Number.isFinite(n))
   );
+}
+
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
 export function validateComponentContent(
@@ -93,14 +118,19 @@ export function validateComponentContent(
     }
   }
 
-  if (obj['parentId'] !== null && (typeof obj['parentId'] !== 'string' || obj['parentId'].trim().length === 0)) {
+  if (
+    obj['parentId'] !== null &&
+    (typeof obj['parentId'] !== 'string' || obj['parentId'].trim().length === 0)
+  ) {
     throw new Error(`${fileHint}: "parentId" must be a non-empty string or null`);
   }
 
-  if (!VALID_SPEC_STATUSES.includes(obj['label'] as SpecStatus)) {
-    throw new Error(
-      `${fileHint}: "label" must be one of ${VALID_SPEC_STATUSES.join(', ')}`
-    );
+  for (const lblKey of ['existenceLabel', 'geometryLabel'] as const) {
+    if (!VALID_SPEC_STATUSES.includes(obj[lblKey] as SpecStatus)) {
+      throw new Error(
+        `${fileHint}: "${lblKey}" must be one of ${VALID_SPEC_STATUSES.join(', ')}`
+      );
+    }
   }
 
   if (obj['materials'] !== undefined) {
@@ -161,8 +191,20 @@ export function validateComponentContent(
     throw new Error(`${fileHint}: "sources" must be a non-empty array`);
   }
   for (const [i, src] of (obj['sources'] as unknown[]).entries()) {
-    if (typeof src !== 'string' || src.trim().length === 0) {
-      throw new Error(`${fileHint}: sources[${i}] must be a non-empty string`);
+    if (!src || typeof src !== 'object') {
+      throw new Error(`${fileHint}: sources[${i}] must be a SourceCitation object`);
+    }
+    const c = src as Record<string, unknown>;
+    for (const k of ['title', 'urlOrLocator', 'accessed', 'snippet'] as const) {
+      if (typeof c[k] !== 'string' || c[k].trim().length === 0) {
+        throw new Error(`${fileHint}: sources[${i}].${k} must be a non-empty string`);
+      }
+    }
+    if (!ISO_DATE_RE.test(c['accessed'] as string)) {
+      throw new Error(`${fileHint}: sources[${i}].accessed must match YYYY-MM-DD`);
+    }
+    if (wordCount(c['snippet'] as string) > 15) {
+      throw new Error(`${fileHint}: sources[${i}].snippet must be 15 words or fewer`);
     }
   }
 
@@ -187,6 +229,21 @@ export function validateComponentContent(
         `${fileHint}: specs[${i}].status must be one of ${VALID_SPEC_STATUSES.join(', ')}`
       );
     }
+    if (s['status'] === 'SOURCED') {
+      for (const k of ['urlOrLocator', 'accessed', 'snippet'] as const) {
+        if (typeof s[k] !== 'string' || s[k].trim().length === 0) {
+          throw new Error(
+            `${fileHint}: SOURCED specs[${i}] requires traceable "${k}"`
+          );
+        }
+      }
+      if (!ISO_DATE_RE.test(s['accessed'] as string)) {
+        throw new Error(`${fileHint}: specs[${i}].accessed must match YYYY-MM-DD`);
+      }
+      if (wordCount(s['snippet'] as string) > 15) {
+        throw new Error(`${fileHint}: specs[${i}].snippet must be 15 words or fewer`);
+      }
+    }
   }
 
   return raw as ComponentContent;
@@ -210,7 +267,6 @@ export function validatePartsHierarchy(parts: readonly ComponentContent[]): void
     if (part.parentId !== null && !byId.has(part.parentId)) {
       throw new Error(`Part "${part.id}" references missing parentId "${part.parentId}"`);
     }
-    // Cycle check
     const visited = new Set<string>([part.id]);
     let cur = part.parentId;
     while (cur !== null) {

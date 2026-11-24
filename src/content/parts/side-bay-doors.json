@@ -3,7 +3,8 @@
   "title": "Side Weapons Bay Doors & Trapeze Rails",
   "parentId": "center-fuselage",
   "category": "Weapons Bays & Gun",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Left and right flush side-bay doors paired with articulated trapeze rails that extend AIM-9 missiles outward for launch.",
   "role": "Keep side bays sealed in cruise and rapidly swing open to expose the AIM-9 seeker head.",
   "materials": "Composite panels with low-observable edge alignment.",
@@ -41,7 +42,17 @@
     }
   ],
   "sources": [
-    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)",
-    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
   ]
 }

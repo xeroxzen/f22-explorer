@@ -3,19 +3,20 @@
   "title": "Aft Tail Booms",
   "parentId": "aft-fuselage",
   "category": "Aft Fuselage & Empennage",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Twin contoured booms flanking the 2D exhaust nozzles that carry the all-moving horizontal stabilator pivots and shield infrared/radar nozzle signatures from side aspects.",
   "role": "Structurally supports the horizontal stabilators and masks nozzle side-aspect thermal emissions.",
   "materials": "Titanium structure with heat-resistant fairings.",
   "modelingNotes": {
     "stationRangeM": [
-      16.5,
+      16.9,
       18.92
     ],
     "approxSizeM": [
       3.6,
       0.85,
-      2.42
+      2.02
     ],
     "proportionReference": "Public 3-view & rear-quarter USAF photos",
     "confidence": "MEDIUM"
@@ -35,18 +36,34 @@
       "value": "18.92 (FS end)",
       "unit": "m",
       "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Length: 62 feet, 1 inch (18.9 meters)"
     },
     {
       "label": "Stealth Function",
       "value": "Side-aspect nozzle & plume shielding",
       "unit": "",
       "status": "SOURCED",
-      "source": "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+      "source": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "Tail booms mask side-aspect exhaust IR signature"
     }
   ],
   "sources": [
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
-    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    }
   ]
 }

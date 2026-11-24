@@ -3,7 +3,8 @@
   "title": "Left Main Landing Gear & Bay Doors",
   "parentId": "center-fuselage",
   "category": "Landing Gear",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Retractable heavy-duty left main landing gear strut, wheel/brake assembly, and serrated low-observable bay doors.",
   "role": "Absorbs landing impact loads and supports main fuselage weight on the ground before retracting flush into the center fuselage.",
   "materials": "High-strength aerospace steel/titanium strut with carbon brakes.",
@@ -37,7 +38,7 @@
       "value": "3.23 (10 ft 7 in)",
       "unit": "m",
       "status": "APPROXIMATE",
-      "source": "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+      "source": "Open aerospace reference compilations; not on USAF fact sheet"
     },
     {
       "label": "Retraction Kinematics (Explorer)",
@@ -48,7 +49,17 @@
     }
   ],
   "sources": [
-    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)",
-    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    },
+    {
+      "title": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Airframe dimensions, 39% titanium / composite structure overview"
+    }
   ]
 }

@@ -3,7 +3,8 @@
   "title": "Right Side Weapons Bay",
   "parentId": "center-fuselage",
   "category": "Weapons Bays & Gun",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Lateral internal weapons bay located along the right intake shoulder housing one short-range AIM-9 Sidewinder.",
   "role": "Carries one infrared-guided AIM-9 missile internally on an extending trapeze rail.",
   "modelingNotes": {
@@ -34,18 +35,40 @@
       "value": "1 × AIM-9 Sidewinder",
       "unit": "",
       "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Two AIM-9 infrared heat-seeking missiles"
     },
     {
-      "label": "Launcher Mechanism",
-      "value": "Extending trapeze rail",
-      "unit": "",
+      "label": "Reference AIM-9 Length",
+      "value": "3.02 (9 ft 11 in)",
+      "unit": "m",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+      "source": "USAF AIM-9 Sidewinder Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104557/aim-9-sidewinder/",
+      "accessed": "2026-11-24",
+      "snippet": "Length: 9 feet, 11 inches (3.02 meters)"
     }
   ],
   "sources": [
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
-    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    },
+    {
+      "title": "USAF AIM-9 Sidewinder Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104557/aim-9-sidewinder/",
+      "accessed": "2026-11-24",
+      "snippet": "Length: 9 feet, 11 inches (3.02 meters)"
+    }
   ]
 }

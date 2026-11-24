@@ -3,7 +3,8 @@
   "title": "HOTAS Side-Stick & Throttles",
   "parentId": "cockpit-tub",
   "category": "Forward Fuselage & Cockpit",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
   "summary": "Hands-On-Throttle-And-Stick (HOTAS) layout with right-hand force-sensing side-stick and left-hand dual engine throttles.",
   "role": "Allows the pilot to command flight control surfaces, thrust vectoring, and twin F119 engines without removing hands from primary controls.",
   "modelingNotes": {
@@ -34,18 +35,34 @@
       "value": "Right-hand side-stick controller",
       "unit": "",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+      "source": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Force-sensing side-stick controller on right console"
     },
     {
       "label": "Throttle Configuration",
       "value": "Left-hand dual throttles (twin F119)",
       "unit": "",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+      "source": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Dual throttle quadrant for twin F119 engines"
     }
   ],
   "sources": [
-    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
-    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    {
+      "title": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Six color LCDs: primary MFD, secondary MFDs, up-front displays"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
   ]
 }

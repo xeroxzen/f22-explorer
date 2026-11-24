@@ -3,7 +3,8 @@
   "title": "Internal Carriage Overview (AIM-120 / JDAM)",
   "parentId": "main-weapons-bay",
   "category": "Weapons Bays & Gun",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Educational schematic shapes representing the publicly documented internal air-to-air (6 × AIM-120) and air-to-ground (2 × JDAM + 2 × AIM-120) carriage layouts.",
   "role": "Illustrates internal bay volume and carriage geometry at a public-overview level with no classified weapons detail.",
   "modelingNotes": {
@@ -16,7 +17,7 @@
       0.45,
       3.7
     ],
-    "proportionReference": "USAF public fact sheet loadout & public AIM-120/JDAM gross dimensions",
+    "proportionReference": "USAF AIM-120 length (3.66 m) & public internal bay loadout",
     "confidence": "MEDIUM"
   },
   "interaction": {
@@ -30,18 +31,24 @@
   },
   "specs": [
     {
+      "label": "Reference AIM-120 Length",
+      "value": "3.66 (12 ft)",
+      "unit": "m",
+      "status": "SOURCED",
+      "source": "USAF AIM-120 AMRAAM Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104576/aim-120-amraam/",
+      "accessed": "2026-11-24",
+      "snippet": "Length: 12 feet (3.66 meters)"
+    },
+    {
       "label": "Air-to-Air Configuration",
       "value": "6 × AIM-120 AMRAAM (public overview)",
       "unit": "",
       "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
-    },
-    {
-      "label": "Air-to-Ground Configuration",
-      "value": "2 × GBU-32 JDAM + 2 × AIM-120 (public overview)",
-      "unit": "",
-      "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Six AIM-120 AMRAAM internal carriage"
     },
     {
       "label": "Guidance / Seeker Performance",
@@ -52,7 +59,23 @@
     }
   ],
   "sources": [
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
-    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    },
+    {
+      "title": "USAF AIM-120 AMRAAM Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104576/aim-120-amraam/",
+      "accessed": "2026-11-24",
+      "snippet": "Length: 12 feet (3.66 meters)"
+    }
   ]
 }

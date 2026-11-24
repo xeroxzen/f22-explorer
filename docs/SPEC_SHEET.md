@@ -16,9 +16,10 @@ Every value in this repository is cited using the following strict precedence or
    - **[DVIDS]** Defense Visual Information Distribution Service / USAF Public Affairs releases (`dvidshub.net`)
    - **[NASA-AIAA]** Public NASA / AIAA / DTIC technical abstracts and academic aerodynamic studies (e.g., wind-tunnel & OpenVSP fighter planform references)
    - **[OEM-SUB]** Sub-tier OEM public product pages: Collins Aerospace (*ACES II Ejection Seat*), Honeywell Aerospace (*Auxiliary Power Units*)
-3. **Tier 3 — Reputable Aerospace References**
-   - **[ASFM]** *Air & Space Forces Magazine* USAF Almanac (*F-22 Raptor* aircraft profile)
-   - **[JANE-REF]** Reputable defense/aerospace reference compilations (e.g., *Jane's All the World's Aircraft* / *Forecast International* F119 summary)
+3. **Tier 3 — Openly Accessible Aerospace References**
+   - **[ASFM]** *Air & Space Forces Magazine* USAF Almanac — F-22 Raptor (`https://www.airandspaceforces.com/weapons-platforms/f-22/`, accessed 2026-11-24)
+   - **[NMUSAF]** National Museum of the U.S. Air Force — F-22A Raptor (`https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/`, accessed 2026-11-24)
+   - **[HSW-COCKPIT]** HowStuffWorks — F-22 Raptor Glass Cockpit Overview (`https://science.howstuffworks.com/f-22-raptor.htm`, accessed 2026-11-24)
 
 ---
 
@@ -31,10 +32,10 @@ Every value in this repository is cited using the following strict precedence or
 | Length | 18.92 (62 ft 1 in) | m | `SOURCED` | [USAF-FS], [LM-PUB] | Exact metric conversion of 62 ft 1 in; see §8 Conflicts |
 | Wingspan | 13.56 (44 ft 6 in) | m | `SOURCED` | [USAF-FS], [LM-PUB] | Trapezoidal / clipped-diamond planform |
 | Height | 5.08 (16 ft 8 in) | m | `SOURCED` | [USAF-FS], [LM-PUB] | Measured to top of outward-canted vertical tails |
-| Wing Area | 78.04 (840 sq ft) | m² | `SOURCED` | [LM-PUB], [DVIDS] | Public manufacturer & USAF reference |
-| Wing Leading-Edge Sweep | 42 | deg | `SOURCED` | [LM-PUB], [NASA-AIAA] | Planform edge alignment for low observability |
-| Vertical Tail Cant Angle | 28 | deg | `SOURCED` | [NASA-AIAA], [JANE-REF] | Outward cant from vertical to avoid 90° corner reflectors |
-| Main Landing Gear Track | 3.23 (10 ft 7 in) | m | `APPROXIMATE` | [JANE-REF] | Secondary reference; exact USAF drawing not published |
+| Wing Area | 78.04 (840 sq ft) | m² | `SOURCED` | [NASA-AIAA], [DVIDS] | NASA NTRS / Virginia Tech & USAF public references |
+| Wing Leading-Edge Sweep | 42 | deg | `SOURCED` | [NASA-AIAA] | Planform edge alignment for low observability |
+| Vertical Tail Cant Angle | 28 | deg | `SOURCED` | [NASA-AIAA] | Outward cant from vertical to avoid 90° corner reflectors |
+| Main Landing Gear Track | 3.23 (10 ft 7 in) | m | `APPROXIMATE` | Open aerospace reference | Secondary reference; exact USAF drawing not published |
 | Landing Gear Wheelbase | ~6.4 | m | `ASSUMED` | Derived from public 3-view proportions | Official wheelbase omitted from unclassified USAF fact sheet |
 
 ---
@@ -47,7 +48,7 @@ Every value in this repository is cited using the following strict precedence or
 | Maximum Takeoff Weight | 38,000 (83,500 lb) | kg | `SOURCED` | [USAF-FS] | Maximum gross takeoff weight |
 | Internal Fuel Capacity | ~8,200 (18,000 lb) | kg | `SOURCED` | [USAF-FS] | Fuselage and wing integral tanks |
 | Fuel Capacity w/ 2 External Tanks | ~11,900 (26,000 lb) | kg | `SOURCED` | [USAF-FS] | Two 600-gallon underwing drop tanks (non-stealth ferry) |
-| Airframe Materials Breakdown | ~39% Ti, ~24% composites, ~16% Al, ~1% thermoplastics | % weight | `APPROXIMATE` | [LM-PUB], [JANE-REF] | See §8 Conflicts for block variations |
+| Airframe Materials Breakdown | ~39% Ti, ~24% composites, ~16% Al, ~1% thermoplastics | % weight | `APPROXIMATE` | [NMUSAF], [LM-PUB] | See §8 Conflicts for block variations |
 
 ---
 
@@ -70,12 +71,12 @@ Every value in this repository is cited using the following strict precedence or
 | --- | --- | --- | --- | --- | --- |
 | Engine Model & Count | 2 × Pratt & Whitney F119-PW-100 | — | `SOURCED` | [USAF-FS], [PW-F119] | Twin-spool, low-bypass augmented turbofan |
 | Thrust Class (Afterburning) | 35,000+ lbf class (~156+ kN) per engine | lbf / kN | `SOURCED` | [USAF-FS], [PW-F119] | Exact rated sea-level static thrust not officially published |
-| Dry (Military) Thrust Class | ~22,000–26,000 lbf (~98–116 kN) | lbf / kN | `APPROXIMATE` | [JANE-REF] | Unofficial public reference range supporting supercruise |
-| Compressor / Turbine Stages | 3-stage fan, 6-stage HPC, 1-stage HPT, 1-stage LPT | stages | `SOURCED` | [PW-F119], [JANE-REF] | Counter-rotating twin-spool architecture |
-| Bypass Ratio | ~0.3:1 | ratio | `APPROXIMATE` | [JANE-REF] | Low bypass ratio typical of supercruise fighter turbofans |
+| Dry (Military) Thrust Class | ~22,000–26,000 lbf (~98–116 kN) | lbf / kN | `APPROXIMATE` | Open aerospace estimates | Unofficial public reference range supporting supercruise |
+| Compressor / Turbine Stages | 3-stage fan, 6-stage HPC, 1-stage HPT, 1-stage LPT | stages | `SOURCED` | [PW-F119] | Counter-rotating twin-spool architecture |
+| Bypass Ratio | ~0.3:1 | ratio | `APPROXIMATE` | Open academic turbofan models | Low bypass ratio typical of supercruise fighter turbofans |
 | 2D Thrust Vectoring Range | ±20 (pitch axis) | deg | `SOURCED` | [PW-F119] | Convergent-divergent rectangular stealth nozzles |
 | Engine Control | Dual-redundant FADEC | — | `SOURCED` | [PW-F119] | Integrated with aircraft flight control system |
-| Auxiliary Power Unit (APU) | Honeywell gas-turbine APU | — | `SOURCED` | [OEM-SUB] | Provides ground electrical/pneumatic power for self-start |
+| Auxiliary Power Unit (APU) | AlliedSignal (now Honeywell Aerospace) G-250 gas-turbine APU | — | `SOURCED` | [OEM-SUB] | Provides ground electrical/pneumatic power for self-start |
 | Exact EGT / SFC / Compressor Maps | Not publicly disclosed | — | `NOT_PUBLICLY_DISCLOSED` | [PW-F119] | Phase 4 engine start model will use `ASSUMED` educational curves |
 
 ---
@@ -84,9 +85,9 @@ Every value in this repository is cited using the following strict precedence or
 
 | Specification | Value | Unit | Label | Primary Source | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Canopy | Frameless one-piece polycarbonate with conductive gold/ITO tint | — | `SOURCED` | [LM-PUB], [JANE-REF] | Shielding prevents radar waves entering the cockpit cavity |
+| Canopy | Frameless one-piece polycarbonate with conductive gold/ITO tint | — | `SOURCED` | [NMUSAF], [HSW-COCKPIT] | Shielding prevents radar waves entering the cockpit cavity |
 | Ejection Seat | Collins Aerospace ACES II | — | `SOURCED` | [OEM-SUB], [USAF-FS] | Zero-zero third-generation ejection seat |
-| Cockpit Displays | Glass cockpit: wide-angle HUD + 4 color liquid-crystal MFDs + ICP | — | `SOURCED` | [LM-PUB], [ASFM] | Generic educational schematic only; real symbology is classified |
+| Cockpit Displays | Glass cockpit: wide-angle HUD + 6 color LCDs (1 primary MFD, 3 secondary MFDs, 2 up-front displays) + ICP | — | `SOURCED` | [HSW-COCKPIT], [ASFM] | Generic educational schematic only; real symbology is classified |
 | Flight Controls | Side-stick controller + dual throttles (HOTAS) | — | `SOURCED` | [LM-PUB], [ASFM] | Digital fly-by-wire integrated with thrust vectoring |
 
 ---
@@ -96,7 +97,7 @@ Every value in this repository is cited using the following strict precedence or
 | Specification | Value | Unit | Label | Primary Source | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Internal Gun | 1 × M61A2 20 mm 6-barrel rotary cannon (480 rounds) | — | `SOURCED` | [USAF-FS], [ASFM] | Mounted internally above right wing root behind flush door |
-| Main (Centerline) Weapons Bay | 6 × AIM-120 AMRAAM (air-to-air) OR 2 × AIM-120 + 2 × 1,000 lb GBU-32 JDAM / 8 × GBU-39 SDB (air-to-ground) | — | `SOURCED` | [USAF-FS], [ASFM] | Pneumatic ejection launchers (e.g., LAU-142/A) |
+| Main (Centerline) Weapons Bay | 6 × AIM-120 AMRAAM (air-to-air); 2 × AIM-120 + 2 × 1,000 lb GBU-32 JDAM (USAF Fact Sheet); up to 8 × GBU-39 SDB ([ASFM]) | — | `SOURCED` | [USAF-FS], [ASFM] | 8 × SDB count attributed to [ASFM] (USAF Fact Sheet notes SDB integration without count) |
 | Side Weapons Bays (2 ×) | 1 × AIM-9 Sidewinder per side bay (2 total) | — | `SOURCED` | [USAF-FS], [ASFM] | Located beside engine intakes; trapeze extension rail |
 | Radar System | AN/APG-77 AESA radar (public designation only) | — | `SOURCED` | [USAF-FS], [ASFM] | Range, modes, and T/R count are `NOT_PUBLICLY_DISCLOSED` |
 | Radar Cross Section (RCS) | Not publicly disclosed | m² / dBsm | `NOT_PUBLICLY_DISCLOSED` | [USAF-FS] | Never fabricated; stealth shaping explained qualitatively only |

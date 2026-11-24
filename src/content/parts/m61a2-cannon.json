@@ -3,7 +3,8 @@
   "title": "M61A2 20 mm Vulcan Cannon",
   "parentId": "center-fuselage",
   "category": "Weapons Bays & Gun",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Internal 20 mm six-barrel Gatling rotary cannon mounted above the right wing root behind a flush retractable muzzle door.",
   "role": "Provides close-range air-to-air and strafing capability with 480 rounds of linkless ammunition.",
   "modelingNotes": {
@@ -36,25 +37,44 @@
       "value": "M61A2 20 mm 6-barrel rotary cannon",
       "unit": "",
       "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "One M61A2 20-millimeter multibarrel cannon"
     },
     {
       "label": "Ammunition Capacity",
       "value": "480",
       "unit": "rounds",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "480 rounds of 20 mm ammunition"
     },
     {
       "label": "Location",
       "value": "Internal, above right wing root",
       "unit": "",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+      "source": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Mounted internally above right wing root"
     }
   ],
   "sources": [
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)",
-    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
   ]
 }

@@ -3,7 +3,8 @@
   "title": "Left 2D Thrust-Vectoring Nozzle",
   "parentId": "engine-f119-left",
   "category": "Propulsion",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Rectangular two-dimensional convergent-divergent exhaust nozzle with ±20° pitch thrust vectoring and low-observable infrared/radar shaping.",
   "role": "Modulates exhaust exit area for dry/afterburner flow, vectors thrust ±20° in pitch, and flattens the exhaust plume to reduce infrared signature.",
   "materials": "High-temperature titanium/ceramic-matrix thermal tiles (public overview).",
@@ -37,18 +38,34 @@
       "value": "±20",
       "unit": "deg",
       "status": "SOURCED",
-      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+      "source": "Pratt & Whitney / RTX F119 Engine Overview",
+      "urlOrLocator": "https://www.rtx.com/prattwhitney/products/military-engines/f119",
+      "accessed": "2026-11-24",
+      "snippet": "Two-dimensional pitch vectoring nozzles up to 20 degrees"
     },
     {
       "label": "Nozzle Geometry",
       "value": "2D convergent-divergent rectangular stealth nozzle",
       "unit": "",
       "status": "SOURCED",
-      "source": "Pratt & Whitney / RTX F119 Public Material (rtx.com)"
+      "source": "Pratt & Whitney / RTX F119 Engine Overview",
+      "urlOrLocator": "https://www.rtx.com/prattwhitney/products/military-engines/f119",
+      "accessed": "2026-11-24",
+      "snippet": "Rectangular convergent-divergent stealth exhaust nozzle"
     }
   ],
   "sources": [
-    "Pratt & Whitney / RTX F119 Public Material (rtx.com)",
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    {
+      "title": "Pratt & Whitney / RTX F119 Engine Overview",
+      "urlOrLocator": "https://www.rtx.com/prattwhitney/products/military-engines/f119",
+      "accessed": "2026-11-24",
+      "snippet": "35,000-pound thrust class, ±20-degree 2D thrust vectoring nozzles"
+    },
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    }
   ]
 }

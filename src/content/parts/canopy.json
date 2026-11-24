@@ -3,7 +3,8 @@
   "title": "Gold-Tinted Polycarbonate Canopy",
   "parentId": "cockpit-tub",
   "category": "Forward Fuselage & Cockpit",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Frameless one-piece bubble canopy with a thin conductive gold/indium-tin-oxide (ITO) coating to deflect radar energy away from the cockpit interior.",
   "role": "Provides unobstructed 360° visibility, bird-strike resistance, and electromagnetic shielding of the cockpit cavity.",
   "materials": "Optical polycarbonate laminate with vapor-deposited conductive gold/ITO film.",
@@ -37,14 +38,20 @@
       "value": "Frameless one-piece polycarbonate",
       "unit": "",
       "status": "SOURCED",
-      "source": "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+      "source": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "One-piece frameless polycarbonate canopy"
     },
     {
       "label": "Stealth Coating",
       "value": "Conductive gold / ITO radar-reflective film",
       "unit": "",
       "status": "SOURCED",
-      "source": "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)"
+      "source": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Thin gold/ITO layer reflects radar away from cockpit"
     },
     {
       "label": "Open Angle (Explorer)",
@@ -55,8 +62,23 @@
     }
   ],
   "sources": [
-    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
-    "Reputable Aerospace Reference Compilations (Jane's / Forecast Intl.)",
-    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)"
+    {
+      "title": "National Museum of the U.S. Air Force — F-22 Raptor",
+      "urlOrLocator": "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196047/lockheed-martin-f-22a-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Airframe dimensions, 39% titanium / composite structure overview"
+    },
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    },
+    {
+      "title": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Six color LCDs: primary MFD, secondary MFDs, up-front displays"
+    }
   ]
 }

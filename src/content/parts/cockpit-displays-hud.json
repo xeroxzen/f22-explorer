@@ -3,8 +3,9 @@
   "title": "Glass Cockpit Displays & HUD",
   "parentId": "cockpit-tub",
   "category": "Forward Fuselage & Cockpit",
-  "label": "SOURCED",
-  "summary": "All-glass instrument panel layout featuring a wide-angle Head-Up Display (HUD), integrated control panel, and four color liquid-crystal MFDs (generic educational schematic only).",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "All-glass instrument panel layout featuring a wide-angle Head-Up Display (HUD), Integrated Control Panel (ICP), and six color liquid-crystal displays (1 primary MFD, 3 secondary MFDs, 2 up-front displays) rendered as generic educational schematics.",
   "role": "Presents flight, navigation, engine, and tactical situational awareness to the pilot.",
   "modelingNotes": {
     "stationRangeM": [
@@ -16,7 +17,7 @@
       0.65,
       0.6
     ],
-    "proportionReference": "Public USAF cockpit layout photographs (generic schematic only)",
+    "proportionReference": "Public USAF cockpit layout descriptions (generic schematic only)",
     "confidence": "MEDIUM"
   },
   "interaction": {
@@ -31,10 +32,13 @@
   "specs": [
     {
       "label": "Display Suite",
-      "value": "Wide-angle HUD + 4 color LCD MFDs + ICP",
+      "value": "Wide-angle HUD + 6 color LCDs (1 primary, 3 secondary, 2 up-front) + ICP",
       "unit": "",
       "status": "SOURCED",
-      "source": "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+      "source": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Six liquid crystal displays plus HUD and ICP"
     },
     {
       "label": "Operational Symbology & Software",
@@ -45,7 +49,17 @@
     }
   ],
   "sources": [
-    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
-    "Air & Space Forces Magazine — USAF Almanac (F-22 Raptor)"
+    {
+      "title": "HowStuffWorks — F-22 Raptor Glass Cockpit Overview",
+      "urlOrLocator": "https://science.howstuffworks.com/f-22-raptor.htm",
+      "accessed": "2026-11-24",
+      "snippet": "Six color LCDs: primary MFD, secondary MFDs, up-front displays"
+    },
+    {
+      "title": "Air & Space Forces Magazine — F-22 Raptor Almanac",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-24",
+      "snippet": "Armament (6 AIM-120, 2 AIM-9, 8 SDB, M61A2), cockpit"
+    }
   ]
 }

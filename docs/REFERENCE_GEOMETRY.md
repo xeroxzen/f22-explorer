@@ -49,7 +49,7 @@ We use a standard right-handed Three.js coordinate system in **meters**:
 | `7.20 – 10.60` | `-2.26` → `+1.14` | Side Weapons Bays (left & right, below intake shoulders) | Each `~0.55 W × 3.40 L × 0.50 D` | **MEDIUM** | Sized to house 1 × AIM-9 (`~3.02 m` length) + trapeze rail |
 | `12.60 – 16.90` | `+3.14` → `+7.44` | Aft Fuselage & Twin Engine Bays (F119-PW-100) | `3.90 → 3.40 W`, `1.45 H`, engine centers at `|X| ≈ 0.82` | **MEDIUM** | Public 3-view & twin-nozzle spacing |
 | `16.90 – 18.45` | `+7.44` → `+8.99` | 2D Convergent-Divergent Thrust-Vectoring Nozzles | Each `~1.15 W × 0.72 H × 1.55 L` | **MEDIUM** | Public rear-quarter photos & PW F119 geometry |
-| `16.80 – 18.92` | `+7.34` → `+9.46` | Aft Tail Booms (flanking nozzles, supporting stabilators) | Outer `|X| ≈ 1.70`, tapering to `FS 18.92` | **MEDIUM** | Public top/side 3-view proportions |
+| `16.90 – 18.92` | `+7.44` → `+9.46` | Aft Tail Booms (flanking nozzles, supporting stabilators) | Outer `|X| ≈ 1.70`, tapering to `FS 18.92` | **MEDIUM** | Public top/side 3-view proportions |
 
 ---
 
@@ -57,11 +57,11 @@ We use a standard right-handed Three.js coordinate system in **meters**:
 
 | Surface | Root Station (`FS`, m) | Spanwise Extent (`|X|`, m) | Sweep / Cant | Confidence | Basis |
 | --- | --- | --- | --- | --- | --- |
-| Main Wing (each side) | `FS 6.60 – 14.30` (root chord `~7.70 m`, tip chord `~1.25 m`) | `1.85 → 6.78` | `42°` LE sweep, `-17°` TE sweep, slight anhedral (`~-1.5°` `ASSUMED`) | **HIGH** (span/sweep), **MEDIUM** (chords) | USAF span + area (`78.04 m²`) + 3-view proportions |
+| Main Wing (each side) | `FS 6.60 – 14.22` (centerline root chord `9.85 m`, exposed root chord `7.62 m`, tip chord `1.67 m`; trapezoidal area `78.13 m²`, within 0.2% of `78.04 m²`) | `1.85 → 6.78` | `42°` LE sweep, `-17°` TE sweep, slight anhedral (`~-1.5°` `ASSUMED`) | **HIGH** (span/sweep), **MEDIUM** (chords) | USAF span + area (`78.04 m²`) + NASA/VT 42° sweep |
 | Leading-Edge Flaps (LEF) | Along wing LE (`|X| = 2.15 → 6.55`) | `4.40 m` span | `42°` hinge line | **MEDIUM** | Public planform & high-AoA photos |
 | Flaperons (inboard TE) | Along inboard TE (`|X| = 2.05 → 4.45`) | `2.40 m` span | `-17°` hinge line | **MEDIUM** | Public top/bottom planform photos |
 | Ailerons (outboard TE) | Along outboard TE (`|X| = 4.55 → 6.55`) | `2.00 m` span | `-17°` hinge line | **MEDIUM** | Public top/bottom planform photos |
-| Vertical Stabilizers (2 ×) | `FS 13.00 – 16.90` | Root `|X| = 1.45` → Tip `|X| = 2.75`, `Y = 2.45 → 5.08` | `28°` outward cant, `~42°` LE sweep | **HIGH** (cant/height), **MEDIUM** (chord) | Public 3-view & height (`5.08 m`) |
+| Vertical Stabilizers (2 ×) | `FS 13.00 – 16.90` | Root `|X| = 1.45` → Tip `|X| = 2.85`, `Y = 2.45 → 5.08` (`atan2(1.40, 2.63) = 28.0°`) | `28°` outward cant, `~42°` LE sweep | **HIGH** (cant/height), **MEDIUM** (chord) | Public 3-view & height (`5.08 m`) |
 | Rudders (2 ×) | Trailing 30% of vertical stabilizers | Full fin height (`~2.4 m`) | Parallel to fin TE | **MEDIUM** | Public side-profile photos |
 | Horizontal Stabilators (2 ×) | `FS 14.90 – 18.70` (all-moving pivot at `FS 16.50`) | `1.70 → 4.40` | `~42°` LE sweep, `-17°` TE sweep | **MEDIUM** | Public top-view proportions |
 

@@ -3,7 +3,8 @@
   "title": "Internal Fuel Tanks",
   "parentId": "center-fuselage",
   "category": "Center Fuselage & Intakes",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
   "summary": "Integral fuselage and wing fuel cells holding approximately 18,000 lb (~8,200 kg) of jet fuel internally to preserve stealth.",
   "role": "Provides internal fuel capacity for air-dominance missions and supercruise without external drag or radar signature.",
   "modelingNotes": {
@@ -16,7 +17,7 @@
       0.75,
       5.4
     ],
-    "proportionReference": "USAF Fact Sheet internal fuel volume & center-fuselage cutaway layout",
+    "proportionReference": "USAF Fact Sheet internal fuel capacity & conceptual fuselage volume",
     "confidence": "MEDIUM"
   },
   "interaction": {
@@ -34,17 +35,28 @@
       "value": "8,200 (18,000 lb)",
       "unit": "kg",
       "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "Fuel Capacity: Internal: 18,000 pounds (8,200 kilograms)"
     },
     {
       "label": "With 2 External 600-gal Tanks",
       "value": "11,900 (26,000 lb)",
       "unit": "kg",
       "status": "SOURCED",
-      "source": "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+      "source": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "with two external wing fuel tanks: 26,000 pounds"
     }
   ],
   "sources": [
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    }
   ]
 }

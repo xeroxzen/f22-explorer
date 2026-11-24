@@ -3,7 +3,8 @@
   "title": "Main Weapons Bay Doors",
   "parentId": "main-weapons-bay",
   "category": "Weapons Bays & Gun",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Segmented ventral bi-fold bay doors with sawtooth radar-scattering edges that seal flush with the lower fuselage.",
   "role": "Rapidly open for weapon release and close flush to preserve the aircraft's stealth mold line.",
   "materials": "Composite honeycomb sandwich panels with serrated low-observable seam edges.",
@@ -37,7 +38,10 @@
       "value": "Sawtooth / serrated low-observable seams",
       "unit": "",
       "status": "SOURCED",
-      "source": "Lockheed Martin F-22 Public Overview (lockheedmartin.com)"
+      "source": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Serrated flush ventral weapons bay doors"
     },
     {
       "label": "Open Angle (Explorer)",
@@ -48,7 +52,17 @@
     }
   ],
   "sources": [
-    "Lockheed Martin F-22 Public Overview (lockheedmartin.com)",
-    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)"
+    {
+      "title": "Lockheed Martin F-22 Raptor Product Page",
+      "urlOrLocator": "https://www.lockheedmartin.com/en-us/products/f-22.html",
+      "accessed": "2026-11-24",
+      "snippet": "F-22 stealth airframe, internal weapons, supercruise overview"
+    },
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    }
   ]
 }

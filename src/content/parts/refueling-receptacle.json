@@ -3,7 +3,8 @@
   "title": "Dorsal Aerial Refueling Receptacle",
   "parentId": "center-fuselage",
   "category": "Center Fuselage & Intakes",
-  "label": "SOURCED",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Flush dorsal spine slipway receptacle covered by a low-observable clamshell door for USAF flying-boom aerial refueling.",
   "role": "Connects to KC-135 / KC-46 tanker booms in flight to extend mission range and endurance.",
   "modelingNotes": {
@@ -36,7 +37,10 @@
       "value": "USAF flying-boom slipway receptacle",
       "unit": "",
       "status": "SOURCED",
-      "source": "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)"
+      "source": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Dorsal spine aerial refueling boom receptacle"
     },
     {
       "label": "Door Open Angle (Explorer)",
@@ -47,7 +51,17 @@
     }
   ],
   "sources": [
-    "USAF Public Affairs / DVIDS Public Releases (dvidshub.net)",
-    "USAF F-22 Raptor Official Fact Sheet (af.mil)"
+    {
+      "title": "DVIDS / USAF Public Affairs F-22 Media Archive",
+      "urlOrLocator": "https://www.dvidshub.net/tags/image/f-22-raptor",
+      "accessed": "2026-11-24",
+      "snippet": "Public-domain ramp, weapons bay, refueling, canopy photographs"
+    },
+    {
+      "title": "USAF F-22 Raptor Official Fact Sheet",
+      "urlOrLocator": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
+      "accessed": "2026-11-24",
+      "snippet": "General Characteristics, supercruise >1.5 Mach, internal armament"
+    }
   ]
 }
