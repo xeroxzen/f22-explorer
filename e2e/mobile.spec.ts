@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { savePhaseScreenshot, waitForExplorerReady } from './helpers.js';
 
-test.describe('Phase 3 Mobile Layout, Bottom-Sheet Camera Fit & Areas', () => {
-  test('renders mobile exploded view fitted above bottom sheet and areas controls cleanly', async ({
+test.describe('Phase 4 Mobile Engine Start, Run-Up Pad & Bottom Sheet', () => {
+  test('runs engines on outdoor run-up pad with mobile bottom sheet and HUD cleanly', async ({
     page,
   }, testInfo) => {
     const pageErrors: string[] = [];
@@ -13,30 +13,32 @@ test.describe('Phase 3 Mobile Layout, Bottom-Sheet Camera Fit & Areas', () => {
     expect(state.qualityTier).toBe('low');
     expect(state.registeredHitboxes.length).toBe(44);
 
-    // Explode & open inspector via part tree (verifying mobile bottom-sheet camera fit)
-    await page.getByTestId('explode-toggle-btn').click();
+    // Open Engines mobile bottom sheet, jump to AB on outdoor pad, rear view
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: {
+            setCameraPreset: (p: string) => void;
+            setEnginePreset: (p: string) => void;
+          };
+        }
+      ).__f22debug;
+      dbg.setEnginePreset('ab');
+      dbg.setCameraPreset('rear');
+    });
+    await page.getByTestId('engines-toggle-btn').click();
+    await expect(page.getByTestId('engines-panel')).toBeVisible();
     await page.waitForTimeout(850);
-    await page.getByTestId('part-tree-toggle-btn').click();
-    await expect(page.getByTestId('part-tree-panel')).toBeVisible();
-    await page.getByTestId('tree-part-canopy').click();
-
-    const sheet = page.getByTestId('inspector-panel');
-    await expect(sheet).toBeVisible();
-    await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
-    await page.waitForTimeout(750);
 
     await savePhaseScreenshot(
       page,
-      `docs/screenshots/phase3/mobile-${testInfo.project.name}-exploded-fit.png`
+      `docs/screenshots/phase4/mobile-${testInfo.project.name}-ab.png`
     );
 
-    // Close sheet, open Areas & Stick mobile sheet, verify immersive toggle
+    // Close sheet -> compact HUD becomes visible cleanly on mobile
     await page.getByTestId('sheet-close-btn').click();
-    await expect(sheet).toHaveCount(0);
-
-    await page.getByTestId('areas-toggle-btn').click();
-    await expect(page.getByTestId('areas-panel')).toBeVisible();
-    await page.getByTestId('sheet-close-btn').click();
+    await expect(page.getByTestId('engines-panel')).toHaveCount(0);
+    await expect(page.getByTestId('engine-hud-overlay')).toBeVisible();
 
     await page.getByTestId('immersive-toggle-btn').click();
     await expect(page.getByTestId('top-bar')).toHaveCount(0);

@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import { CockpitDetail } from './CockpitDetail.js';
+import { ExhaustPlume } from './ExhaustPlume.js';
 import { WeaponsBaysDetail } from './WeaponsBaysDetail.js';
 import {
   F22_BUILT_PARTS,
@@ -155,11 +156,14 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
   const isSelected = selectedPartId === part.id;
   const isHovered = hoveredPartId === part.id;
 
-  // Hide coarse placeholder cockpit boxes when inside detailed Cockpit Seat View
+  // Hide coarse placeholder cockpit boxes (and closed tub box) when inside detailed Cockpit Seat View
   const replacedByCockpitDetail =
     explodeFactor <= 0.05 &&
     cameraPreset === 'cockpit' &&
-    (part.id === 'hotas-controls' || part.id === 'cockpit-displays-hud');
+    (part.id === 'hotas-controls' ||
+      part.id === 'cockpit-displays-hud' ||
+      part.id === 'cockpit-tub' ||
+      part.id === 'canopy');
 
   // Hide static closed door / generic ordnance cylinder when detailed open-bay stores take over
   const replacedByAnimatedBay =
@@ -194,6 +198,17 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
       p.rotation.x += (rx - p.rotation.x) * alpha;
       p.rotation.y += (ry - p.rotation.y) * alpha;
       p.rotation.z += (rz - p.rotation.z) * alpha;
+
+      // Expand 2D nozzle exit area with AB / power setting
+      if (part.id === 'nozzle-2d-left' || part.id === 'nozzle-2d-right') {
+        const es = useExplorerStore.getState().engineSim;
+        const eng = part.id === 'nozzle-2d-left' ? es.left : es.right;
+        const targetSy =
+          useExplorerStore.getState().explodeFactor > 0.05
+            ? 1
+            : 0.88 + eng.nozzleOpenFraction * 0.44;
+        p.scale.y += (targetSy - p.scale.y) * alpha;
+      }
     }
   });
 
@@ -356,6 +371,7 @@ export function F22Model() {
         />
       ))}
       <WeaponsBaysDetail clippingPlanes={clippingPlanes} />
+      <ExhaustPlume clippingPlanes={clippingPlanes} />
     </group>
   );
 }

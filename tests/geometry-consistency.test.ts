@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { getComponentContent } from '../src/content/registry.js';
+import {
+  COCKPIT_DISPLAY_DIMENSIONS_M,
+  RENDERED_STORE_SPECS,
+} from '../src/scene/storeDimensions.js';
 import { CONSTANTS_REGISTRY as R } from '../src/sim/config/registry.js';
 
 describe('F-22 Reference Geometry Consistency Checks', () => {
@@ -91,5 +95,29 @@ describe('F-22 Reference Geometry Consistency Checks', () => {
       expect(noz.modelingNotes.stationRangeM[0]).toBeGreaterThanOrEqual(16.9);
       expect(noz.modelingNotes.stationRangeM[1]).toBeLessThanOrEqual(R.F22_LENGTH_M.value);
     }
+  });
+
+  it('matches rendered store lengths within 5% of cited USAF Fact Sheet lengths (and 4×2 SDB racks)', () => {
+    for (const store of Object.values(RENDERED_STORE_SPECS)) {
+      const relErr =
+        Math.abs(store.renderedLengthM - store.sourcedLengthM) / store.sourcedLengthM;
+      expect(
+        relErr,
+        `${store.id}: rendered ${store.renderedLengthM} m vs sourced ${store.sourcedLengthM} m`
+      ).toBeLessThan(0.05);
+    }
+    expect(R.GBU39_PER_RACK.value).toBe(4);
+    expect(R.GBU39_RACKS_IN_MAIN_BAY.value).toBe(2);
+    expect(R.GBU39_PER_RACK.value * R.GBU39_RACKS_IN_MAIN_BAY.value).toBe(8);
+  });
+
+  it('sizes cockpit LCDs to Lockheed Martin Code One sourced dimensions (8×8, 6.5×6.5, 3×4 in)', () => {
+    const IN_TO_M = 0.0254;
+    expect(COCKPIT_DISPLAY_DIMENSIONS_M.primaryMfd.width).toBeCloseTo(8 * IN_TO_M, 4);
+    expect(COCKPIT_DISPLAY_DIMENSIONS_M.primaryMfd.height).toBeCloseTo(8 * IN_TO_M, 4);
+    expect(COCKPIT_DISPLAY_DIMENSIONS_M.secondaryMfd.width).toBeCloseTo(6.5 * IN_TO_M, 4);
+    expect(COCKPIT_DISPLAY_DIMENSIONS_M.secondaryMfd.height).toBeCloseTo(6.5 * IN_TO_M, 4);
+    expect(COCKPIT_DISPLAY_DIMENSIONS_M.upFrontDisplay.width).toBeCloseTo(4 * IN_TO_M, 4);
+    expect(COCKPIT_DISPLAY_DIMENSIONS_M.upFrontDisplay.height).toBeCloseTo(3 * IN_TO_M, 4);
   });
 });

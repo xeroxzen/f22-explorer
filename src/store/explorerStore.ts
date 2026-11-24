@@ -1,5 +1,14 @@
 import { create } from 'zustand';
 import { soundEngine } from '../audio/soundEngine.js';
+import {
+  abortOrShutdownEngines,
+  createEnginePresetState,
+  createInitialEngineSimState,
+  setEngineThrottle,
+  startEngineSequence,
+  stepEngineSim,
+  type EngineSimState,
+} from '../sim/engineSim.js';
 
 export type QualityTier = 'low' | 'med' | 'high';
 export type ClipAxis = 'none' | 'x' | 'y' | 'z';
@@ -46,6 +55,7 @@ export interface ExplorerState {
   readonly showInspector: boolean;
   readonly showPartTree: boolean;
   readonly showAreasPanel: boolean;
+  readonly showEnginesPanel: boolean;
   readonly explodeFactor: number;
   readonly xrayMode: boolean;
   readonly clipAxis: ClipAxis;
@@ -71,6 +81,9 @@ export interface ExplorerState {
   readonly flaps: number;
   readonly nozzlePitch: number;
 
+  // Phase 4: Engine start sequence & twin-F119 spool simulation
+  readonly engineSim: EngineSimState;
+
   setSceneReady: (ready: boolean) => void;
   setQualityTier: (tier: QualityTier) => void;
   toggleSoundMute: () => void;
@@ -80,6 +93,7 @@ export interface ExplorerState {
   setShowInspector: (open: boolean) => void;
   setShowPartTree: (open: boolean) => void;
   setShowAreasPanel: (open: boolean) => void;
+  setShowEnginesPanel: (open: boolean) => void;
   setExplodeFactor: (value: number) => void;
   toggleExplode: () => void;
   setXrayMode: (enabled: boolean) => void;
@@ -104,6 +118,12 @@ export interface ExplorerState {
   setFlaps: (val: number) => void;
   setNozzlePitch: (val: number) => void;
   resetControlSurfaces: () => void;
+
+  startEngines: () => void;
+  abortOrShutdown: () => void;
+  setThrottle: (val: number) => void;
+  tickEngineSim: (dtS: number) => void;
+  setEnginePreset: (preset: 'off' | 'mid-start' | 'idle' | 'mil' | 'ab') => void;
 }
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -117,6 +137,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   showInspector: false,
   showPartTree: false,
   showAreasPanel: false,
+  showEnginesPanel: false,
   explodeFactor: 0,
   xrayMode: false,
   clipAxis: 'none',
@@ -140,6 +161,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   airbrake: 0,
   flaps: 0,
   nozzlePitch: 0,
+  engineSim: createInitialEngineSimState(),
 
   setSceneReady: (sceneReady) => set({ sceneReady }),
   setQualityTier: (qualityTier) => set({ qualityTier }),
@@ -170,13 +192,22 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
     set((s) => ({
       showPartTree,
       showAreasPanel: showPartTree ? false : s.showAreasPanel,
+      showEnginesPanel: showPartTree ? false : s.showEnginesPanel,
       mobileControlsHidden: showPartTree ? false : s.mobileControlsHidden,
     })),
   setShowAreasPanel: (showAreasPanel) =>
     set((s) => ({
       showAreasPanel,
       showPartTree: showAreasPanel ? false : s.showPartTree,
+      showEnginesPanel: showAreasPanel ? false : s.showEnginesPanel,
       mobileControlsHidden: showAreasPanel ? false : s.mobileControlsHidden,
+    })),
+  setShowEnginesPanel: (showEnginesPanel) =>
+    set((s) => ({
+      showEnginesPanel,
+      showPartTree: showEnginesPanel ? false : s.showPartTree,
+      showAreasPanel: showEnginesPanel ? false : s.showAreasPanel,
+      mobileControlsHidden: showEnginesPanel ? false : s.mobileControlsHidden,
     })),
   setExplodeFactor: (value) => set({ explodeFactor: clamp(value, 0, 1) }),
   toggleExplode: () =>
@@ -231,4 +262,30 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
       flaps: 0,
       nozzlePitch: 0,
     }),
+
+  startEngines: () =>
+    set((s) => ({
+      explodeFactor: 0,
+      gearDeployed: true,
+      engineSim: startEngineSequence(s.engineSim),
+    })),
+  abortOrShutdown: () =>
+    set((s) => ({
+      engineSim: abortOrShutdownEngines(s.engineSim),
+    })),
+  setThrottle: (val) =>
+    set((s) => ({
+      engineSim: setEngineThrottle(s.engineSim, val),
+    })),
+  tickEngineSim: (dtS) =>
+    set((s) => {
+      if (s.engineSim.phase === 'OFF') return s;
+      return { engineSim: stepEngineSim(s.engineSim, dtS) };
+    }),
+  setEnginePreset: (preset) =>
+    set((s) => ({
+      explodeFactor: preset === 'off' ? s.explodeFactor : 0,
+      gearDeployed: preset === 'off' ? s.gearDeployed : true,
+      engineSim: createEnginePresetState(preset),
+    })),
 }));

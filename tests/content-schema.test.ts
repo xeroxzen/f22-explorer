@@ -160,4 +160,64 @@ describe('Component content JSON schema & hierarchy validation', () => {
     );
     expect(classifiedSpecs.length).toBeGreaterThanOrEqual(4);
   });
+
+  it('rejects quoted snippets not marked verbatim: true and verifies cockpit Code One citation', () => {
+    expect(() =>
+      validateComponentContent(
+        {
+          id: 'quote-check',
+          title: 'Quote Check',
+          parentId: null,
+          category: 'Test',
+          existenceLabel: 'SOURCED',
+          geometryLabel: 'ASSUMED',
+          summary: 'Summary',
+          role: 'Role',
+          modelingNotes: {
+            stationRangeM: [0, 1],
+            approxSizeM: [1, 1, 1],
+            proportionReference: 'Test',
+            confidence: 'LOW',
+          },
+          interaction: {
+            explodes: false,
+            explodeVectorM: [0, 0, 0],
+            kind: 'static',
+          },
+          specs: [
+            {
+              label: 'Test',
+              value: '1',
+              unit: '',
+              status: 'SOURCED',
+              source: 'Test',
+              urlOrLocator: 'https://example.com',
+              accessed: '2026-11-24',
+              snippet: '"Unverified quoted paraphrase"',
+            },
+          ],
+          sources: [
+            {
+              title: 'Test',
+              urlOrLocator: 'https://example.com',
+              accessed: '2026-11-24',
+              snippet: 'Unquoted locator',
+            },
+          ],
+        },
+        'quote-check.json'
+      )
+    ).toThrow(/verbatim: true/);
+
+    const cockpit = ALL_COMPONENTS.find((p) => p.id === 'cockpit-displays-hud');
+    expect(cockpit).toBeDefined();
+    expect(cockpit!.geometryLabel).toBe('SOURCED');
+    expect(cockpit!.sources[0].title).toMatch(/Code One/i);
+    expect(cockpit!.sources[0].verbatim).toBe(true);
+    expect(
+      cockpit!.sources.some((s) =>
+        s.urlOrLocator.includes('science.howstuffworks.com/f-22-raptor7.htm')
+      )
+    ).toBe(true);
+  });
 });

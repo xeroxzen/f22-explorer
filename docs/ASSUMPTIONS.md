@@ -16,7 +16,7 @@ Classified specifications (such as exact RCS, avionics internals, and detailed e
 
 ## Constants Registry (Single Source of Truth)
 
-Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (36 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
+Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (64 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
 
 ### Physical & Atmosphere
 
@@ -25,6 +25,7 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `G0` | `9.80665 m/s^2` | `SOURCED` | — | `v0.1.0` | CGPM 1901 / ISO 80000-3 standard gravity |
 | `SEA_LEVEL_DENSITY_KG_M3` | `1.225 kg/m^3` | `SOURCED` | — | `v0.1.0` | ICAO / US Standard Atmosphere 1976 sea-level air density (15 °C, 101.325 kPa) |
 | `SEA_LEVEL_SPEED_OF_SOUND_MS` | `340.294 m/s` | `SOURCED` | — | `v0.1.0` | ICAO / US Standard Atmosphere 1976 sea-level speed of sound (15 °C) |
+| `LBF_TO_KN` | `0.0044482216 kN/lbf` | `SOURCED` | — | `phase4` | NIST SP 811 exact unit conversion (1 lbf = 4.4482216 N) |
 
 ### Airframe & Dimensions
 
@@ -57,6 +58,29 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `F119_DRY_THRUST_CLASS_KN` | `107 kN` | `APPROXIMATE` | — | `phase1` | Public aerospace reference range (~22,000–26,000 lbf / 98–116 kN dry military thrust) *(uncertainty: ±9 kN public estimate range)* |
 | `F119_BYPASS_RATIO_APPROX` | `0.3` | `APPROXIMATE` | — | `phase1` | Jane's / public academic low-bypass turbofan reference (~0.3:1) |
 | `F119_NOZZLE_VECTOR_MAX_DEG` | `20 deg` | `SOURCED` | — | `phase1` | Pratt & Whitney F119 public specification (±20° 2D pitch thrust vectoring) |
+| `F119_AB_THRUST_CLASS_LBF` | `35,000 lbf` | `SOURCED` | — | `phase4` | USAF F-22 Fact Sheet & Pratt & Whitney public 35,000-pound thrust class per engine *(uncertainty: 35,000-lbf class; exact static thrust not publicly disclosed)* |
+| `F119_DRY_THRUST_FRACTION` | `0.68` | `APPROXIMATE` | — | `phase4` | Dry military thrust fraction (~23,800 lbf / 106 kN ÷ 35,000 lbf class) |
+| `F119_IDLE_THRUST_FRACTION` | `0.05` | `ASSUMED` | — | `phase4` | Teaching ground-idle residual thrust (~5% of rated class) |
+| `ENGINE_IDLE_N2_PCT` | `62 %` | `ASSUMED` | — | `phase4` | Teaching ground-idle core spool speed; real F119 schedule not publicly disclosed |
+| `ENGINE_MIL_N2_PCT` | `100 %` | `ASSUMED` | — | `phase4` | Normalized 100% N2 core speed at military dry power (generic gauge) |
+| `ENGINE_MIL_THROTTLE_THRESHOLD` | `0.75` | `ASSUMED` | — | `phase4` | Throttle lever detent: 0..0.75 = Idle to Military (dry); >0.75..1.0 = Afterburner |
+| `ENGINE_SPOOL_UP_TAU_S` | `2.2 s` | `ASSUMED` | — | `phase4` | First-order lag time constant for core spool acceleration (teaching model) |
+| `ENGINE_SPOOL_DOWN_TAU_S` | `3.6 s` | `ASSUMED` | — | `phase4` | First-order lag time constant for core spool deceleration (teaching model) |
+| `ENGINE_AB_TAU_S` | `0.85 s` | `ASSUMED` | — | `phase4` | First-order lag time constant for afterburner staging and nozzle expansion |
+| `ENGINE_NOZZLE_IDLE_OPEN_FRAC` | `0.25` | `ASSUMED` | — | `phase4` | Convergent-divergent 2D nozzle exit area fraction at ground idle |
+| `ENGINE_NOZZLE_MIL_OPEN_FRAC` | `0.55` | `ASSUMED` | — | `phase4` | Convergent-divergent 2D nozzle exit area fraction at military dry power |
+| `ENGINE_NOZZLE_AB_OPEN_FRAC` | `1` | `ASSUMED` | — | `phase4` | Convergent-divergent 2D nozzle exit area fraction at maximum afterburner |
+| `START_BATTERY_DURATION_S` | `1.5 s` | `ASSUMED` | — | `phase4` | Simulated battery bus power-up step duration (teaching sequence) |
+| `START_APU_DURATION_S` | `3 s` | `ASSUMED` | — | `phase4` | Simulated APU spool-up step duration (teaching sequence) |
+| `START_MOTOR_DURATION_S` | `2.5 s` | `ASSUMED` | — | `phase4` | Simulated AMAD accessory-gearbox motoring step duration (teaching sequence) |
+| `START_IGNITION_DURATION_S` | `1.5 s` | `ASSUMED` | — | `phase4` | Simulated igniter & fuel-introduction step duration (teaching sequence) |
+| `START_LIGHTOFF_DURATION_S` | `3.5 s` | `ASSUMED` | — | `phase4` | Simulated light-off to ground-idle spool step duration (teaching sequence) |
+| `START_MOTOR_N2_PCT` | `22 %` | `ASSUMED` | — | `phase4` | Target N2% driven by APU via accessory gearbox prior to ignition |
+| `SHUTDOWN_COOLDOWN_TAU_S` | `4 s` | `ASSUMED` | — | `phase4` | Spool-down time constant after fuel cutoff / abort |
+| `ENGINE_AB_ON_THRESHOLD` | `0.05` | `ASSUMED` | — | `phase4` | Minimum normalized afterburner fraction to indicate AB lit |
+| `ENGINE_MIL_REGIME_THRESHOLD` | `0.1` | `ASSUMED` | — | `phase4` | Minimum normalized dry spool above idle to indicate MIL regime |
+| `ENGINE_SHUTDOWN_N2_CUTOFF_PCT` | `1.5 %` | `ASSUMED` | — | `phase4` | Core spool threshold below which SHUTDOWN transitions back to OFF |
+| `ENGINE_APU_SPOOL_TAU_S` | `1.35 s` | `ASSUMED` | — | `phase4` | First-order lag time constant for Honeywell G-250 APU spool-up |
 
 ### Control Surfaces & Gear
 
@@ -76,6 +100,10 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | --- | --- | --- | --- | --- | --- |
 | `AIM120_LENGTH_M` | `3.66 m` | `SOURCED` | — | `phase1` | USAF AIM-120 AMRAAM Fact Sheet (12 ft / 3.66 m) for main bay clearance check |
 | `AIM9_LENGTH_M` | `3.02 m` | `SOURCED` | — | `phase1` | USAF AIM-9 Sidewinder Fact Sheet (9 ft 11 in / 3.02 m) for side bay clearance check |
+| `GBU32_LENGTH_M` | `3.04 m` | `SOURCED` | — | `phase4` | USAF Joint Direct Attack Munition (GBU-31/32/38) Fact Sheet: GBU-32 length 119.5 in (3.04 m) |
+| `GBU39_LENGTH_M` | `1.8 m` | `SOURCED` | — | `phase4` | USAF GBU-39B Small Diameter Bomb Fact Sheet: length 70.8 in (1.80 m) |
+| `GBU39_PER_RACK` | `4` | `SOURCED` | — | `phase4` | USAF GBU-39B Small Diameter Bomb Fact Sheet: 4 bombs per BRU-61/A carriage rack |
+| `GBU39_RACKS_IN_MAIN_BAY` | `2` | `SOURCED` | — | `phase4` | USAF F-22 Raptor Fact Sheet: up to 8 Small Diameter Bombs (2 BRU-61/A racks × 4) |
 | `F22_CANOPY_OPEN_DEG` | `38 deg` | `ASSUMED` | — | `phase1` | Visual proportion from USAF ramp photos; exact canopy hinge angle not published |
 | `F22_M61A2_AMMO_ROUNDS` | `480 rounds` | `SOURCED` | — | `phase1` | USAF F-22 Fact Sheet & Air & Space Forces Magazine (20 mm M61A2 internal cannon) |
 

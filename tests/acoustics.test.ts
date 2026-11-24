@@ -54,4 +54,21 @@ describe('Hangar & engine acoustic model', () => {
     expect(dbg.muted).toBe(true);
     expect(dbg.hasAudioContext).toBe(false);
   });
+
+  it('produces APU whine during autonomous start before main engines light off', () => {
+    const apuOnly = evaluateAcoustics({
+      sourcePosM: { x: 0, y: 2.0, z: 7.5 },
+      listenerPosM: { x: 7, y: 4, z: 16 },
+      isInterior: false,
+      running: true,
+      spoolFraction: 0,
+      afterburnerFraction: 0,
+      activeEngineCount: 0,
+      apuSpoolFraction: 1.0,
+    });
+    expect(apuOnly.continuousMuted).toBe(false);
+    expect(apuOnly.whineGain).toBeGreaterThan(0.1);
+    expect(apuOnly.roarGain).toBe(0);
+    expect(apuOnly.crackleGain).toBe(0);
+  });
 });

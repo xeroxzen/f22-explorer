@@ -8,6 +8,8 @@ import {
   type QualityTier,
 } from './store/explorerStore.js';
 import { AreasControlPanel } from './ui/AreasControlPanel.js';
+import { EngineControlPanel } from './ui/EngineControlPanel.js';
+import { EngineHudOverlay } from './ui/EngineHudOverlay.js';
 import { InspectorPanel } from './ui/InspectorPanel.js';
 import { PartTreePanel } from './ui/PartTreePanel.js';
 import { useViewport } from './ui/useViewport.js';
@@ -31,6 +33,7 @@ export function App() {
   const showInspector = useExplorerStore((s) => s.showInspector);
   const showPartTree = useExplorerStore((s) => s.showPartTree);
   const showAreasPanel = useExplorerStore((s) => s.showAreasPanel);
+  const showEnginesPanel = useExplorerStore((s) => s.showEnginesPanel);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
   const clipAxis = useExplorerStore((s) => s.clipAxis);
@@ -43,6 +46,7 @@ export function App() {
   const setShowInspector = useExplorerStore((s) => s.setShowInspector);
   const setShowPartTree = useExplorerStore((s) => s.setShowPartTree);
   const setShowAreasPanel = useExplorerStore((s) => s.setShowAreasPanel);
+  const setShowEnginesPanel = useExplorerStore((s) => s.setShowEnginesPanel);
   const setExplodeFactor = useExplorerStore((s) => s.setExplodeFactor);
   const toggleExplode = useExplorerStore((s) => s.toggleExplode);
   const setXrayMode = useExplorerStore((s) => s.setXrayMode);
@@ -58,7 +62,12 @@ export function App() {
   }, [isPhone, mobileControlsHidden, setMobileControlsHidden]);
 
   const hideChrome =
-    isPhone && mobileControlsHidden && !showInspector && !showPartTree && !showAreasPanel;
+    isPhone &&
+    mobileControlsHidden &&
+    !showInspector &&
+    !showPartTree &&
+    !showAreasPanel &&
+    !showEnginesPanel;
 
   return (
     <div className={`app-root ${hideChrome ? 'immersive' : ''}`}>
@@ -101,6 +110,20 @@ export function App() {
                 </button>
               ))}
             </div>
+
+            <button
+              type="button"
+              className={`ctrl-btn ${showEnginesPanel ? 'active' : ''}`}
+              onClick={() => {
+                const next = !showEnginesPanel;
+                setShowEnginesPanel(next);
+                if (isPhone && next) setShowInspector(false);
+              }}
+              data-testid="engines-toggle-btn"
+              aria-pressed={showEnginesPanel}
+            >
+              Engines
+            </button>
 
             <button
               type="button"
@@ -179,6 +202,8 @@ export function App() {
         </button>
       )}
 
+      <EngineControlPanel />
+      <EngineHudOverlay />
       <AreasControlPanel />
       <PartTreePanel />
       <InspectorPanel />
@@ -197,7 +222,8 @@ export function App() {
         </div>
       )}
 
-      {!hideChrome && !(isPhone && (showInspector || showPartTree || showAreasPanel)) && (
+      {!hideChrome &&
+        !(isPhone && (showInspector || showPartTree || showAreasPanel || showEnginesPanel)) && (
         <section className="bottom-dock" data-testid="disassembly-dock">
           <button
             type="button"
