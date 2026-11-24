@@ -27,8 +27,8 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Verify ASSUMPTIONS.md sync
-        run: pnpm docs:assumptions -- --check
+      - name: Verify ASSUMPTIONS.md and README.md generated tables
+        run: pnpm docs:assumptions -- --check && pnpm docs:readme -- --check
 
       - name: Unit tests (Vitest)
         run: pnpm test

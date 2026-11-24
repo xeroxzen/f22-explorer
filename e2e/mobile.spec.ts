@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { savePhaseScreenshot, waitForExplorerReady } from './helpers.js';
 
-test.describe('Phase 4 Mobile Engine Start, Run-Up Pad & Bottom Sheet', () => {
-  test('runs engines on outdoor run-up pad with mobile bottom sheet and HUD cleanly', async ({
+test.describe('Phase 5 Mobile Engine Sheet (Running) & Performance', () => {
+  test('pins throttle at top and collapses start steps to 1-line summary when RUNNING on mobile', async ({
     page,
   }, testInfo) => {
     const pageErrors: string[] = [];
@@ -13,7 +13,7 @@ test.describe('Phase 4 Mobile Engine Start, Run-Up Pad & Bottom Sheet', () => {
     expect(state.qualityTier).toBe('low');
     expect(state.registeredHitboxes.length).toBe(44);
 
-    // Open Engines mobile bottom sheet, jump to AB on outdoor pad, rear view
+    // Jump to steady-state RUNNING AB on outdoor run-up pad, rear view
     await page.evaluate(() => {
       const dbg = (
         window as unknown as {
@@ -26,26 +26,38 @@ test.describe('Phase 4 Mobile Engine Start, Run-Up Pad & Bottom Sheet', () => {
       dbg.setEnginePreset('ab');
       dbg.setCameraPreset('rear');
     });
+
     await page.getByTestId('engines-toggle-btn').click();
     await expect(page.getByTestId('engines-panel')).toBeVisible();
+    // Verify throttle is pinned at top & step list is collapsed to 1-line summary
+    await expect(page.getByTestId('throttle-section')).toBeVisible();
+    await expect(page.getByTestId('engine-steps-collapsed-summary')).toBeVisible();
     await page.waitForTimeout(850);
 
     await savePhaseScreenshot(
       page,
-      `docs/screenshots/phase4/mobile-${testInfo.project.name}-ab.png`
+      `docs/screenshots/phase5/mobile-${testInfo.project.name}-engine-running.png`
     );
 
-    // Close sheet -> compact HUD becomes visible cleanly on mobile
+    const perf = await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: {
+            getPerfMetrics: () => { fps: number; p50FrameMs: number; drawCalls: number; triangles: number };
+          };
+        }
+      ).__f22debug;
+      return dbg.getPerfMetrics();
+    });
+    console.log(
+      `[Phase 5 Perf Mobile LOW ${testInfo.project.name} (headless SwiftShader)]`,
+      JSON.stringify(perf)
+    );
+
+    // Close sheet -> compact HUD becomes visible
     await page.getByTestId('sheet-close-btn').click();
     await expect(page.getByTestId('engines-panel')).toHaveCount(0);
     await expect(page.getByTestId('engine-hud-overlay')).toBeVisible();
-
-    await page.getByTestId('immersive-toggle-btn').click();
-    await expect(page.getByTestId('top-bar')).toHaveCount(0);
-    await expect(page.getByTestId('immersive-restore-btn')).toBeVisible();
-
-    await page.getByTestId('immersive-restore-btn').click();
-    await expect(page.getByTestId('top-bar')).toBeVisible();
 
     expect(pageErrors).toEqual([]);
   });

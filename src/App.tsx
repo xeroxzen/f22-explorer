@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { HangarCanvas } from './scene/HangarCanvas.js';
 import { SYSTEM_GROUP_COLORS, type SystemGroup } from './scene/f22Geometry.js';
+import { applyDeepLinkFromUrl, buildCurrentShareUrl } from './store/deepLink.js';
 import {
   useExplorerStore,
   type CameraPresetId,
@@ -12,6 +13,7 @@ import { EngineControlPanel } from './ui/EngineControlPanel.js';
 import { EngineHudOverlay } from './ui/EngineHudOverlay.js';
 import { InspectorPanel } from './ui/InspectorPanel.js';
 import { PartTreePanel } from './ui/PartTreePanel.js';
+import { TourOverlay } from './ui/TourOverlay.js';
 import { useViewport } from './ui/useViewport.js';
 
 const QUALITY_TIERS: readonly QualityTier[] = ['low', 'med', 'high'];
@@ -34,6 +36,8 @@ export function App() {
   const showPartTree = useExplorerStore((s) => s.showPartTree);
   const showAreasPanel = useExplorerStore((s) => s.showAreasPanel);
   const showEnginesPanel = useExplorerStore((s) => s.showEnginesPanel);
+  const showTourPicker = useExplorerStore((s) => s.showTourPicker);
+  const activeTourId = useExplorerStore((s) => s.activeTourId);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
   const clipAxis = useExplorerStore((s) => s.clipAxis);
@@ -47,6 +51,7 @@ export function App() {
   const setShowPartTree = useExplorerStore((s) => s.setShowPartTree);
   const setShowAreasPanel = useExplorerStore((s) => s.setShowAreasPanel);
   const setShowEnginesPanel = useExplorerStore((s) => s.setShowEnginesPanel);
+  const setShowTourPicker = useExplorerStore((s) => s.setShowTourPicker);
   const setExplodeFactor = useExplorerStore((s) => s.setExplodeFactor);
   const toggleExplode = useExplorerStore((s) => s.toggleExplode);
   const setXrayMode = useExplorerStore((s) => s.setXrayMode);
@@ -54,6 +59,29 @@ export function App() {
   const setClipPosition = useExplorerStore((s) => s.setClipPosition);
   const setCameraPreset = useExplorerStore((s) => s.setCameraPreset);
   const setMobileControlsHidden = useExplorerStore((s) => s.setMobileControlsHidden);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  // Restore shareable deep-link query params on initial load
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search) {
+      applyDeepLinkFromUrl(window.location.search);
+    }
+  }, []);
+
+  // Global keyboard accessibility: Escape closes active panels/dialogs
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      const s = useExplorerStore.getState();
+      if (s.showTourPicker) s.setShowTourPicker(false);
+      else if (s.showInspector) s.setShowInspector(false);
+      else if (s.showEnginesPanel) s.setShowEnginesPanel(false);
+      else if (s.showAreasPanel) s.setShowAreasPanel(false);
+      else if (s.showPartTree) s.setShowPartTree(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   useEffect(() => {
     if (!isPhone && mobileControlsHidden) {
@@ -110,6 +138,16 @@ export function App() {
                 </button>
               ))}
             </div>
+
+            <button
+              type="button"
+              className={`ctrl-btn ${showTourPicker || activeTourId !== null ? 'active' : ''}`}
+              onClick={() => setShowTourPicker(!showTourPicker)}
+              data-testid="tours-toggle-btn"
+              aria-pressed={showTourPicker || activeTourId !== null}
+            >
+              Tours
+            </button>
 
             <button
               type="button"
@@ -177,6 +215,28 @@ export function App() {
               {soundMuted ? 'Audio: Muted' : 'Audio: On'}
             </button>
 
+            {!isPhone && (
+              <button
+                type="button"
+                className={`ctrl-btn ${shareCopied ? 'active' : ''}`}
+                onClick={() => {
+                  const url = buildCurrentShareUrl();
+                  if (typeof window !== 'undefined') {
+                    window.history.replaceState(null, '', url);
+                    if (navigator.clipboard?.writeText) {
+                      void navigator.clipboard.writeText(url);
+                    }
+                  }
+                  setShareCopied(true);
+                  window.setTimeout(() => setShareCopied(false), 1800);
+                }}
+                data-testid="share-link-btn"
+                aria-label="Copy shareable deep link to current view"
+              >
+                {shareCopied ? 'Link Copied' : 'Share'}
+              </button>
+            )}
+
             {isPhone && (
               <button
                 type="button"
@@ -204,6 +264,7 @@ export function App() {
 
       <EngineControlPanel />
       <EngineHudOverlay />
+      <TourOverlay />
       <AreasControlPanel />
       <PartTreePanel />
       <InspectorPanel />

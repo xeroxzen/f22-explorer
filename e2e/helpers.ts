@@ -14,8 +14,13 @@ export interface ExplorerDebugState {
   registeredHitboxes: string[];
 }
 
-export async function waitForExplorerReady(page: Page): Promise<ExplorerDebugState> {
-  await page.goto('/');
+export async function waitForExplorerReady(
+  page: Page,
+  navigate = true
+): Promise<ExplorerDebugState> {
+  if (navigate) {
+    await page.goto('/');
+  }
   await page.waitForFunction(
     () => {
       const dbg = (

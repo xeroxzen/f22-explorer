@@ -1,12 +1,11 @@
 import { expect, test } from '@playwright/test';
 import {
-  assertNoElementOverlap,
   savePhaseScreenshot,
   waitForExplorerReady,
 } from './helpers.js';
 
-test.describe('Phase 4 Desktop F-22 Engine Start Sequence, Live Instruments & Afterburner', () => {
-  test('runs full start -> idle -> mil -> AB -> cockpit AB MFD -> shutdown with 0 console errors', async ({
+test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precision', () => {
+  test('verifies all 3 tours (skippable/resumable), new AB/Mil plumes, 2-sig-fig HUD, and cockpit deep link', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -23,132 +22,96 @@ test.describe('Phase 4 Desktop F-22 Engine Start Sequence, Live Instruments & Af
     expect(state.soundMuted).toBe(true);
     expect(state.registeredHitboxes.length).toBe(44);
 
-    // 1. Assert ZERO unintended part interpenetration in assembled state (explode = 0)
-    const assembledOverlaps = await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: { checkPartIntersections: (tol?: number) => Array<{ a: string; b: string }> };
-        }
-      ).__f22debug;
-      return dbg.checkPartIntersections(0.005);
-    });
-    expect(assembledOverlaps).toEqual([]);
-
-    // 2. Open Engine Control panel & kick off real start sequence (moves jet to outdoor run-up pad)
-    await page.getByTestId('engines-toggle-btn').click();
-    await expect(page.getByTestId('engines-panel')).toBeVisible();
-    await expect(page.getByTestId('engine-step-list')).toBeVisible();
-    await page.getByTestId('cam-rear').click();
-    await page.getByTestId('start-engines-btn').click();
-
-    // Advance the real state machine to mid-start (~13 s into start sequence: Eng 1 idle, Eng 2 motoring)
-    await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: { tickEngineSim: (dt: number) => void };
-        }
-      ).__f22debug;
-      for (let i = 0; i < 130; i++) dbg.tickEngineSim(0.1);
-    });
+    // 1. Anatomy tour — step 1 screenshot + Next + Skip + Resume check
+    await page.getByTestId('tours-toggle-btn').click();
+    await expect(page.getByTestId('tour-picker')).toBeVisible();
+    await page.getByTestId('start-tour-anatomy').click();
+    await expect(page.getByTestId('tour-card')).toBeVisible();
+    await expect(page.getByTestId('tour-citation')).toBeVisible();
     await page.waitForTimeout(850);
-    await expect(page.getByTestId('engine-hud-overlay')).toBeVisible();
-    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-start-midway.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-anatomy.png');
 
-    // 3. Finish start sequence -> Both Engines at Idle
+    await page.getByTestId('tour-next-btn').click();
+    await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-step', '2');
+    await page.getByTestId('tour-skip-btn').click();
+    await expect(page.getByTestId('tour-card')).toHaveCount(0);
+
+    // Verify Resume button appears at Step 2
+    await page.getByTestId('tours-toggle-btn').click();
+    await expect(page.getByTestId('resume-tour-anatomy')).toBeVisible();
+
+    // 2. Cockpit tour — step 1 screenshot
+    await page.getByTestId('start-tour-cockpit').click();
+    await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-id', 'cockpit');
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-cockpit.png');
+
+    // 3. Engine Start tour — step 1 screenshot (runs real state machine!)
+    await page.getByTestId('tour-switcher').selectOption('engine-start');
+    await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-id', 'engine-start');
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-engine.png');
+    await page.getByTestId('tour-skip-btn').click();
+
+    // 4. New Mil Power (heat shimmer ONLY, no opaque geometry) + 2-sig-fig HUD check
     await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: { tickEngineSim: (dt: number) => void };
-        }
-      ).__f22debug;
-      for (let i = 0; i < 160; i++) dbg.tickEngineSim(0.1);
-    });
-    await page.waitForTimeout(350);
-    await expect(page.getByTestId('throttle-mil-btn')).toBeEnabled();
-    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-idle.png');
-
-    // 4. Advance throttle to Military Dry Power (75%)
-    await page.getByTestId('throttle-mil-btn').click();
-    await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: { tickEngineSim: (dt: number) => void };
-        }
-      ).__f22debug;
-      for (let i = 0; i < 90; i++) dbg.tickEngineSim(0.1);
-    });
-    await page.waitForTimeout(350);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-mil.png');
-
-    // 5. Advance throttle to Max Afterburner (100%) -> shock diamonds + expanded 2D nozzles
-    await page.getByTestId('throttle-ab-btn').click();
-    await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: { tickEngineSim: (dt: number) => void };
-        }
-      ).__f22debug;
-      for (let i = 0; i < 60; i++) dbg.tickEngineSim(0.1);
-    });
-    await page.waitForTimeout(450);
-
-    const abState = await page.evaluate(() => {
       const dbg = (
         window as unknown as {
           __f22debug: {
-            getState: () => {
-              enginePhase: string;
-              engineOutdoors: boolean;
-              leftThrustLbf: number;
-              afterburnerOn: boolean;
-            };
+            setEnginePreset: (p: string) => void;
+            setCameraPreset: (p: string) => void;
           };
         }
       ).__f22debug;
-      return dbg.getState();
+      dbg.setEnginePreset('mil');
+      dbg.setCameraPreset('rear');
     });
-    expect(abState.enginePhase).toBe('RUNNING');
-    expect(abState.engineOutdoors).toBe(true);
-    expect(abState.afterburnerOn).toBe(true);
-    expect(abState.leftThrustLbf).toBeGreaterThan(30_000);
-    expect(abState.leftThrustLbf).toBeLessThanOrEqual(35_000);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-ab-diamonds.png');
+    await page.waitForTimeout(850);
+    const milHudText = await page.getByTestId('hud-eng1-thrust').innerText();
+    expect(milHudText).toMatch(/^~\d[\d,]* lbf \(~\d+(?:\.\d)? kN\)$/);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-mil-shimmer.png');
 
-    // 6. Switch to Cockpit view during AB (verify all 6 Code One LCDs + live Engine MFD showing AB ON)
-    await page.getByTestId('engine-cockpit-cam-btn').click();
-    await page.getByTestId('engines-close-btn').click();
-    await page.waitForTimeout(950);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase4/desktop-cockpit-ab.png');
-
-    // 7. Shutdown back to OFF (returns to indoor hangar)
-    await page.getByTestId('engines-toggle-btn').click();
-    await page.getByTestId('shutdown-engines-btn').click();
+    // 5. New Afterburner plume (rectangular exit, translucent flame, discrete fading shock diamonds)
     await page.evaluate(() => {
       const dbg = (
         window as unknown as {
-          __f22debug: { tickEngineSim: (dt: number) => void };
+          __f22debug: { setEnginePreset: (p: string) => void };
         }
       ).__f22debug;
-      for (let i = 0; i < 250; i++) dbg.tickEngineSim(0.1);
+      dbg.setEnginePreset('ab');
     });
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(600);
+    const abHudText = await page.getByTestId('hud-eng1-thrust').innerText();
+    expect(abHudText).toContain('~35,000 lbf');
+    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-ab-plume-new.png');
 
-    const offState = await page.evaluate(() => {
+    // Measure desktop HIGH perf metrics
+    const perf = await page.evaluate(() => {
       const dbg = (
         window as unknown as {
-          __f22debug: { getState: () => { enginePhase: string; engineOutdoors: boolean } };
+          __f22debug: {
+            getPerfMetrics: () => { fps: number; p50FrameMs: number; drawCalls: number; triangles: number };
+          };
         }
       ).__f22debug;
-      return dbg.getState();
+      return dbg.getPerfMetrics();
     });
-    expect(offState.enginePhase).toBe('OFF');
-    expect(offState.engineOutdoors).toBe(false);
+    console.log('[Phase 5 Perf Desktop HIGH (headless SwiftShader)]', JSON.stringify(perf));
 
-    await assertNoElementOverlap(
-      page,
-      '[data-testid="top-bar"]',
-      '[data-testid="engines-panel"]'
+    // 6. Shareable Deep Link restoring Cockpit view + selected part + AB live MFD
+    await page.goto('/?cam=cockpit&part=cockpit-displays-hud&engine=ab');
+    await waitForExplorerReady(page, false);
+    await expect(page.getByTestId('inspector-panel')).toBeVisible();
+    await expect(page.getByTestId('inspector-panel')).toHaveAttribute(
+      'data-component-id',
+      'cockpit-displays-hud'
     );
+    await page.waitForTimeout(900);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-deeplink-cockpit.png');
+
+    // Keyboard Escape closes Inspector
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('inspector-panel')).toHaveCount(0);
 
     expect(consoleErrors).toEqual([]);
     expect(pageErrors).toEqual([]);

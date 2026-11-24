@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { soundEngine } from '../audio/soundEngine.js';
+import type { TourId } from '../content/tours.js';
 import {
   abortOrShutdownEngines,
   createEnginePresetState,
@@ -84,6 +85,14 @@ export interface ExplorerState {
   // Phase 4: Engine start sequence & twin-F119 spool simulation
   readonly engineSim: EngineSimState;
 
+  // Phase 5: Guided tours, accessibility & adaptive quality
+  readonly activeTourId: TourId | null;
+  readonly tourStepIndex: number;
+  readonly showTourPicker: boolean;
+  readonly savedTourProgress: Partial<Record<TourId, number>>;
+  readonly reducedMotion: boolean;
+  readonly qualityLockedByUser: boolean;
+
   setSceneReady: (ready: boolean) => void;
   setQualityTier: (tier: QualityTier) => void;
   toggleSoundMute: () => void;
@@ -124,6 +133,13 @@ export interface ExplorerState {
   setThrottle: (val: number) => void;
   tickEngineSim: (dtS: number) => void;
   setEnginePreset: (preset: 'off' | 'mid-start' | 'idle' | 'mil' | 'ab') => void;
+
+  startTour: (id: TourId, stepIndex?: number) => void;
+  setTourStepIndex: (index: number) => void;
+  closeTour: () => void;
+  setShowTourPicker: (open: boolean) => void;
+  setReducedMotion: (enabled: boolean) => void;
+  stepDownQualityAdaptive: () => void;
 }
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -162,9 +178,18 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   flaps: 0,
   nozzlePitch: 0,
   engineSim: createInitialEngineSimState(),
+  activeTourId: null,
+  tourStepIndex: 0,
+  showTourPicker: false,
+  savedTourProgress: {},
+  reducedMotion:
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  qualityLockedByUser: false,
 
   setSceneReady: (sceneReady) => set({ sceneReady }),
-  setQualityTier: (qualityTier) => set({ qualityTier }),
+  setQualityTier: (qualityTier) => set({ qualityTier, qualityLockedByUser: true }),
   toggleSoundMute: () =>
     set((s) => {
       const next = !s.soundMuted;
@@ -288,4 +313,36 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
       gearDeployed: preset === 'off' ? s.gearDeployed : true,
       engineSim: createEnginePresetState(preset),
     })),
+
+  startTour: (id, stepIndex = 0) =>
+    set((s) => ({
+      activeTourId: id,
+      tourStepIndex: stepIndex,
+      showTourPicker: false,
+      showPartTree: false,
+      showAreasPanel: false,
+      showEnginesPanel: false,
+      savedTourProgress: { ...s.savedTourProgress, [id]: stepIndex },
+    })),
+  setTourStepIndex: (index) =>
+    set((s) => ({
+      tourStepIndex: Math.max(0, index),
+      savedTourProgress: s.activeTourId
+        ? { ...s.savedTourProgress, [s.activeTourId]: Math.max(0, index) }
+        : s.savedTourProgress,
+    })),
+  closeTour: () => set({ activeTourId: null, showTourPicker: false }),
+  setShowTourPicker: (showTourPicker) =>
+    set((s) => ({
+      showTourPicker,
+      activeTourId: showTourPicker ? null : s.activeTourId,
+    })),
+  setReducedMotion: (reducedMotion) => set({ reducedMotion }),
+  stepDownQualityAdaptive: () =>
+    set((s) => {
+      if (s.qualityLockedByUser) return s;
+      const next: QualityTier =
+        s.qualityTier === 'high' ? 'med' : s.qualityTier === 'med' ? 'low' : 'low';
+      return next === s.qualityTier ? s : { qualityTier: next };
+    }),
 }));

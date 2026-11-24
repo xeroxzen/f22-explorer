@@ -11,6 +11,11 @@ import {
   stepEngineSim,
   type EngineStartPhase,
 } from '../src/sim/engineSim.js';
+import {
+  countSignificantFigures,
+  formatApproxThrustKn,
+  formatApproxThrustLbf,
+} from '../src/ui/formatApprox.js';
 
 function advance(state: ReturnType<typeof createInitialEngineSimState>, seconds: number, dt = 0.1) {
   let s = state;
@@ -140,5 +145,24 @@ describe('F-22 Twin F119 Engine Start State Machine & Spool Model', () => {
     expect(texts).toContain('AB: ON');
     expect(texts).toContain('100');
     expect(texts.some((t) => t.includes('MODE: AFTERBURNER'))).toBe(true);
+  });
+
+  it('never displays more than 2 significant figures for formatted APPROXIMATE/ASSUMED thrust values', () => {
+    const sampleLbf = [0, 40, 1750, 5432, 12845, 23185, 23800, 29412, 34960, 35000];
+    for (const lbf of sampleLbf) {
+      const fLbf = formatApproxThrustLbf(lbf);
+      const fKn = formatApproxThrustKn(lbf * R.LBF_TO_KN.value);
+      expect(
+        countSignificantFigures(fLbf),
+        `Expected <= 2 sig figs for ${fLbf}`
+      ).toBeLessThanOrEqual(2);
+      expect(
+        countSignificantFigures(fKn),
+        `Expected <= 2 sig figs for ${fKn}`
+      ).toBeLessThanOrEqual(2);
+    }
+    expect(formatApproxThrustLbf(23185)).toBe('~23,000 lbf');
+    expect(formatApproxThrustKn(103.1)).toBe('~100 kN');
+    expect(formatApproxThrustLbf(34960)).toBe('~35,000 lbf');
   });
 });
