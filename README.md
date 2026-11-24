@@ -62,7 +62,7 @@ pnpm docs:readme      # Regenerate README.md label counts table
 
 - **USAF F-22 Raptor Official Fact Sheet** — <https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/>
 - **Pratt & Whitney F119-PW-100 Public Overview** — 35,000-lbf thrust class, ±20° 2D pitch thrust vectoring
-- **Lockheed Martin *Code One* Magazine (Vol. 21, No. 2, June 15, 2006)** — *"The New Front Office"* by John Kent (`codeonemagazine.com`): F-22 cockpit LCD sizes (`1 × 8×8 in`, `3 × 6.5×6.5 in`, `2 × 3×4 in`)
+- **Lockheed Martin *Code One* Magazine (June 15, 2006)** — *"The New Front Office"* by John Kent (`codeonemagazine.com`): F-22 cockpit LCD sizes (`1 × 8×8 in`, `3 × 6.5×6.5 in`, `2 × 3×4 in`)
 - **USAF AIM-120 AMRAAM Fact Sheet** — <https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104576/aim-120-amraam/>
 - **NAVAIR AIM-9X Sidewinder Product Page** — <https://www.navair.navy.mil/product/AIM-9X-Sidewinder>
 - **USAF Joint Direct Attack Munition (GBU-31/32/38) Fact Sheet** — <https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104555/joint-direct-attack-munition-gbu-313238/>

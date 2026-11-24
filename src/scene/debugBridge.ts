@@ -242,5 +242,25 @@ export function installDebugHook(): void {
       const factor = useExplorerStore.getState().explodeFactor;
       return findExactPartCollisionsAtExplode(factor, toleranceM);
     },
+    getPlumeMeshOpacities() {
+      if (!activeScene) return [];
+      const plumeRoot = activeScene.getObjectByName('f119-exhaust-plumes');
+      if (!plumeRoot) return [];
+      const out: Array<{ transparent: boolean; opacity: number }> = [];
+      plumeRoot.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (!mesh.isMesh || !mesh.visible) return;
+        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        for (const m of mats) {
+          if (m) {
+            out.push({
+              transparent: Boolean(m.transparent),
+              opacity: typeof m.opacity === 'number' ? m.opacity : 1,
+            });
+          }
+        }
+      });
+      return out;
+    },
   };
 }

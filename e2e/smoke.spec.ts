@@ -5,7 +5,7 @@ import {
 } from './helpers.js';
 
 test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precision', () => {
-  test('verifies all 3 tours (skippable/resumable), new AB/Mil plumes, 2-sig-fig HUD, and cockpit deep link', async ({
+  test('verifies HIGH-locked screenshots, mil opacity <= 0.1 across all tiers, rectangular AB plume, tours & deep link', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -21,6 +21,14 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
     expect(state.sceneReady).toBe(true);
     expect(state.soundMuted).toBe(true);
     expect(state.registeredHitboxes.length).toBe(44);
+
+    // Lock quality to HIGH for desktop screenshot capture (disables adaptive step-down)
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as { __f22debug: { setQualityTier: (t: 'low' | 'med' | 'high') => void } }
+      ).__f22debug;
+      dbg.setQualityTier('high');
+    });
 
     // 1. Anatomy tour — step 1 screenshot + Next + Skip + Resume check
     await page.getByTestId('tours-toggle-btn').click();
@@ -46,14 +54,14 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
     await page.waitForTimeout(850);
     await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-cockpit.png');
 
-    // 3. Engine Start tour — step 1 screenshot (runs real state machine!)
+    // 3. Engine Start tour — step 1 screenshot (runs real state machine)
     await page.getByTestId('tour-switcher').selectOption('engine-start');
     await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-id', 'engine-start');
     await page.waitForTimeout(850);
     await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-engine.png');
     await page.getByTestId('tour-skip-btn').click();
 
-    // 4. New Mil Power (heat shimmer ONLY, no opaque geometry) + 2-sig-fig HUD check
+    // 4. Mil power: assert plume mesh opacity <= 0.1 at EVERY quality tier (low, med, high)
     await page.evaluate(() => {
       const dbg = (
         window as unknown as {
@@ -67,11 +75,42 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
       dbg.setCameraPreset('rear');
     });
     await page.waitForTimeout(850);
+
+    for (const tier of ['low', 'med', 'high'] as const) {
+      await page.evaluate((t) => {
+        const dbg = (
+          window as unknown as { __f22debug: { setQualityTier: (x: 'low' | 'med' | 'high') => void } }
+        ).__f22debug;
+        dbg.setQualityTier(t);
+      }, tier);
+      await page.waitForTimeout(180);
+      const meshes = await page.evaluate(() => {
+        const dbg = (
+          window as unknown as {
+            __f22debug: {
+              getPlumeMeshOpacities: () => Array<{ transparent: boolean; opacity: number }>;
+            };
+          }
+        ).__f22debug;
+        return dbg.getPlumeMeshOpacities();
+      });
+      for (const m of meshes) {
+        expect(m.transparent, `Mil plume mesh at ${tier} must be transparent`).toBe(true);
+        expect(
+          m.opacity,
+          `Mil plume mesh opacity at ${tier} must be <= 0.1`
+        ).toBeLessThanOrEqual(0.1);
+      }
+      if (tier === 'low') {
+        expect(meshes.length).toBe(0);
+      }
+    }
+
     const milHudText = await page.getByTestId('hud-eng1-thrust').innerText();
     expect(milHudText).toMatch(/^~\d[\d,]* lbf \(~\d+(?:\.\d)? kN\)$/);
     await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-mil-shimmer.png');
 
-    // 5. New Afterburner plume (rectangular exit, translucent flame, discrete fading shock diamonds)
+    // 5. Afterburner plume (locked at HIGH: rectangular exit relaxing to round, discrete shock diamonds)
     await page.evaluate(() => {
       const dbg = (
         window as unknown as {
@@ -85,22 +124,15 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
     expect(abHudText).toContain('~35,000 lbf');
     await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-ab-plume-new.png');
 
-    // Measure desktop HIGH perf metrics
-    const perf = await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: {
-            getPerfMetrics: () => { fps: number; p50FrameMs: number; drawCalls: number; triangles: number };
-          };
-        }
-      ).__f22debug;
-      return dbg.getPerfMetrics();
-    });
-    console.log('[Phase 5 Perf Desktop HIGH (headless SwiftShader)]', JSON.stringify(perf));
-
-    // 6. Shareable Deep Link restoring Cockpit view + selected part + AB live MFD
+    // 6. Shareable Deep Link restoring Cockpit view + selected part + AB live MFD (locked at HIGH)
     await page.goto('/?cam=cockpit&part=cockpit-displays-hud&engine=ab');
     await waitForExplorerReady(page, false);
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as { __f22debug: { setQualityTier: (t: 'low' | 'med' | 'high') => void } }
+      ).__f22debug;
+      dbg.setQualityTier('high');
+    });
     await expect(page.getByTestId('inspector-panel')).toBeVisible();
     await expect(page.getByTestId('inspector-panel')).toHaveAttribute(
       'data-component-id',
