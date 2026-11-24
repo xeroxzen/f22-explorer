@@ -20,7 +20,7 @@ Every value in this repository is cited using the following strict precedence or
    - **[HONEYWELL]** Honeywell Aerospace: *Defense Auxiliary Power Units (G250 for F-22)* (`https://aerospace.honeywell.com/us/en/products-and-services/product/hardware-and-systems/auxiliary-power-units`, accessed 2026-11-24)
 3. **Tier 3 — Specific Openly Accessible Aerospace References**
    - **[ASFM]** *Air & Space Forces Magazine* USAF Almanac — *F-22 Raptor* (`https://www.airandspaceforces.com/weapons-platforms/f-22/`, accessed 2026-11-24)
-   - **[WIKI-F22]** Wikipedia — *Lockheed Martin F-22 Raptor* Specifications (citing Jay Miller, *Lockheed Martin F/A-22 Raptor: Stealth Fighter*, Aerofax, 2005) (`https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor#Specifications_(F-22A)`, accessed 2026-11-24)
+   - **[WIKI-F22]** *(Secondary Reference)* Wikipedia — *Lockheed Martin F-22 Raptor* Specifications (citing Jay Miller, *Lockheed Martin F/A-22 Raptor: Stealth Fighter*, Aerofax, 2005) (`https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor#Specifications_(F-22A)`, accessed 2026-11-24)
    - **[HSW-COCKPIT]** HowStuffWorks — *How the F/A-22 Raptor Works: Cockpit* (`https://science.howstuffworks.com/f-22-raptor.htm`, accessed 2026-11-24)
 
 ---

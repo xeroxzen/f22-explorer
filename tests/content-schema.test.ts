@@ -127,7 +127,7 @@ describe('Component content JSON schema & hierarchy validation', () => {
   });
 
   it('validates all 30–50 F-22 parts JSON files on disk, dual labels, and tree integrity', () => {
-    const dir = path.resolve(process.cwd(), 'src/content');
+    const dir = path.resolve(process.cwd(), 'src/content/parts');
     const files = collectJsonFiles(dir);
     expect(files.length).toBeGreaterThanOrEqual(30);
     expect(files.length).toBeLessThanOrEqual(50);

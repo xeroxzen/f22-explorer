@@ -3,7 +3,15 @@ import { soundEngine } from '../audio/soundEngine.js';
 
 export type QualityTier = 'low' | 'med' | 'high';
 export type ClipAxis = 'none' | 'x' | 'y' | 'z';
-export type CameraPresetId = 'three-quarter' | 'front' | 'top' | 'side' | 'rear' | 'cockpit';
+export type CameraPresetId =
+  | 'three-quarter'
+  | 'front'
+  | 'top'
+  | 'side'
+  | 'rear'
+  | 'cockpit'
+  | 'bays';
+export type WeaponsLoadoutId = 'air-to-air' | 'jdam' | 'sdb';
 
 export interface QualityPreset {
   readonly dpr: number | [number, number];
@@ -37,6 +45,7 @@ export interface ExplorerState {
   readonly hoveredPartId: string | null;
   readonly showInspector: boolean;
   readonly showPartTree: boolean;
+  readonly showAreasPanel: boolean;
   readonly explodeFactor: number;
   readonly xrayMode: boolean;
   readonly clipAxis: ClipAxis;
@@ -49,6 +58,19 @@ export interface ExplorerState {
   readonly rightDrawerWidthPx: number;
   readonly mobileControlsHidden: boolean;
 
+  // Phase 3: Area inspection & control surfaces
+  readonly canopyOpen: boolean;
+  readonly mainBayOpen: boolean;
+  readonly sideBaysOpen: boolean;
+  readonly weaponsLoadout: WeaponsLoadoutId;
+  readonly gearDeployed: boolean;
+  readonly stickPitch: number;
+  readonly stickRoll: number;
+  readonly rudderYaw: number;
+  readonly airbrake: number;
+  readonly flaps: number;
+  readonly nozzlePitch: number;
+
   setSceneReady: (ready: boolean) => void;
   setQualityTier: (tier: QualityTier) => void;
   toggleSoundMute: () => void;
@@ -57,6 +79,7 @@ export interface ExplorerState {
   setHoveredPart: (partId: string | null) => void;
   setShowInspector: (open: boolean) => void;
   setShowPartTree: (open: boolean) => void;
+  setShowAreasPanel: (open: boolean) => void;
   setExplodeFactor: (value: number) => void;
   toggleExplode: () => void;
   setXrayMode: (enabled: boolean) => void;
@@ -69,7 +92,21 @@ export interface ExplorerState {
   setBottomSheetHeightPx: (px: number) => void;
   setRightDrawerWidthPx: (px: number) => void;
   setMobileControlsHidden: (hidden: boolean) => void;
+
+  setCanopyOpen: (open: boolean) => void;
+  setMainBayOpen: (open: boolean) => void;
+  setSideBaysOpen: (open: boolean) => void;
+  setWeaponsLoadout: (loadout: WeaponsLoadoutId) => void;
+  setGearDeployed: (deployed: boolean) => void;
+  setStick: (pitch: number, roll: number) => void;
+  setRudderYaw: (yaw: number) => void;
+  setAirbrake: (val: number) => void;
+  setFlaps: (val: number) => void;
+  setNozzlePitch: (val: number) => void;
+  resetControlSurfaces: () => void;
 }
+
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export const useExplorerStore = create<ExplorerState>((set) => ({
   sceneReady: false,
@@ -79,6 +116,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   hoveredPartId: null,
   showInspector: false,
   showPartTree: false,
+  showAreasPanel: false,
   explodeFactor: 0,
   xrayMode: false,
   clipAxis: 'none',
@@ -90,6 +128,18 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   bottomSheetHeightPx: 0,
   rightDrawerWidthPx: 0,
   mobileControlsHidden: false,
+
+  canopyOpen: false,
+  mainBayOpen: false,
+  sideBaysOpen: false,
+  weaponsLoadout: 'air-to-air',
+  gearDeployed: true,
+  stickPitch: 0,
+  stickRoll: 0,
+  rudderYaw: 0,
+  airbrake: 0,
+  flaps: 0,
+  nozzlePitch: 0,
 
   setSceneReady: (sceneReady) => set({ sceneReady }),
   setQualityTier: (qualityTier) => set({ qualityTier }),
@@ -119,10 +169,16 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   setShowPartTree: (showPartTree) =>
     set((s) => ({
       showPartTree,
+      showAreasPanel: showPartTree ? false : s.showAreasPanel,
       mobileControlsHidden: showPartTree ? false : s.mobileControlsHidden,
     })),
-  setExplodeFactor: (value) =>
-    set({ explodeFactor: Math.max(0, Math.min(1, value)) }),
+  setShowAreasPanel: (showAreasPanel) =>
+    set((s) => ({
+      showAreasPanel,
+      showPartTree: showAreasPanel ? false : s.showPartTree,
+      mobileControlsHidden: showAreasPanel ? false : s.mobileControlsHidden,
+    })),
+  setExplodeFactor: (value) => set({ explodeFactor: clamp(value, 0, 1) }),
   toggleExplode: () =>
     set((s) => ({ explodeFactor: s.explodeFactor > 0.5 ? 0 : 1 })),
   setXrayMode: (xrayMode) => set({ xrayMode }),
@@ -150,4 +206,29 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   setRightDrawerWidthPx: (rightDrawerWidthPx) => set({ rightDrawerWidthPx }),
   setMobileControlsHidden: (mobileControlsHidden) =>
     set({ mobileControlsHidden }),
+
+  setCanopyOpen: (canopyOpen) => set({ canopyOpen }),
+  setMainBayOpen: (mainBayOpen) => set({ mainBayOpen }),
+  setSideBaysOpen: (sideBaysOpen) => set({ sideBaysOpen }),
+  setWeaponsLoadout: (weaponsLoadout) => set({ weaponsLoadout }),
+  setGearDeployed: (gearDeployed) => set({ gearDeployed }),
+  setStick: (pitch, roll) =>
+    set({
+      stickPitch: clamp(pitch, -1, 1),
+      stickRoll: clamp(roll, -1, 1),
+      nozzlePitch: clamp(pitch, -1, 1),
+    }),
+  setRudderYaw: (yaw) => set({ rudderYaw: clamp(yaw, -1, 1) }),
+  setAirbrake: (val) => set({ airbrake: clamp(val, 0, 1) }),
+  setFlaps: (val) => set({ flaps: clamp(val, 0, 1) }),
+  setNozzlePitch: (val) => set({ nozzlePitch: clamp(val, -1, 1) }),
+  resetControlSurfaces: () =>
+    set({
+      stickPitch: 0,
+      stickRoll: 0,
+      rudderYaw: 0,
+      airbrake: 0,
+      flaps: 0,
+      nozzlePitch: 0,
+    }),
 }));
