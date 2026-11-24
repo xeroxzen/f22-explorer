@@ -5,8 +5,8 @@ import {
   waitForExplorerReady,
 } from './helpers.js';
 
-test.describe('Phase 3 Desktop F-22 Areas, Cockpit, Weapons Bays, Gear & Control Surfaces', () => {
-  test('verifies zero collisions, 3-view presets, cockpit 6-LCD view, open bays/loadouts, gear & control surfaces', async ({
+test.describe('Phase 3 Desktop F-22 Cockpit Rebuild, Weapons Bays Loadouts & Controls', () => {
+  test('verifies zero collisions, cockpit 6-LCD + hotspot inspector, all 3 bay loadouts, gear & control stick', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -34,33 +34,38 @@ test.describe('Phase 3 Desktop F-22 Areas, Cockpit, Weapons Bays, Gear & Control
     });
     expect(assembledOverlaps).toEqual([]);
 
-    // Capture 3/4, Front, Top, Side assembled views
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-3quarter.png');
-
-    await page.getByTestId('cam-front').click();
-    await page.waitForTimeout(850);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-front.png');
-
+    // Capture Top view for direct comparison with v0.3.0
     await page.getByTestId('cam-top').click();
     await page.waitForTimeout(850);
     await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-top.png');
 
-    await page.getByTestId('cam-side').click();
-    await page.waitForTimeout(850);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-side.png');
-
-    // 2. Open Areas & Stick panel -> Seat-level Cockpit View (open canopy + 6 LCDs + HUD + ICP)
+    // 2. Cockpit seat-level view (6 bezeled LCDs, HUD, ICP, consoles, HOTAS, canopy bow)
     await page.getByTestId('areas-toggle-btn').click();
     await expect(page.getByTestId('areas-panel')).toBeVisible();
     await page.getByTestId('cockpit-cam-btn').click();
     await page.waitForTimeout(950);
     await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-cockpit.png');
 
-    // 3. Open Main + Side Weapons Bays, switch to JDAM loadout, inspect bays
-    await page.getByTestId('loadout-jdam').click();
+    // Click center Primary MFD hotspot -> opens Inspector with dual badges & sources
+    await page.mouse.click(640, 460);
+    await page.waitForTimeout(350);
+    await expect(page.getByTestId('inspector-panel')).toBeVisible();
+    await expect(page.getByTestId('inspector-dual-labels')).toBeVisible();
+    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-cockpit-hotspot.png');
+    await page.getByTestId('inspector-close-btn').click();
+
+    // 3. Open Main + Side Weapons Bays and capture ALL 3 USAF loadouts
     await page.getByTestId('bays-cam-btn').click();
     await page.waitForTimeout(950);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-open.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-aim120.png');
+
+    await page.getByTestId('loadout-jdam').click();
+    await page.waitForTimeout(350);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-jdam.png');
+
+    await page.getByTestId('loadout-sdb').click();
+    await page.waitForTimeout(350);
+    await savePhaseScreenshot(page, 'docs/screenshots/phase3/desktop-bays-sdb.png');
 
     // 4. Test Gear retract/extend + Control Stick / Rudder / Airbrake / Nozzle controls
     await page.getByTestId('gear-toggle-btn').click();

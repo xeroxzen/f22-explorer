@@ -1,8 +1,9 @@
 {
-  "source": "USAF / DoD Public-Domain F-22A Raptor Three-View Orthographic Silhouette (public-domain reference drawing, Wikimedia Commons File:F-22_Raptor_3-view.svg / USAF Fact Sheet envelope)",
-  "url": "https://commons.wikimedia.org/wiki/File:F-22_Raptor_3-view.svg",
+  "provenance": "ASSUMED (hand-authored)",
+  "source": "Hand-authored orthographic reference polygons derived from USAF Fact Sheet envelope dimensions (18.92 m × 13.56 m × 5.08 m) and public proportion notes — NOT traced from a third-party drawing",
+  "url": "https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104506/f-22-raptor/",
   "accessed": "2026-11-24",
-  "scaleNotes": "Normalized coordinates mapped strictly to USAF Fact Sheet dimensions: length = 18.92 m (u_fs in [0, 1] -> FS 0..18.92 m, Z = FS - 9.46 m), wingspan = 13.56 m (u_span in [-0.5, +0.5] -> X = u_span * 13.56 m), height = 5.08 m (v_h in [0, 1] -> Y = v_h * 5.08 m). Zero parameters imported from f22Geometry.ts.",
+  "scaleNotes": "ASSUMED (hand-authored): normalized coordinates mapped to USAF Fact Sheet envelope (length = 18.92 m, wingspan = 13.56 m, height = 5.08 m). Silhouette IoU tests regression consistency against this hand-authored reference outline, not against a digitized USAF CAD/3-view drawing.",
   "envelopeM": {
     "length": 18.92,
     "wingspan": 13.56,

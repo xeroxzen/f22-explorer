@@ -20,10 +20,10 @@ const CAMERA_PRESETS: Record<
   top: { pos: [0, 31.0, -0.01], target: [0, 1.8, 0] },
   side: { pos: [22.0, 3.0, 0], target: [0, 2.1, 0] },
   rear: { pos: [7.5, 4.4, 17.5], target: [0, 2.0, 1.5] },
-  // Seat-level pilot eye camera looking directly forward at the 6 LCDs + HUD + ICP
-  cockpit: { pos: [0, 2.74, fsToZ(5.25)], target: [0, 2.46, fsToZ(3.85)] },
-  // Low quarter camera looking cleanly into open main & side weapons bays
-  bays: { pos: [5.4, 0.95, fsToZ(5.2)], target: [0, 1.42, fsToZ(9.2)] },
+  // Seat-level pilot eye camera looking forward at all 6 bezeled LCDs + HUD + ICP + consoles + HOTAS
+  cockpit: { pos: [0, 2.70, fsToZ(5.26)], target: [0, 2.38, fsToZ(3.96)] },
+  // Below-belly forward-outboard camera looking unobstructed into the open main bay & side bay stores
+  bays: { pos: [0.55, 0.22, fsToZ(5.45)], target: [0.05, 1.32, fsToZ(9.35)] },
 };
 
 function HangarStructure({ shadows }: { readonly shadows: boolean }) {
@@ -165,15 +165,23 @@ function SceneController() {
     );
   });
 
+  const isCockpitView = cameraPreset === 'cockpit';
+  const isBaysView = cameraPreset === 'bays';
+
   return (
     <OrbitControls
       ref={controlsRef}
       makeDefault
       enableDamping
       dampingFactor={0.08}
-      minDistance={0.6}
-      maxDistance={75}
-      maxPolarAngle={Math.PI / 2 - 0.01}
+      minDistance={isCockpitView ? 0.45 : isBaysView ? 1.5 : 2.5}
+      maxDistance={isCockpitView ? 2.2 : 75}
+      minAzimuthAngle={isCockpitView ? -Math.PI / 3 : -Infinity}
+      maxAzimuthAngle={isCockpitView ? Math.PI / 3 : Infinity}
+      minPolarAngle={isCockpitView ? Math.PI / 3 : 0.05}
+      maxPolarAngle={
+        isCockpitView ? (Math.PI * 2) / 3 : isBaysView ? Math.PI * 0.72 : Math.PI / 2 - 0.01
+      }
       target={[0, 2.0, 0]}
       onStart={() => {
         animatingRef.current = false;

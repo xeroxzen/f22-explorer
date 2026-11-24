@@ -1,6 +1,6 @@
 # F-22 Raptor — Reference Geometry & Parametric Stations (Phase 1)
 
-> **IP & Asset Hygiene:** All 3D geometry in Phase 2+ will be built procedurally/parametrically in TypeScript from public dimensions and proportions. Public 3-view drawings and USAF public-domain photographs are used strictly as measurement references; **no copyrighted drawings, meshes, textures, or manufacturer trademarks are committed or redistributed**.
+> **IP & Asset Hygiene:** All 3D geometry is currently built procedurally/parametrically in TypeScript from public dimensions and proportions and is labeled **`APPROXIMATE`** (see GitHub issue for future replacement of the outer mold line with a licensed split glTF mesh using the same part IDs). The orthographic silhouette regression polygons in `src/content/reference-outlines.json` are **`ASSUMED (hand-authored)`** from the USAF Fact Sheet envelope (`18.92 m × 13.56 m × 5.08 m`) and public proportion notes—they guard against model shrinkage/regression and are not traced from a third-party drawing. **No copyrighted drawings, meshes, textures, or manufacturer trademarks are committed or redistributed**.
 
 ---
 
