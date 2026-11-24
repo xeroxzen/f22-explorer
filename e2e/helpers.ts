@@ -28,7 +28,8 @@ export async function waitForExplorerReady(
           __f22debug?: { getState: () => ExplorerDebugState };
         }
       ).__f22debug;
-      return Boolean(dbg && dbg.getState().sceneReady);
+      const st = dbg?.getState();
+      return Boolean(st && st.sceneReady && st.registeredHitboxes.length >= 44);
     },
     { timeout: 30_000 }
   );

@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
+import { Html, useGLTF } from '@react-three/drei';
 import { CockpitDetail } from './CockpitDetail.js';
 import { ExhaustPlume } from './ExhaustPlume.js';
 import { WeaponsBaysDetail } from './WeaponsBaysDetail.js';
@@ -19,21 +19,24 @@ import { useExplorerStore } from '../store/explorerStore.js';
 import { useViewport } from '../ui/useViewport.js';
 
 const DEG = Math.PI / 180;
+const GLB_URL = `${import.meta.env.BASE_URL}models/f22-raptor-nlm.glb`;
+const DRACO_PATH = `${import.meta.env.BASE_URL}draco/`;
 
 const MATERIAL_PALETTE: Record<
   MaterialRole,
-  { color: string; metalness: number; roughness: number; opacity?: number }
+  { color: string; metalness: number; roughness: number; envMapIntensity?: number; opacity?: number }
 > = {
-  'stealth-skin': { color: '#6b7685', metalness: 0.52, roughness: 0.40 },
-  'stealth-dark': { color: '#46505e', metalness: 0.46, roughness: 0.46 },
-  'canopy-gold': { color: '#d8a63c', metalness: 0.74, roughness: 0.12, opacity: 0.64 },
-  titanium: { color: '#8d96a2', metalness: 0.78, roughness: 0.32 },
-  'engine-core': { color: '#586270', metalness: 0.84, roughness: 0.26 },
-  'nozzle-ceramic': { color: '#313740', metalness: 0.68, roughness: 0.44 },
-  'bay-white': { color: '#cfd6de', metalness: 0.14, roughness: 0.60 },
-  'ordnance-body': { color: '#aeb7c2', metalness: 0.35, roughness: 0.44 },
-  'gear-strut': { color: '#bfc7d1', metalness: 0.78, roughness: 0.28 },
-  'cockpit-dark': { color: '#262d36', metalness: 0.30, roughness: 0.65 },
+  // RAM-coat dark neutral tactical grey (not blue-grey): low metalness, mid roughness
+  'stealth-skin': { color: '#383a3e', metalness: 0.16, roughness: 0.50, envMapIntensity: 0.78 },
+  'stealth-dark': { color: '#232528', metalness: 0.20, roughness: 0.56, envMapIntensity: 0.72 },
+  'canopy-gold': { color: '#d4a238', metalness: 0.35, roughness: 0.08, envMapIntensity: 1.55, opacity: 0.68 },
+  titanium: { color: '#8d96a2', metalness: 0.84, roughness: 0.30, envMapIntensity: 1.25 },
+  'engine-core': { color: '#586270', metalness: 0.88, roughness: 0.24, envMapIntensity: 1.3 },
+  'nozzle-ceramic': { color: '#2b313a', metalness: 0.82, roughness: 0.34, envMapIntensity: 1.2 },
+  'bay-white': { color: '#cfd6de', metalness: 0.12, roughness: 0.58, envMapIntensity: 0.8 },
+  'ordnance-body': { color: '#aeb7c2', metalness: 0.35, roughness: 0.44, envMapIntensity: 0.9 },
+  'gear-strut': { color: '#bfc7d1', metalness: 0.80, roughness: 0.26, envMapIntensity: 1.2 },
+  'cockpit-dark': { color: '#1f252e', metalness: 0.25, roughness: 0.68, envMapIntensity: 0.75 },
 };
 
 /**
@@ -49,7 +52,7 @@ function getArticulationTarget(partId: string): {
   switch (partId) {
     case 'canopy':
       return {
-        pivot: [0, 2.55, fsToZ(6.39)],
+        pivot: [0, 1.68, -3.76],
         rot: [s.canopyOpen ? R.F22_CANOPY_OPEN_DEG.value * DEG : 0, 0, 0],
       };
     case 'nose-landing-gear':
@@ -124,7 +127,7 @@ function getArticulationTarget(partId: string): {
     case 'nozzle-2d-left':
     case 'nozzle-2d-right':
       return {
-        pivot: [partId === 'nozzle-2d-left' ? -0.72 : 0.72, 1.72, fsToZ(16.92)],
+        pivot: [partId === 'nozzle-2d-left' ? -0.74 : 0.74, 0.90, 5.12],
         rot: [(-s.nozzlePitch * R.F119_NOZZLE_VECTOR_MAX_DEG.value) * DEG, 0, 0],
       };
     default:
@@ -134,11 +137,12 @@ function getArticulationTarget(partId: string): {
 
 interface PartNodeProps {
   readonly part: BuiltPartMesh;
+  readonly gltfGeometry?: THREE.BufferGeometry | null;
   readonly clippingPlanes: readonly THREE.Plane[];
   readonly isPhone: boolean;
 }
 
-function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
+function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodeProps) {
   const explodeGroupRef = useRef<THREE.Group>(null);
   const pivotRef = useRef<THREE.Group>(null);
   const selectedPartId = useExplorerStore((s) => s.selectedPartId);
@@ -148,6 +152,7 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
   const cameraPreset = useExplorerStore((s) => s.cameraPreset);
   const mainBayOpen = useExplorerStore((s) => s.mainBayOpen);
   const sideBaysOpen = useExplorerStore((s) => s.sideBaysOpen);
+  const clipAxis = useExplorerStore((s) => s.clipAxis);
   const hiddenPartIds = useExplorerStore((s) => s.hiddenPartIds);
   const isolatedPartId = useExplorerStore((s) => s.isolatedPartId);
   const selectPart = useExplorerStore((s) => s.selectPart);
@@ -155,6 +160,14 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
 
   const isSelected = selectedPartId === part.id;
   const isHovered = hoveredPartId === part.id;
+
+  // Hide procedural internal-only parts when exterior glTF is assembled (revealed in explode / X-ray / section cut)
+  const internalOnlyHiddenWhenAssembled =
+    !gltfGeometry &&
+    part.id !== 'cockpit-displays-hud' &&
+    explodeFactor <= 0.05 &&
+    !xrayMode &&
+    clipAxis === 'none';
 
   // Hide coarse placeholder cockpit boxes (and closed tub box) when inside detailed Cockpit Seat View
   const replacedByCockpitDetail =
@@ -173,6 +186,7 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
       (part.id === 'internal-ordnance-display' && mainBayOpen));
 
   const isHidden =
+    internalOnlyHiddenWhenAssembled ||
     replacedByAnimatedBay ||
     hiddenPartIds.includes(part.id) ||
     (isolatedPartId !== null && isolatedPartId !== part.id);
@@ -217,16 +231,19 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
     return () => registerDebugHitbox(part.id, null, null);
   }, [part.id]);
 
-  const geometry = useMemo(() => {
+  const proceduralGeometry = useMemo(() => {
+    if (gltfGeometry) return null;
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(part.positions, 3));
     geo.computeVertexNormals();
     return geo;
-  }, [part.positions]);
+  }, [part.positions, gltfGeometry]);
 
   useEffect(() => {
-    return () => geometry.dispose();
-  }, [geometry]);
+    return () => proceduralGeometry?.dispose();
+  }, [proceduralGeometry]);
+
+  const geometry = gltfGeometry ?? proceduralGeometry!;
 
   const pal = MATERIAL_PALETTE[part.material];
   const groupInfo = SYSTEM_GROUP_COLORS[part.systemGroup];
@@ -284,18 +301,27 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
       onPointerOut={handlePointerOut}
     >
       <group position={pivot} ref={pivotRef}>
-        <group position={[-pivot[0], -pivot[1], -pivot[2]]}>
-          {!replacedByCockpitDetail && (
+        <group
+          position={[
+            -pivot[0],
+            -pivot[1] + (!gltfGeometry && part.id !== 'cockpit-displays-hud' ? -0.82 : 0),
+            -pivot[2],
+          ]}
+        >
+          {!replacedByCockpitDetail && !(part.id === 'cockpit-displays-hud' && cameraPreset !== 'cockpit' && explodeFactor <= 0.05) && (
             <mesh geometry={geometry} castShadow receiveShadow>
               {part.material === 'canopy-gold' ? (
                 <meshPhysicalMaterial
                   color={blendedColor}
-                  metalness={0.68}
-                  roughness={0.12}
+                  metalness={0.35}
+                  roughness={0.08}
+                  ior={1.52}
+                  reflectivity={0.96}
                   clearcoat={1}
-                  clearcoatRoughness={0.1}
+                  clearcoatRoughness={0.06}
+                  envMapIntensity={1.55}
                   transparent
-                  opacity={xrayGhost ? 0.16 : 0.64}
+                  opacity={xrayGhost ? 0.16 : 0.68}
                   emissive={emissive}
                   emissiveIntensity={emissiveIntensity}
                   clippingPlanes={clippingPlanes as THREE.Plane[]}
@@ -306,6 +332,7 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
                   color={blendedColor}
                   metalness={pal.metalness}
                   roughness={pal.roughness}
+                  envMapIntensity={pal.envMapIntensity ?? 1.0}
                   transparent={transparent}
                   opacity={opacity}
                   depthWrite={!xrayGhost}
@@ -319,7 +346,7 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
             </mesh>
           )}
 
-          {part.id === 'cockpit-displays-hud' && (
+          {part.id === 'cockpit-displays-hud' && cameraPreset === 'cockpit' && (
             <CockpitDetail clippingPlanes={clippingPlanes} />
           )}
         </group>
@@ -344,6 +371,44 @@ function F22PartNode({ part, clippingPlanes, isPhone }: PartNodeProps) {
   );
 }
 
+function F22ModelInner({
+  clippingPlanes,
+  isPhone,
+}: {
+  readonly clippingPlanes: readonly THREE.Plane[];
+  readonly isPhone: boolean;
+}) {
+  // Load Draco-compressed NLM CC-BY 4.0 glTF exterior (33 split parts) with local decoder
+  const gltf = useGLTF(GLB_URL, DRACO_PATH);
+
+  const gltfPartMap = useMemo(() => {
+    const map = new Map<string, THREE.BufferGeometry>();
+    gltf.scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh;
+      if (mesh.isMesh && mesh.geometry && mesh.name) {
+        map.set(mesh.name, mesh.geometry);
+      }
+    });
+    return map;
+  }, [gltf.scene]);
+
+  return (
+    <group name="f22-airframe">
+      {F22_BUILT_PARTS.map((part) => (
+        <F22PartNode
+          key={part.id}
+          part={part}
+          gltfGeometry={gltfPartMap.get(part.id) ?? null}
+          clippingPlanes={clippingPlanes}
+          isPhone={isPhone}
+        />
+      ))}
+      <WeaponsBaysDetail clippingPlanes={clippingPlanes} />
+      <ExhaustPlume clippingPlanes={clippingPlanes} />
+    </group>
+  );
+}
+
 export function F22Model() {
   const { isPhone } = useViewport();
   const clipAxis = useExplorerStore((s) => s.clipAxis);
@@ -361,17 +426,8 @@ export function F22Model() {
   }, [clipAxis, clipPosition]);
 
   return (
-    <group name="f22-airframe">
-      {F22_BUILT_PARTS.map((part) => (
-        <F22PartNode
-          key={part.id}
-          part={part}
-          clippingPlanes={clippingPlanes}
-          isPhone={isPhone}
-        />
-      ))}
-      <WeaponsBaysDetail clippingPlanes={clippingPlanes} />
-      <ExhaustPlume clippingPlanes={clippingPlanes} />
-    </group>
+    <Suspense fallback={null}>
+      <F22ModelInner clippingPlanes={clippingPlanes} isPhone={isPhone} />
+    </Suspense>
   );
 }

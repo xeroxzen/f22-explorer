@@ -1,7 +1,8 @@
-import { useEffect, useRef, type ComponentRef } from 'react';
+import { Suspense, useEffect, useRef, type ComponentRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Grid, OrbitControls } from '@react-three/drei';
+import { ContactShadows, Environment, Grid, OrbitControls } from '@react-three/drei';
+import { Bloom, EffectComposer, SSAO } from '@react-three/postprocessing';
 import { soundEngine } from '../audio/soundEngine.js';
 import {
   QUALITY_PRESETS,
@@ -90,12 +91,12 @@ function OutdoorRunUpPad({ shadows }: { readonly shadows: boolean }) {
           <meshBasicMaterial color="#eab308" />
         </mesh>
       </group>
-      {/* Apron edge lights */}
+      {/* Flush low-profile apron edge markers (no tall distracting posts) */}
       {[-16, 16].flatMap((x) =>
         [-14, 0, 14].map((z) => (
-          <mesh key={`${x}-${z}`} position={[x, 0.35, z]}>
-            <cylinderGeometry args={[0.08, 0.1, 0.7, 8]} />
-            <meshStandardMaterial color="#38bdf8" emissive="#0ea5e9" emissiveIntensity={1.5} />
+          <mesh key={`${x}-${z}`} position={[x, 0.02, z]}>
+            <cylinderGeometry args={[0.14, 0.16, 0.04, 10]} />
+            <meshStandardMaterial color="#475569" roughness={0.7} metalness={0.2} />
           </mesh>
         ))
       )}
@@ -308,10 +309,58 @@ function SceneController() {
   );
 }
 
+const BASE = import.meta.env.BASE_URL;
+const SSAO_COLOR = new THREE.Color('#090d14');
+
+function PostEffects({
+  qualityTier,
+  afterburnerOn,
+}: {
+  readonly qualityTier: 'low' | 'med' | 'high';
+  readonly afterburnerOn: boolean;
+}) {
+  if (qualityTier === 'low') return null;
+  if (qualityTier === 'med' && !afterburnerOn) return null;
+
+  return (
+    <EffectComposer multisampling={0} enableNormalPass={qualityTier === 'high'}>
+      {qualityTier === 'high' ? (
+        <SSAO
+          samples={8}
+          resolutionScale={0.5}
+          radius={0.35}
+          intensity={14}
+          luminanceInfluence={0.5}
+          color={SSAO_COLOR}
+          worldDistanceThreshold={40}
+          worldDistanceFalloff={5}
+          worldProximityThreshold={0.4}
+          worldProximityFalloff={0.1}
+        />
+      ) : (
+        <></>
+      )}
+      {afterburnerOn ? (
+        <Bloom
+          mipmapBlur
+          luminanceThreshold={1.08}
+          intensity={0.48}
+          radius={0.62}
+        />
+      ) : (
+        <></>
+      )}
+    </EffectComposer>
+  );
+}
+
 export function HangarCanvas() {
   const qualityTier = useExplorerStore((s) => s.qualityTier);
   const selectPart = useExplorerStore((s) => s.selectPart);
   const outdoors = useExplorerStore((s) => s.engineSim.outdoors);
+  const afterburnerOn = useExplorerStore(
+    (s) => s.engineSim.left.afterburnerOn || s.engineSim.right.afterburnerOn
+  );
   const preset = QUALITY_PRESETS[qualityTier];
 
   return (
@@ -319,15 +368,33 @@ export function HangarCanvas() {
       <Canvas
         dpr={preset.dpr}
         shadows={preset.shadows}
-        gl={{ antialias: preset.antialias, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: preset.antialias,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.12,
+          powerPreference: 'high-performance',
+        }}
         camera={{ position: [14.5, 6.2, -13.5], fov: 40, near: 0.08, far: 320 }}
         onPointerMissed={() => selectPart(null)}
       >
-        <color attach="background" args={[outdoors ? '#1b2c44' : '#0c1118']} />
-        <fog attach="fog" args={[outdoors ? '#1b2c44' : '#0c1118', outdoors ? 55 : 48, outdoors ? 185 : 135]} />
+        <color attach="background" args={[outdoors ? '#1e3048' : '#0c1118']} />
+        <fog attach="fog" args={[outdoors ? '#1e3048' : '#0c1118', outdoors ? 55 : 48, outdoors ? 185 : 135]} />
 
-        <ambientLight intensity={outdoors ? 0.65 : 0.55} />
-        <hemisphereLight args={[outdoors ? '#dbeafe' : '#c8dcff', outdoors ? '#334155' : '#1b2430', 0.65]} />
+        {qualityTier !== 'low' && (
+          <Suspense fallback={null}>
+            <Environment
+              files={
+                outdoors
+                  ? `${BASE}hdri/airfield_overcast_1k.hdr`
+                  : `${BASE}hdri/hangar_1k.hdr`
+              }
+              environmentIntensity={outdoors ? 0.92 : 0.72}
+            />
+          </Suspense>
+        )}
+
+        <ambientLight intensity={qualityTier === 'low' ? 0.65 : 0.35} />
+        <hemisphereLight args={[outdoors ? '#dbeafe' : '#c8dcff', outdoors ? '#334155' : '#1b2430', 0.55]} />
         <directionalLight
           position={[16, 22, -14]}
           intensity={outdoors ? 1.55 : 1.35}
@@ -341,6 +408,18 @@ export function HangarCanvas() {
           <OutdoorRunUpPad shadows={preset.shadows} />
         ) : (
           <HangarStructure shadows={preset.shadows} />
+        )}
+
+        {qualityTier !== 'low' && (
+          <ContactShadows
+            position={[0, 0.012, 0]}
+            opacity={0.55}
+            scale={28}
+            blur={2.2}
+            far={6}
+            resolution={256}
+            frames={1}
+          />
         )}
 
         <Grid
@@ -357,6 +436,7 @@ export function HangarCanvas() {
         />
 
         <F22Model />
+        <PostEffects qualityTier={qualityTier} afterburnerOn={afterburnerOn} />
         <SceneController />
       </Canvas>
     </div>

@@ -32,7 +32,7 @@ Much of the F-22 Raptor is classified. Rather than fabricating figures or hiding
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | Simulation & Model Registry (`src/sim/config/registry.ts`) | **62** | 24 | 10 | 28 | 0 |
 | Parts — Existence Provenance (`src/content/parts/*.json`) | **45** | 45 | 0 | 0 | 0 |
-| Parts — Geometry Provenance (`src/content/parts/*.json`) | **45** | 2 | 38 | 5 | 0 |
+| Parts — Geometry Provenance (`src/content/parts/*.json`) | **45** | 1 | 39 | 5 | 0 |
 | Component Inspector Specs | **111** | 65 | 10 | 17 | 19 |
 
 <!-- END GENERATED: LABEL_COUNTS -->
@@ -73,7 +73,12 @@ pnpm docs:readme      # Regenerate README.md label counts table
 
 Infrastructure modules (constants registry + AST literal guard, content-JSON schema validator, Web Audio acoustics engine, mobile bottom-sheet UI, and Playwright helpers) were vendored from [`falcon-9-simulator`](https://github.com/xeroxzen/falcon-9-simulator) (`v1.9.2`, commit `9de14bb`). All vendored files and modifications are tracked in [`VENDORED.md`](VENDORED.md).
 
+## 3D Model & Environment Attribution
+
+- **F-22 Exterior Mesh (`public/models/f22-raptor-nlm.glb`):** *"F22 Raptor FREE"* by **NLM** (`@NLM-Group`) — <https://sketchfab.com/3d-models/f22-raptor-free-2a64abf0866a405c865466c7642ca689> — licensed under **CC-BY 4.0** (<https://creativecommons.org/licenses/by/4.0/>, accessed & verified `2026-11-25`). Split into 33 part IDs and Draco-compressed via [`scripts/blender/split_f22_mesh.py`](scripts/blender/split_f22_mesh.py). Labeled `APPROXIMATE` (not verified against engineering drawings).
+- **Environment Maps (`public/hdri/`):** *Aircraft Workshop 01* & *Kloofendal 48d Partly Cloudy PureSky* from **Poly Haven** — **CC0 1.0** (accessed `2026-11-25`).
+
 ## Known Limitations
 
-- **Procedural exterior geometry (`APPROXIMATE`):** The current outer mold line is built parametrically from lofted cross-sections and proportions for zero IP risk. Replacing the outer mold line with a properly licensed glTF mesh split into the same 44 part IDs is tracked in [GitHub Issue #1](https://github.com/xeroxzen/f22-explorer/issues/1).
+- **Third-party exterior geometry (`APPROXIMATE`):** The exterior glTF mesh is a modified CC-BY 4.0 artist model normalized to the 18.92 m USAF length, not verified against engineering drawings. Parametric reference planform dimensions remain in `src/scene/f22Geometry.ts` for future aerodynamics (`v1.3`).
 - **Approximate engine & plume visuals:** The engine model is an educational first-order teaching simulation, and exhaust plumes/shock diamonds are procedural visual approximations (not CFD).

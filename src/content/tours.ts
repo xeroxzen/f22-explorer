@@ -43,7 +43,7 @@ export const GUIDED_TOURS: readonly GuidedTour[] = [
         title: 'Airframe Envelope & Stealth Shaping',
         partId: 'f22-airframe',
         focusNote:
-          'Overview of the 18.92 m × 13.56 m × 5.08 m twin-engine air superiority platform (procedural APPROXIMATE exterior).',
+          'Overview of the 18.92 m × 13.56 m × 5.08 m twin-engine air superiority platform (third-party CC-BY 4.0 exterior model, APPROXIMATE — not verified against drawings).',
         cameraPreset: 'three-quarter',
         explodeFactor: 0,
         canopyOpen: false,

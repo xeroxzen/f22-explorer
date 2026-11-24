@@ -37,7 +37,7 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
     await expect(page.getByTestId('tour-card')).toBeVisible();
     await expect(page.getByTestId('tour-citation')).toBeVisible();
     await page.waitForTimeout(850);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-anatomy.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-tour-anatomy.png');
 
     await page.getByTestId('tour-next-btn').click();
     await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-step', '2');
@@ -52,13 +52,13 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
     await page.getByTestId('start-tour-cockpit').click();
     await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-id', 'cockpit');
     await page.waitForTimeout(850);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-cockpit.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-tour-cockpit.png');
 
     // 3. Engine Start tour — step 1 screenshot (runs real state machine)
     await page.getByTestId('tour-switcher').selectOption('engine-start');
     await expect(page.getByTestId('tour-card')).toHaveAttribute('data-tour-id', 'engine-start');
     await page.waitForTimeout(850);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-tour-engine.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-tour-engine.png');
     await page.getByTestId('tour-skip-btn').click();
 
     // 4. Mil power: assert plume mesh opacity <= 0.1 at EVERY quality tier (low, med, high)
@@ -108,7 +108,7 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
 
     const milHudText = await page.getByTestId('hud-eng1-thrust').innerText();
     expect(milHudText).toMatch(/^~\d[\d,]* lbf \(~\d+(?:\.\d)? kN\)$/);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-mil-shimmer.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-mil-shimmer.png');
 
     // 5. Afterburner plume (locked at HIGH: rectangular exit relaxing to round, discrete shock diamonds)
     await page.evaluate(() => {
@@ -122,7 +122,7 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
     await page.waitForTimeout(600);
     const abHudText = await page.getByTestId('hud-eng1-thrust').innerText();
     expect(abHudText).toContain('~35,000 lbf');
-    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-ab-plume-new.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-ab-plume-new.png');
 
     // 6. Shareable Deep Link restoring Cockpit view + selected part + AB live MFD (locked at HIGH)
     await page.goto('/?cam=cockpit&part=cockpit-displays-hud&engine=ab');
@@ -139,7 +139,7 @@ test.describe('Phase 5 Desktop Guided Tours, Deep Links, Plume Realism & Precisi
       'cockpit-displays-hud'
     );
     await page.waitForTimeout(900);
-    await savePhaseScreenshot(page, 'docs/screenshots/phase5/desktop-deeplink-cockpit.png');
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-deeplink-cockpit.png');
 
     // Keyboard Escape closes Inspector
     await page.keyboard.press('Escape');

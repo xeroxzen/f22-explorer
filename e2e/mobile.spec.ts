@@ -36,7 +36,7 @@ test.describe('Phase 5 Mobile Engine Sheet (Running) & Performance', () => {
 
     await savePhaseScreenshot(
       page,
-      `docs/screenshots/phase5/mobile-${testInfo.project.name}-engine-running.png`
+      `docs/screenshots/v1.1/mobile-${testInfo.project.name}-engine-running.png`
     );
 
     const perf = await page.evaluate(() => {
