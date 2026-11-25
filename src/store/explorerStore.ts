@@ -21,7 +21,8 @@ export type CameraPresetId =
   | 'side'
   | 'rear'
   | 'cockpit'
-  | 'bays';
+  | 'bays'
+  | 'thermal-cutaway';
 export type WeaponsLoadoutId = 'air-to-air' | 'jdam' | 'sdb';
 
 export interface QualityPreset {
@@ -59,6 +60,10 @@ export interface ExplorerState {
   readonly showAreasPanel: boolean;
   readonly showEnginesPanel: boolean;
   readonly explodeFactor: number;
+  readonly showSystemTints: boolean;
+  readonly showThermalColors: boolean;
+  readonly skinAltitudeM: number;
+  readonly skinMach: number;
   readonly xrayMode: boolean;
   readonly clipAxis: ClipAxis;
   readonly clipPosition: number;
@@ -108,7 +113,12 @@ export interface ExplorerState {
   setShowAreasPanel: (open: boolean) => void;
   setShowEnginesPanel: (open: boolean) => void;
   setExplodeFactor: (value: number) => void;
+  setExplodeStage: (stage: 0 | 1 | 2 | 3) => void;
   toggleExplode: () => void;
+  setShowSystemTints: (enabled: boolean) => void;
+  setShowThermalColors: (enabled: boolean) => void;
+  setSkinAltitudeM: (altM: number) => void;
+  setSkinMach: (mach: number) => void;
   setXrayMode: (enabled: boolean) => void;
   setClipAxis: (axis: ClipAxis) => void;
   setClipPosition: (pos: number) => void;
@@ -162,6 +172,10 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   showAreasPanel: false,
   showEnginesPanel: false,
   explodeFactor: 0,
+  showSystemTints: false,
+  showThermalColors: true,
+  skinAltitudeM: 12_000,
+  skinMach: 1.5,
   xrayMode: false,
   clipAxis: 'none',
   clipPosition: 0,
@@ -248,8 +262,16 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
       mobileControlsHidden: showEnginesPanel ? false : s.mobileControlsHidden,
     })),
   setExplodeFactor: (value) => set({ explodeFactor: clamp(value, 0, 1) }),
+  setExplodeStage: (stage) =>
+    set({
+      explodeFactor: stage === 0 ? 0 : stage === 1 ? 0.33 : stage === 2 ? 0.66 : 1,
+    }),
   toggleExplode: () =>
     set((s) => ({ explodeFactor: s.explodeFactor > 0.5 ? 0 : 1 })),
+  setShowSystemTints: (showSystemTints) => set({ showSystemTints }),
+  setShowThermalColors: (showThermalColors) => set({ showThermalColors }),
+  setSkinAltitudeM: (altM) => set({ skinAltitudeM: clamp(altM, 0, 20_000) }),
+  setSkinMach: (mach) => set({ skinMach: clamp(mach, 0, 2.0) }),
   setXrayMode: (xrayMode) => set({ xrayMode }),
   setClipAxis: (clipAxis) => set({ clipAxis, clipPosition: 0 }),
   setClipPosition: (clipPosition) => set({ clipPosition }),
@@ -322,7 +344,6 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
     }),
   setEnginePreset: (preset) =>
     set((s) => ({
-      explodeFactor: preset === 'off' ? s.explodeFactor : 0,
       gearDeployed: preset === 'off' ? s.gearDeployed : true,
       engineSim: createEnginePresetState(preset),
     })),

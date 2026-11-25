@@ -4,6 +4,7 @@ import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html, useGLTF } from '@react-three/drei';
 import { CockpitDetail } from './CockpitDetail.js';
 import { ExhaustPlume } from './ExhaustPlume.js';
+import { F119CutawayDetail, isF119CutawayPart } from './F119CutawayDetail.js';
 import { WeaponsBaysDetail } from './WeaponsBaysDetail.js';
 import {
   F22_BUILT_PARTS,
@@ -142,11 +143,41 @@ interface PartNodeProps {
   readonly isPhone: boolean;
 }
 
+const STAGE1_LIFT_M = 1.15;
+
+/**
+ * Outward surface-normal unit vector for Stage 1 skin-panel lift (zero rotation, uniform distance).
+ */
+function getStage1NormalLift(part: BuiltPartMesh): [number, number, number] {
+  const id = part.id;
+  if (id === 'radome' || id === 'nose-avionics-bay') return [0, 0, -STAGE1_LIFT_M];
+  if (id === 'nozzle-2d-left' || id === 'nozzle-2d-right') return [0, 0, STAGE1_LIFT_M];
+  if (id === 'main-bay-doors' || id === 'side-bay-doors' || id === 'forward-fuselage') {
+    return [0, -STAGE1_LIFT_M, 0];
+  }
+  if (id.endsWith('-left')) {
+    if (id.includes('vertical-stabilizer') || id.includes('rudder')) {
+      return [-STAGE1_LIFT_M * 0.85, STAGE1_LIFT_M * 0.52, 0];
+    }
+    return [-STAGE1_LIFT_M, 0, 0];
+  }
+  if (id.endsWith('-right')) {
+    if (id.includes('vertical-stabilizer') || id.includes('rudder')) {
+      return [STAGE1_LIFT_M * 0.85, STAGE1_LIFT_M * 0.52, 0];
+    }
+    return [STAGE1_LIFT_M, 0, 0];
+  }
+  // Dorsal spine panels (canopy, center-fuselage, aft-fuselage, tail-booms, refueling-receptacle)
+  return [0, STAGE1_LIFT_M, 0];
+}
+
 function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodeProps) {
   const explodeGroupRef = useRef<THREE.Group>(null);
   const pivotRef = useRef<THREE.Group>(null);
   const selectedPartId = useExplorerStore((s) => s.selectedPartId);
   const hoveredPartId = useExplorerStore((s) => s.hoveredPartId);
+  const showSystemTints = useExplorerStore((s) => s.showSystemTints);
+  const showThermalColors = useExplorerStore((s) => s.showThermalColors);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
   const cameraPreset = useExplorerStore((s) => s.cameraPreset);
@@ -191,15 +222,41 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
     hiddenPartIds.includes(part.id) ||
     (isolatedPartId !== null && isolatedPartId !== part.id);
 
-  // Smooth directional explode + Phase 3 hinge articulation
+  // Staged directional explode:
+  //   Stage 1 (0.00 -> 0.33): Outer skin panels lift uniformly along their outward surface normals (zero rotation)
+  //   Stage 2 (0.33 -> 0.66): Outer skin clears further & internal systems separate
+  //   Stage 3 (0.66 -> 1.00): F119 engine cutaway stages slide apart axially
+  const isEngineStage = isF119CutawayPart(part.id);
+  const stage1Lift = useMemo(() => getStage1NormalLift(part), [part]);
+
   useFrame((_, delta) => {
     const g = explodeGroupRef.current;
     if (g) {
       const f = useExplorerStore.getState().explodeFactor;
       const alpha = Math.min(1, delta * 10);
-      g.position.x += (part.explode[0] * f - g.position.x) * alpha;
-      g.position.y += (part.explode[1] * f - g.position.y) * alpha;
-      g.position.z += (part.explode[2] * f - g.position.z) * alpha;
+      let tx = 0;
+      let ty = 0;
+      let tz = 0;
+      if (part.isOuterSkin) {
+        const t1 = Math.min(1, f / 0.33);
+        const t2 = Math.max(0, Math.min(1, (f - 0.33) / 0.33));
+        tx = stage1Lift[0] * t1 + (part.explode[0] - stage1Lift[0]) * t2;
+        ty = stage1Lift[1] * t1 + (part.explode[1] - stage1Lift[1]) * t2;
+        tz = stage1Lift[2] * t1 + (part.explode[2] - stage1Lift[2]) * t2;
+      } else if (!isEngineStage) {
+        const t2 = Math.max(0, Math.min(1, (f - 0.33) / 0.33));
+        tx = part.explode[0] * t2;
+        ty = part.explode[1] * t2;
+        tz = part.explode[2] * t2;
+      } else {
+        const t3 = Math.max(0, Math.min(1, (f - 0.66) / 0.34));
+        tx = part.explode[0] * t3;
+        ty = part.explode[1] * t3;
+        tz = part.explode[2] * t3;
+      }
+      g.position.x += (tx - g.position.x) * alpha;
+      g.position.y += (ty - g.position.y) * alpha;
+      g.position.z += (tz - g.position.z) * alpha;
     }
 
     const p = pivotRef.current;
@@ -248,18 +305,22 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
   const pal = MATERIAL_PALETTE[part.material];
   const groupInfo = SYSTEM_GROUP_COLORS[part.systemGroup];
 
+  // Technical-illustration neutral metals by default; system tints ONLY when user enables toggle
   const blendedColor = useMemo(() => {
     const base = new THREE.Color(pal.color);
-    if (explodeFactor > 0.04) {
+    if (showSystemTints && explodeFactor > 0.04) {
       const tint = new THREE.Color(groupInfo.tint);
       base.lerp(tint, Math.min(0.45, explodeFactor * 0.45));
     }
     return `#${base.getHexString()}`;
-  }, [pal.color, groupInfo.tint, explodeFactor]);
+  }, [pal.color, groupInfo.tint, explodeFactor, showSystemTints]);
 
   const xrayGhost = xrayMode && part.isOuterSkin;
-  const transparent = xrayGhost || pal.opacity !== undefined;
-  const opacity = xrayGhost ? 0.18 : (pal.opacity ?? 1);
+  // When Thermal Map is active on the F119 cutaway, dim non-engine airframe parts to ~30% so thermal colors dominate
+  const thermalDimAirframe =
+    showThermalColors && explodeFactor > 0.65 && !isEngineStage && cameraPreset === 'thermal-cutaway';
+  const transparent = xrayGhost || thermalDimAirframe || pal.opacity !== undefined;
+  const opacity = xrayGhost ? 0.18 : thermalDimAirframe ? 0.28 : (pal.opacity ?? 1);
   const emissive = isSelected ? '#0ea5e9' : isHovered ? '#38bdf8' : '#000000';
   const emissiveIntensity = isSelected ? 0.45 : isHovered ? 0.22 : 0;
 
@@ -308,42 +369,52 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
             -pivot[2],
           ]}
         >
-          {!replacedByCockpitDetail && !(part.id === 'cockpit-displays-hud' && cameraPreset !== 'cockpit' && explodeFactor <= 0.05) && (
-            <mesh geometry={geometry} castShadow receiveShadow>
-              {part.material === 'canopy-gold' ? (
-                <meshPhysicalMaterial
-                  color={blendedColor}
-                  metalness={0.35}
-                  roughness={0.08}
-                  ior={1.52}
-                  reflectivity={0.96}
-                  clearcoat={1}
-                  clearcoatRoughness={0.06}
-                  envMapIntensity={1.55}
-                  transparent
-                  opacity={xrayGhost ? 0.16 : 0.68}
-                  emissive={emissive}
-                  emissiveIntensity={emissiveIntensity}
-                  clippingPlanes={clippingPlanes as THREE.Plane[]}
-                  side={THREE.DoubleSide}
-                />
-              ) : (
-                <meshStandardMaterial
-                  color={blendedColor}
-                  metalness={pal.metalness}
-                  roughness={pal.roughness}
-                  envMapIntensity={pal.envMapIntensity ?? 1.0}
-                  transparent={transparent}
-                  opacity={opacity}
-                  depthWrite={!xrayGhost}
-                  emissive={emissive}
-                  emissiveIntensity={emissiveIntensity}
-                  clippingPlanes={clippingPlanes as THREE.Plane[]}
-                  clipShadows
-                  side={clippingPlanes.length > 0 ? THREE.DoubleSide : THREE.FrontSide}
-                />
-              )}
-            </mesh>
+          {isEngineStage ? (
+            <F119CutawayDetail
+              partId={part.id}
+              clippingPlanes={clippingPlanes}
+              isSelected={isSelected}
+              isHovered={isHovered}
+            />
+          ) : (
+            !replacedByCockpitDetail &&
+            !(part.id === 'cockpit-displays-hud' && cameraPreset !== 'cockpit' && explodeFactor <= 0.05) && (
+              <mesh geometry={geometry} castShadow receiveShadow>
+                {part.material === 'canopy-gold' ? (
+                  <meshPhysicalMaterial
+                    color={blendedColor}
+                    metalness={0.35}
+                    roughness={0.08}
+                    ior={1.52}
+                    reflectivity={0.96}
+                    clearcoat={1}
+                    clearcoatRoughness={0.06}
+                    envMapIntensity={1.55}
+                    transparent
+                    opacity={xrayGhost ? 0.16 : 0.68}
+                    emissive={emissive}
+                    emissiveIntensity={emissiveIntensity}
+                    clippingPlanes={clippingPlanes as THREE.Plane[]}
+                    side={THREE.DoubleSide}
+                  />
+                ) : (
+                  <meshStandardMaterial
+                    color={blendedColor}
+                    metalness={pal.metalness}
+                    roughness={pal.roughness}
+                    envMapIntensity={pal.envMapIntensity ?? 1.0}
+                    transparent={transparent}
+                    opacity={opacity}
+                    depthWrite={!xrayGhost && !thermalDimAirframe}
+                    emissive={emissive}
+                    emissiveIntensity={emissiveIntensity}
+                    clippingPlanes={clippingPlanes as THREE.Plane[]}
+                    clipShadows
+                    side={clippingPlanes.length > 0 ? THREE.DoubleSide : THREE.FrontSide}
+                  />
+                )}
+              </mesh>
+            )
           )}
 
           {part.id === 'cockpit-displays-hud' && cameraPreset === 'cockpit' && (

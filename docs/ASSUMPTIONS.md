@@ -16,7 +16,7 @@ Classified specifications (such as exact RCS, avionics internals, and detailed e
 
 ## Constants Registry (Single Source of Truth)
 
-Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (62 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
+Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (90 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
 
 ### Physical & Atmosphere
 
@@ -26,6 +26,15 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `SEA_LEVEL_DENSITY_KG_M3` | `1.225 kg/m^3` | `SOURCED` | — | `v0.1.0` | ICAO / US Standard Atmosphere 1976 sea-level air density (15 °C, 101.325 kPa) |
 | `SEA_LEVEL_SPEED_OF_SOUND_MS` | `340.294 m/s` | `SOURCED` | — | `v0.1.0` | ICAO / US Standard Atmosphere 1976 sea-level speed of sound (15 °C) |
 | `LBF_TO_KN` | `0.0044482216 kN/lbf` | `SOURCED` | — | `phase4` | NIST SP 811 exact unit conversion (1 lbf = 4.4482216 N) |
+| `AIR_GAMMA_COLD` | `1.4` | `SOURCED` | — | `v1.2-thermal` | Standard diatomic dry air specific heat ratio (gamma_c = 1.4) for ISA compression & stagnation heating |
+| `AIR_CP_COLD_J_KG_K` | `1,005 J/(kg*K)` | `SOURCED` | — | `v1.2-thermal` | Standard dry air specific heat at constant pressure (c_p,c = 1005 J/(kg·K)) |
+| `ISA_SEA_LEVEL_TEMP_K` | `288.15 K` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO International Standard Atmosphere sea-level static temperature (15 °C) |
+| `ISA_SEA_LEVEL_PRESSURE_PA` | `101,325 Pa` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO International Standard Atmosphere sea-level static pressure |
+| `ISA_TROPOSPHERE_LAPSE_K_M` | `0.0065 K/m` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO ISA tropospheric temperature lapse rate (0–11 km) |
+| `ISA_TROPOPAUSE_ALT_M` | `11,000 m` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO ISA tropopause geopotential altitude (11 km) |
+| `ISA_TROPOPAUSE_TEMP_K` | `216.65 K` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO ISA isothermal lower stratosphere temperature (11–20 km, -56.5 °C) |
+| `KELVIN_OFFSET` | `273.15 K` | `SOURCED` | — | `v1.2-thermal` | Exact SI offset between Kelvin and degrees Celsius |
+| `ISA_STRATOSPHERE_CEILING_M` | `20,000 m` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO ISA upper ceiling of isothermal lower stratosphere band (20 km) |
 
 ### Airframe & Dimensions
 
@@ -79,6 +88,25 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `ENGINE_MIL_REGIME_THRESHOLD` | `0.1` | `ASSUMED` | — | `phase4` | Minimum normalized dry spool above idle to indicate MIL regime |
 | `ENGINE_SHUTDOWN_N2_CUTOFF_PCT` | `1.5 %` | `ASSUMED` | — | `phase4` | Core spool threshold below which SHUTDOWN transitions back to OFF |
 | `ENGINE_APU_SPOOL_TAU_S` | `1.35 s` | `ASSUMED` | — | `phase4` | First-order lag time constant for Honeywell G-250 APU spool-up |
+| `GAS_GAMMA_HOT` | `1.33` | `SOURCED` | — | `v1.2-thermal` | Textbook gas-turbine hot-section combustion products specific heat ratio (gamma_h = 1.33) |
+| `GAS_CP_HOT_J_KG_K` | `1,150 J/(kg*K)` | `SOURCED` | — | `v1.2-thermal` | Textbook gas-turbine hot-section specific heat at constant pressure (c_p,h = 1150 J/(kg·K)) |
+| `BRAYTON_FAN_PR_IDLE` | `1.5` | `ASSUMED` | — | `v1.2-thermal` | Assumed idle fan pressure ratio for teaching Brayton cycle (F119 cycle not publicly disclosed) |
+| `BRAYTON_FAN_PR_MIL` | `4` | `ASSUMED` | — | `v1.2-thermal` | Assumed mil/max 3-stage fan pressure ratio for teaching Brayton cycle (F119 cycle not publicly disclosed) |
+| `BRAYTON_HPC_PR_IDLE` | `3.2` | `ASSUMED` | — | `v1.2-thermal` | Assumed idle 6-stage HPC pressure ratio for teaching Brayton cycle (F119 cycle not publicly disclosed) |
+| `BRAYTON_HPC_PR_MIL` | `7.5` | `ASSUMED` | — | `v1.2-thermal` | Assumed mil/max 6-stage HPC pressure ratio (~30:1 OPR; F119 cycle not publicly disclosed) |
+| `BRAYTON_TIT_IDLE_K` | `1,050 K` | `ASSUMED` | — | `v1.2-thermal` | Assumed idle combustor exit / turbine inlet temperature (F119 cycle not publicly disclosed) |
+| `BRAYTON_TIT_MIL_K` | `1,850 K` | `ASSUMED` | — | `v1.2-thermal` | Assumed mil/max combustor exit / turbine inlet temperature (F119 cycle not publicly disclosed) |
+| `BRAYTON_AB_TEMP_MAX_K` | `2,150 K` | `ASSUMED` | — | `v1.2-thermal` | Assumed maximum afterburner exit total temperature (F119 cycle not publicly disclosed) |
+| `BRAYTON_ETA_FAN` | `0.89` | `ASSUMED` | — | `v1.2-thermal` | Textbook axial fan isentropic efficiency for teaching Brayton cycle (F119 cycle not publicly disclosed) |
+| `BRAYTON_ETA_HPC` | `0.87` | `ASSUMED` | — | `v1.2-thermal` | Textbook high-pressure compressor isentropic efficiency (F119 cycle not publicly disclosed) |
+| `BRAYTON_ETA_HPT` | `0.9` | `ASSUMED` | — | `v1.2-thermal` | Textbook high-pressure turbine isentropic efficiency (F119 cycle not publicly disclosed) |
+| `BRAYTON_ETA_LPT` | `0.91` | `ASSUMED` | — | `v1.2-thermal` | Textbook low-pressure turbine isentropic efficiency (F119 cycle not publicly disclosed) |
+| `BRAYTON_ETA_NOZZLE` | `0.97` | `ASSUMED` | — | `v1.2-thermal` | Textbook convergent-divergent nozzle total pressure recovery (F119 cycle not publicly disclosed) |
+| `BRAYTON_COMBUSTOR_DP_FRAC` | `0.04` | `ASSUMED` | — | `v1.2-thermal` | Textbook annular combustor fractional total pressure drop (F119 cycle not publicly disclosed) |
+| `BRAYTON_AB_DP_FRAC` | `0.05` | `ASSUMED` | — | `v1.2-thermal` | Textbook afterburner fractional total pressure loss when lit (F119 cycle not publicly disclosed) |
+| `BRAYTON_UNLIT_PR_FRAC` | `0.25` | `ASSUMED` | — | `v1.2-thermal` | Motoring compression fraction before light-off for smooth Brayton start transition |
+| `BRAYTON_MIN_TURBINE_TERM` | `0.05` | `HEURISTIC` | — | `v1.2-thermal` | Numerical guard keeping turbine pressure-ratio base strictly positive |
+| `JET_FUEL_LHV_J_KG` | `4.3200e+7 J/kg` | `ASSUMED` | — | `v1.2-thermal` | Assumed JP-8 / Jet A-1 lower heating value (~43.2 MJ/kg textbook teaching value for Brayton first-law check) |
 
 ### Control Surfaces & Gear
 

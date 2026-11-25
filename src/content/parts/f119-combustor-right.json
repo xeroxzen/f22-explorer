@@ -36,7 +36,7 @@
       "value": "Floatwall annular",
       "unit": "",
       "status": "SOURCED",
-      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "source": "Wikipedia (secondary) \u2014 Pratt & Whitney F119 (fetch-verified)",
       "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
       "accessed": "2026-11-25",
       "snippet": "Floatwall annular combustor lined with high-cobalt material"
@@ -51,7 +51,7 @@
   ],
   "sources": [
     {
-      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "title": "Wikipedia (secondary) \u2014 Pratt & Whitney F119 (fetch-verified)",
       "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
       "accessed": "2026-11-25",
       "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"

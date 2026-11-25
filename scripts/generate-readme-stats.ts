@@ -7,16 +7,35 @@ const START_MARKER = '<!-- BEGIN GENERATED: LABEL_COUNTS -->';
 const END_MARKER = '<!-- END GENERATED: LABEL_COUNTS -->';
 
 export function renderReadmeLabelCountsMarkdown(): string {
-  const regCounts = { SOURCED: 0, APPROXIMATE: 0, ASSUMED: 0 };
+  const regCounts = { SOURCED: 0, APPROXIMATE: 0, ASSUMED: 0, COMPUTED: 0 };
   for (const e of REGISTRY_ENTRIES) {
     if (e.label === 'SOURCED') regCounts.SOURCED++;
     else if (e.label === 'APPROXIMATE') regCounts.APPROXIMATE++;
+    else if (e.label === 'COMPUTED') regCounts.COMPUTED++;
     else regCounts.ASSUMED++;
   }
 
-  const partExistence = { SOURCED: 0, APPROXIMATE: 0, ASSUMED: 0, NOT_PUBLICLY_DISCLOSED: 0 };
-  const partGeometry = { SOURCED: 0, APPROXIMATE: 0, ASSUMED: 0, NOT_PUBLICLY_DISCLOSED: 0 };
-  const specCounts = { SOURCED: 0, APPROXIMATE: 0, ASSUMED: 0, NOT_PUBLICLY_DISCLOSED: 0 };
+  const partExistence = {
+    SOURCED: 0,
+    APPROXIMATE: 0,
+    ASSUMED: 0,
+    COMPUTED: 0,
+    NOT_PUBLICLY_DISCLOSED: 0,
+  };
+  const partGeometry = {
+    SOURCED: 0,
+    APPROXIMATE: 0,
+    ASSUMED: 0,
+    COMPUTED: 0,
+    NOT_PUBLICLY_DISCLOSED: 0,
+  };
+  const specCounts = {
+    SOURCED: 0,
+    APPROXIMATE: 0,
+    ASSUMED: 0,
+    COMPUTED: 0,
+    NOT_PUBLICLY_DISCLOSED: 0,
+  };
 
   for (const p of ALL_COMPONENTS) {
     partExistence[p.existenceLabel]++;
@@ -30,18 +49,19 @@ export function renderReadmeLabelCountsMarkdown(): string {
     specCounts.SOURCED +
     specCounts.APPROXIMATE +
     specCounts.ASSUMED +
+    specCounts.COMPUTED +
     specCounts.NOT_PUBLICLY_DISCLOSED;
 
   return [
     START_MARKER,
     '<!-- Auto-generated from src/sim/config/registry.ts and src/content/parts/*.json via `pnpm docs:readme`. Do not edit by hand. -->',
     '',
-    '| Dataset | Total | `SOURCED` | `APPROXIMATE` | `ASSUMED` | `NOT_PUBLICLY_DISCLOSED` |',
-    '| :--- | :---: | :---: | :---: | :---: | :---: |',
-    `| Simulation & Model Registry (\`src/sim/config/registry.ts\`) | **${REGISTRY_ENTRIES.length}** | ${regCounts.SOURCED} | ${regCounts.APPROXIMATE} | ${regCounts.ASSUMED} | 0 |`,
-    `| Parts — Existence Provenance (\`src/content/parts/*.json\`) | **${ALL_COMPONENTS.length}** | ${partExistence.SOURCED} | ${partExistence.APPROXIMATE} | ${partExistence.ASSUMED} | ${partExistence.NOT_PUBLICLY_DISCLOSED} |`,
-    `| Parts — Geometry Provenance (\`src/content/parts/*.json\`) | **${ALL_COMPONENTS.length}** | ${partGeometry.SOURCED} | ${partGeometry.APPROXIMATE} | ${partGeometry.ASSUMED} | ${partGeometry.NOT_PUBLICLY_DISCLOSED} |`,
-    `| Component Inspector Specs | **${totalSpecs}** | ${specCounts.SOURCED} | ${specCounts.APPROXIMATE} | ${specCounts.ASSUMED} | ${specCounts.NOT_PUBLICLY_DISCLOSED} |`,
+    '| Dataset | Total | `SOURCED` | `APPROXIMATE` | `ASSUMED` | `COMPUTED` | `NOT_PUBLICLY_DISCLOSED` |',
+    '| :--- | :---: | :---: | :---: | :---: | :---: | :---: |',
+    `| Simulation & Model Registry (\`src/sim/config/registry.ts\`) | **${REGISTRY_ENTRIES.length}** | ${regCounts.SOURCED} | ${regCounts.APPROXIMATE} | ${regCounts.ASSUMED} | ${regCounts.COMPUTED} | 0 |`,
+    `| Parts — Existence Provenance (\`src/content/parts/*.json\`) | **${ALL_COMPONENTS.length}** | ${partExistence.SOURCED} | ${partExistence.APPROXIMATE} | ${partExistence.ASSUMED} | ${partExistence.COMPUTED} | ${partExistence.NOT_PUBLICLY_DISCLOSED} |`,
+    `| Parts — Geometry Provenance (\`src/content/parts/*.json\`) | **${ALL_COMPONENTS.length}** | ${partGeometry.SOURCED} | ${partGeometry.APPROXIMATE} | ${partGeometry.ASSUMED} | ${partGeometry.COMPUTED} | ${partGeometry.NOT_PUBLICLY_DISCLOSED} |`,
+    `| Component Inspector Specs | **${totalSpecs}** | ${specCounts.SOURCED} | ${specCounts.APPROXIMATE} | ${specCounts.ASSUMED} | ${specCounts.COMPUTED} | ${specCounts.NOT_PUBLICLY_DISCLOSED} |`,
     '',
     END_MARKER,
   ].join('\n');

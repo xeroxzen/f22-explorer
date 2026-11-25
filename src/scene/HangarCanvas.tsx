@@ -27,6 +27,7 @@ const CAMERA_PRESETS: Record<
   cockpit: { pos: [0, 2.82, fsToZ(5.10)], target: [0, 2.51, fsToZ(3.96)] },
   // Below-belly forward-starboard exterior camera framing the open main & side weapons bays unobstructed
   bays: { pos: [6.4, 0.85, -6.2], target: [0.0, 0.95, -0.4] },
+  'thermal-cutaway': { pos: [-5.8, 3.2, 13.5], target: [0, 0.9, 8.8] },
 };
 
 function HangarStructure({ shadows }: { readonly shadows: boolean }) {
@@ -213,6 +214,42 @@ function SceneController() {
       if (goalPosRef.current.y < 0.26) {
         goalPosRef.current.y = 0.26;
       }
+      animatingRef.current = true;
+      return;
+    }
+
+    if (cameraPreset === 'thermal-cutaway') {
+      const box = new THREE.Box3();
+      scene.traverse((obj) => {
+        if (obj.name && obj.name.startsWith('f119-')) {
+          obj.updateMatrixWorld(true);
+          box.expandByObject(obj);
+        }
+      });
+      if (box.isEmpty()) {
+        box.set(new THREE.Vector3(-2.0, 0.2, 5.5), new THREE.Vector3(2.0, 1.5, 13.5));
+      }
+      const center = box.getCenter(new THREE.Vector3());
+      const ext = box.getSize(new THREE.Vector3());
+      const radius = Math.max(2.2, ext.length() * 0.5);
+
+      const persp = camera as THREE.PerspectiveCamera;
+      const fovRad = ((persp.isPerspectiveCamera ? persp.fov : 40) * Math.PI) / 180;
+      const aspect = Math.max(0.35, size.width / Math.max(1, size.height));
+      const halfV = fovRad / 2;
+      const halfH = Math.atan(Math.tan(halfV) * aspect);
+      const minHalf = Math.min(halfV, halfH);
+
+      const sheetFrac = bottomSheetHeightPx > 0 ? bottomSheetHeightPx / Math.max(300, size.height) : 0;
+      const fitScale = (size.width < size.height ? 1.25 : 1.18) * (1 + sheetFrac * 0.65);
+      const dist = (radius / Math.sin(minHalf)) * fitScale;
+
+      const dir = new THREE.Vector3(-0.62, 0.34, 0.71).normalize();
+      goalTargetRef.current.copy(center);
+      if (sheetFrac > 0.05) {
+        goalTargetRef.current.y -= radius * sheetFrac * 0.45;
+      }
+      goalPosRef.current.copy(goalTargetRef.current).addScaledVector(dir, dist);
       animatingRef.current = true;
       return;
     }
