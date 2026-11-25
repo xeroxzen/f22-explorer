@@ -112,6 +112,9 @@ function SceneController() {
   const cameraPresetNonce = useExplorerStore((s) => s.cameraPresetNonce);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const bottomSheetHeightPx = useExplorerStore((s) => s.bottomSheetHeightPx);
+  const mainBayOpen = useExplorerStore((s) => s.mainBayOpen);
+  const sideBaysOpen = useExplorerStore((s) => s.sideBaysOpen);
+  const weaponsLoadout = useExplorerStore((s) => s.weaponsLoadout);
   const rightDrawerWidthPx = useExplorerStore((s) => s.rightDrawerWidthPx);
   const animatingRef = useRef(false);
   const goalPosRef = useRef(new THREE.Vector3(14.5, 6.2, -13.5));
@@ -169,11 +172,53 @@ function SceneController() {
     }
   }, [camera, cameraPreset]);
 
-  // Camera preset transitions
+  // Camera preset transitions (with bounding-box auto-fit for open weapons bays + loaded stores)
   useEffect(() => {
-    if (cameraPresetNonce === 0) return;
+    if (cameraPresetNonce === 0 && cameraPreset !== 'bays') return;
+
+    if (cameraPreset === 'bays') {
+      const box = new THREE.Box3();
+      const baysRoot = scene.getObjectByName('animated-weapons-bays');
+      if (baysRoot) {
+        baysRoot.updateMatrixWorld(true);
+        box.setFromObject(baysRoot);
+      }
+      if (box.isEmpty()) {
+        box.set(new THREE.Vector3(-1.85, 0.25, -2.5), new THREE.Vector3(1.85, 1.0, 2.0));
+      }
+      const center = box.getCenter(new THREE.Vector3());
+      const ext = box.getSize(new THREE.Vector3());
+      const radius = Math.max(1.8, ext.length() * 0.5);
+
+      const persp = camera as THREE.PerspectiveCamera;
+      const fovRad = ((persp.isPerspectiveCamera ? persp.fov : 40) * Math.PI) / 180;
+      const aspect = Math.max(0.35, size.width / Math.max(1, size.height));
+      const halfV = fovRad / 2;
+      const halfH = Math.atan(Math.tan(halfV) * aspect);
+      const minHalf = Math.min(halfV, halfH);
+
+      // Account for mobile bottom sheet or desktop left panel
+      const sheetFrac = bottomSheetHeightPx > 0 ? bottomSheetHeightPx / Math.max(300, size.height) : 0;
+      const fitScale = (size.width < size.height ? 1.38 : 1.25) * (1 + sheetFrac * 0.75);
+      const dist = (radius / Math.sin(minHalf)) * fitScale;
+
+      // Below and outboard (~30° downward look angle toward open bays & stores, clamped above floor)
+      const dir = new THREE.Vector3(0.76, -0.14, -0.63).normalize();
+      goalTargetRef.current.copy(center);
+      // Shift target slightly down on mobile when bottom sheet is open so bays sit in upper viewport
+      if (sheetFrac > 0.05) {
+        goalTargetRef.current.y -= radius * sheetFrac * 0.45;
+      }
+      goalPosRef.current.copy(goalTargetRef.current).addScaledVector(dir, dist);
+      if (goalPosRef.current.y < 0.26) {
+        goalPosRef.current.y = 0.26;
+      }
+      animatingRef.current = true;
+      return;
+    }
+
     const p = CAMERA_PRESETS[cameraPreset];
-    const isCloseView = cameraPreset === 'cockpit' || cameraPreset === 'bays';
+    const isCloseView = cameraPreset === 'cockpit';
     const aspectScale = !isCloseView && size.width < size.height ? 1.48 : 1.0;
     const sheetScale =
       !isCloseView && bottomSheetHeightPx > 0
@@ -188,7 +233,18 @@ function SceneController() {
       .copy(goalTargetRef.current)
       .addScaledVector(dir, aspectScale * sheetScale * explodeScale);
     animatingRef.current = true;
-  }, [cameraPreset, cameraPresetNonce, size.width, size.height, bottomSheetHeightPx]);
+  }, [
+    camera,
+    scene,
+    cameraPreset,
+    cameraPresetNonce,
+    size.width,
+    size.height,
+    bottomSheetHeightPx,
+    mainBayOpen,
+    sideBaysOpen,
+    weaponsLoadout,
+  ]);
 
   // Auto-fit camera bounding box when exploding or when mobile sheet opens/closes
   useEffect(() => {

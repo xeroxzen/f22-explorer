@@ -72,12 +72,37 @@ test.describe('v1.1 Desktop Mode UI, 70 Parts, Plume Gradient, Credits & Deep Li
     await expect(page.getByTestId('resume-tour-anatomy')).toBeVisible();
     await page.getByTestId('overflow-menu-btn').click();
 
-    // 4. Weapons mode: open main & side bays + screenshot
+    // 4. Weapons mode: open main & side bays, verify >= 80% projected store bbox inside viewport for all 3 loadouts
     await page.getByTestId('mode-weapons').click();
     await expect(page.getByTestId('mode-panel-weapons')).toBeVisible();
     await page.getByTestId('main-bay-toggle-btn').click();
     await page.getByTestId('side-bays-toggle-btn').click();
-    await page.waitForTimeout(850);
+    await page.getByTestId('bays-cam-btn').click();
+    for (const loadout of ['air-to-air', 'jdam', 'sdb'] as const) {
+      await page.getByTestId(`loadout-${loadout}`).click();
+      await page.waitForTimeout(750);
+      const cov = await page.evaluate(() => {
+        const dbg = (
+          window as unknown as {
+            __f22debug: {
+              getLoadedStoresViewportCoverage: () => {
+                count: number;
+                minCoverage: number;
+                avgCoverage: number;
+              };
+            };
+          }
+        ).__f22debug;
+        return dbg.getLoadedStoresViewportCoverage();
+      });
+      expect(cov.count, `Loadout ${loadout} must have loaded stores`).toBeGreaterThanOrEqual(6);
+      expect(
+        cov.minCoverage,
+        `Loadout ${loadout} min store viewport coverage (${(cov.minCoverage * 100).toFixed(1)}%) must be >= 80%`
+      ).toBeGreaterThanOrEqual(0.8);
+    }
+    await page.getByTestId('loadout-air-to-air').click();
+    await page.waitForTimeout(650);
     await savePhaseScreenshot(page, 'docs/screenshots/v1.1/desktop-weapons-bays.png');
 
     // 5. Engines mode: inline thrust readout inside Engines panel (no separate floating HUD)

@@ -66,6 +66,36 @@ test.describe('v1.1 Mobile Bottom Mode Bar, Single Sheet & Engine Running Layout
     await expect(page.getByTestId('mode-panel-engines')).toHaveCount(0);
     await expect(page.getByTestId('engine-hud-overlay')).toHaveCount(0);
 
+    // Weapons mode on mobile: open bays, verify >= 80% store viewport coverage & capture mobile bays screenshot
+    await page.evaluate(() => {
+      const dbg = (
+        window as unknown as { __f22debug: { setEnginePreset: (p: string) => void } }
+      ).__f22debug;
+      dbg.setEnginePreset('off');
+    });
+    await page.getByTestId('mobile-mode-weapons').click();
+    await expect(page.getByTestId('mode-panel-weapons')).toBeVisible();
+    await page.getByTestId('main-bay-toggle-btn').click();
+    await page.getByTestId('side-bays-toggle-btn').click();
+    await page.getByTestId('bays-cam-btn').click();
+    await page.waitForTimeout(850);
+    const mobileCov = await page.evaluate(() => {
+      const dbg = (
+        window as unknown as {
+          __f22debug: {
+            getLoadedStoresViewportCoverage: () => { count: number; minCoverage: number };
+          };
+        }
+      ).__f22debug;
+      return dbg.getLoadedStoresViewportCoverage();
+    });
+    expect(mobileCov.count).toBeGreaterThanOrEqual(8);
+    expect(mobileCov.minCoverage).toBeGreaterThanOrEqual(0.8);
+    await savePhaseScreenshot(
+      page,
+      `docs/screenshots/v1.1/mobile-${testInfo.project.name}-weapons-bays.png`
+    );
+
     expect(pageErrors).toEqual([]);
   });
 });

@@ -262,5 +262,58 @@ export function installDebugHook(): void {
       });
       return out;
     },
+    getLoadedStoresViewportCoverage() {
+      if (!activeScene || !activeCamera || !activeCanvas) {
+        return { count: 0, minCoverage: 0, avgCoverage: 0, coverages: [] as number[] };
+      }
+      const baysRoot = activeScene.getObjectByName('animated-weapons-bays');
+      if (!baysRoot) {
+        return { count: 0, minCoverage: 0, avgCoverage: 0, coverages: [] as number[] };
+      }
+      activeCamera.updateMatrixWorld();
+      baysRoot.updateMatrixWorld(true);
+      const rect = activeCanvas.getBoundingClientRect();
+      const coverages: number[] = [];
+
+      baysRoot.traverse((obj) => {
+        if (!obj.userData?.loadedStore) return;
+        SCRATCH_BOX3.setFromObject(obj);
+        if (SCRATCH_BOX3.isEmpty()) return;
+
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+        const { min, max } = SCRATCH_BOX3;
+        for (let ix = 0; ix < 2; ix++) {
+          for (let iy = 0; iy < 2; iy++) {
+            for (let iz = 0; iz < 2; iz++) {
+              SCRATCH_CORNER.set(
+                ix ? max.x : min.x,
+                iy ? max.y : min.y,
+                iz ? max.z : min.z
+              ).project(activeCamera!);
+              const sx = rect.left + ((SCRATCH_CORNER.x + 1) / 2) * rect.width;
+              const sy = rect.top + ((-SCRATCH_CORNER.y + 1) / 2) * rect.height;
+              if (sx < minX) minX = sx;
+              if (sx > maxX) maxX = sx;
+              if (sy < minY) minY = sy;
+              if (sy > maxY) maxY = sy;
+            }
+          }
+        }
+        const totalArea = Math.max(1e-6, (maxX - minX) * (maxY - minY));
+        const interW = Math.max(0, Math.min(maxX, rect.right) - Math.max(minX, rect.left));
+        const interH = Math.max(0, Math.min(maxY, rect.bottom) - Math.max(minY, rect.top));
+        coverages.push((interW * interH) / totalArea);
+      });
+
+      const minCoverage = coverages.length > 0 ? Math.min(...coverages) : 0;
+      const avgCoverage =
+        coverages.length > 0
+          ? coverages.reduce((sum, v) => sum + v, 0) / coverages.length
+          : 0;
+      return { count: coverages.length, minCoverage, avgCoverage, coverages };
+    },
   };
 }

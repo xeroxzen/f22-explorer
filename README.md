@@ -51,7 +51,7 @@ Much of the F-22 Raptor is classified. Rather than fabricating figures or hiding
 pnpm install
 pnpm dev              # Start Vite dev server
 pnpm typecheck        # TypeScript strict check
-pnpm test             # Vitest unit & invariant suite (AST literal guard, SAT collisions, IoU, schema, engine sim)
+pnpm test             # Vitest unit & invariant suite (AST literal guard, SAT collisions, aero-ref IoU, schema, engine sim)
 HEADLESS=1 pnpm e2e   # Playwright desktop + mobile E2E suite (--reporter=list)
 pnpm build            # Production build
 pnpm docs:assumptions # Regenerate docs/ASSUMPTIONS.md from src/sim/config/registry.ts
