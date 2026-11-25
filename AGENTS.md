@@ -17,6 +17,7 @@
 
 ## Branching & Validation Hygiene (Non-Negotiable)
 - **Feature branches only:** Work on one feature branch per phase (e.g., `feat/phase-0-bootstrap`), never push unreviewed work directly to `main` (pushing to `main` auto-deploys to GitHub Pages). Merge to `main` (merge commit, no squash) and tag releases only after explicit review.
+- **Green CI gate:** Never tag or release while CI is red on the target commit.
 - **Phase screenshots:** Capture desktop + mobile screenshots under `docs/screenshots/phaseN/` and stop for review after each phase.
 - **Verbatim quote review checklist:** Any content JSON `snippet` enclosed in quotation marks MUST set `verbatim: true` (enforced by `tests/content-schema.test.ts`), and reviewers must verify every `verbatim: true` snippet by hand against the cited source before merging.
 - **Verification claim standard:** Using `"verified"` in a report requires an actual page fetch in that session's log. A search result snippet is not verification; if a page was not fetched directly, state `"not verified."`

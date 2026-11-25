@@ -69,6 +69,7 @@ export async function savePhaseScreenshot(
   page: Page,
   relPath: string
 ): Promise<void> {
+  if (process.env.CI) return;
   const fullPath = path.resolve(process.cwd(), relPath);
   fs.mkdirSync(path.dirname(fullPath), { recursive: true });
   await page.screenshot({ path: fullPath });
