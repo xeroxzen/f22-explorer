@@ -22,13 +22,14 @@ test.describe('v1.1 Desktop Mode UI, 70 Parts, Plume Gradient, Credits & Deep Li
     expect(state.soundMuted).toBe(true);
     expect(state.registeredHitboxes.length).toBe(70);
 
-    // Lock quality to HIGH for desktop screenshot capture (disables adaptive step-down)
-    await page.evaluate(() => {
+    // Lock quality to HIGH for local screenshot capture (MED in CI to keep 2-vCPU SwiftShader well under timeout)
+    const defaultDesktopTier: 'med' | 'high' = process.env.CI ? 'med' : 'high';
+    await page.evaluate((tier) => {
       const dbg = (
         window as unknown as { __f22debug: { setQualityTier: (t: 'low' | 'med' | 'high') => void } }
       ).__f22debug;
-      dbg.setQualityTier('high');
-    });
+      dbg.setQualityTier(tier);
+    }, defaultDesktopTier);
 
     // 1. Default Explore mode screenshot (blurred hangar HDRI + 70-part tree + 4-mode top bar)
     await expect(page.getByTestId('mode-explore')).toBeVisible();
@@ -195,12 +196,12 @@ test.describe('v1.1 Desktop Mode UI, 70 Parts, Plume Gradient, Credits & Deep Li
     // 8. Shareable Deep Link restoring Cockpit mode + selected part + AB live MFD (locked at HIGH)
     await page.goto('/?cam=cockpit&part=cockpit-displays-hud&engine=ab');
     await waitForExplorerReady(page, false);
-    await page.evaluate(() => {
+    await page.evaluate((tier) => {
       const dbg = (
         window as unknown as { __f22debug: { setQualityTier: (t: 'low' | 'med' | 'high') => void } }
       ).__f22debug;
-      dbg.setQualityTier('high');
-    });
+      dbg.setQualityTier(tier);
+    }, defaultDesktopTier);
     await expect(page.getByTestId('inspector-panel')).toBeVisible();
     await expect(page.getByTestId('inspector-panel')).toHaveAttribute(
       'data-component-id',
