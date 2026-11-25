@@ -30,7 +30,7 @@ Much of the F-22 Raptor is classified. Rather than fabricating figures or hiding
 
 | Dataset | Total | `SOURCED` | `APPROXIMATE` | `ASSUMED` | `COMPUTED` | `NOT_PUBLICLY_DISCLOSED` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Simulation & Model Registry (`src/sim/config/registry.ts`) | **90** | 35 | 10 | 45 | 0 | 0 |
+| Simulation & Model Registry (`src/sim/config/registry.ts`) | **118** | 39 | 26 | 53 | 0 | 0 |
 | Parts — Existence Provenance (`src/content/parts/*.json`) | **71** | 71 | 0 | 0 | 0 | 0 |
 | Parts — Geometry Provenance (`src/content/parts/*.json`) | **71** | 1 | 41 | 29 | 0 | 0 |
 | Component Inspector Specs | **153** | 91 | 10 | 17 | 0 | 35 |

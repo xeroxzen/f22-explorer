@@ -83,12 +83,15 @@ export function F119CutawayDetail({
       }
     }
 
-    if (isSelected) {
-      emissive = '#0ea5e9';
-      emissiveIntensity = Math.max(emissiveIntensity, 0.45);
-    } else if (isHovered) {
-      emissive = '#38bdf8';
-      emissiveIntensity = Math.max(emissiveIntensity, 0.22);
+    // In thermal mode, preserve the Inferno temperature color intact (selection uses a separate outline ring below)
+    if (!showThermalColors) {
+      if (isSelected) {
+        emissive = '#0ea5e9';
+        emissiveIntensity = Math.max(emissiveIntensity, 0.45);
+      } else if (isHovered) {
+        emissive = '#38bdf8';
+        emissiveIntensity = Math.max(emissiveIntensity, 0.22);
+      }
     }
 
     return {
@@ -130,6 +133,17 @@ export function F119CutawayDetail({
 
   return (
     <group position={[xEng, yEng, zEng]} name={`detail-${partId}`}>
+      {showThermalColors && (isSelected || isHovered) && (
+        <mesh>
+          <torusGeometry args={[0.53, isSelected ? 0.022 : 0.014, 8, 28]} />
+          <meshBasicMaterial
+            color={isSelected ? '#38bdf8' : '#7dd3fc'}
+            transparent
+            opacity={isSelected ? 0.95 : 0.65}
+            toneMapped={false}
+          />
+        </mesh>
+      )}
       {parsed.stage === 'fan' && (
         <>
           {/* Nose spinner cone & central hub */}

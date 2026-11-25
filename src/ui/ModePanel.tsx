@@ -923,11 +923,290 @@ function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
   );
 }
 
+function AirflowModeBody() {
+  const aeroAlphaDeg = useExplorerStore((s) => s.aeroAlphaDeg);
+  const aeroBetaDeg = useExplorerStore((s) => s.aeroBetaDeg);
+  const aeroMach = useExplorerStore((s) => s.aeroMach);
+  const aeroPolhamus = useExplorerStore((s) => s.aeroPolhamus);
+  const aeroShowCp = useExplorerStore((s) => s.aeroShowCp);
+  const aeroShowLiftRibbon = useExplorerStore((s) => s.aeroShowLiftRibbon);
+  const aeroShowStreamlines = useExplorerStore((s) => s.aeroShowStreamlines);
+  const aeroShowForces = useExplorerStore((s) => s.aeroShowForces);
+  const flaps = useExplorerStore((s) => s.flaps);
+  const rudderYaw = useExplorerStore((s) => s.rudderYaw);
+  const stickPitch = useExplorerStore((s) => s.stickPitch);
+  const stickRoll = useExplorerStore((s) => s.stickRoll);
+  const vlmResult = useExplorerStore((s) => s.vlmResult);
+
+  const setAeroAlphaDeg = useExplorerStore((s) => s.setAeroAlphaDeg);
+  const setAeroBetaDeg = useExplorerStore((s) => s.setAeroBetaDeg);
+  const setAeroMach = useExplorerStore((s) => s.setAeroMach);
+  const setAeroPolhamus = useExplorerStore((s) => s.setAeroPolhamus);
+  const setAeroShowCp = useExplorerStore((s) => s.setAeroShowCp);
+  const setAeroShowLiftRibbon = useExplorerStore((s) => s.setAeroShowLiftRibbon);
+  const setAeroShowStreamlines = useExplorerStore((s) => s.setAeroShowStreamlines);
+  const setAeroShowForces = useExplorerStore((s) => s.setAeroShowForces);
+  const setFlaps = useExplorerStore((s) => s.setFlaps);
+  const setRudderYaw = useExplorerStore((s) => s.setRudderYaw);
+  const resetControlSurfaces = useExplorerStore((s) => s.resetControlSurfaces);
+
+  // Build 2D spanwise lift SVG polyline
+  const spanPts = vlmResult?.spanwiseWingLift ?? [];
+  const halfSpan = R.F22_WINGSPAN_M.value / 2;
+  const maxCcl = Math.max(0.6, ...spanPts.map((p) => Math.abs(p.cClOverCref)));
+  const spanPoly = spanPts
+    .map((p) => {
+      const sx = 12 + ((p.xSpanM + halfSpan) / (2 * halfSpan)) * 276;
+      const sy = 56 - (p.cClOverCref / maxCcl) * 44;
+      return `${sx.toFixed(1)},${sy.toFixed(1)}`;
+    })
+    .join(' ');
+
+  // Linear + optional Polhamus AoA sweep curve (-10..+20 deg) for quick visual reference
+  const clSlopeApprox =
+    vlmResult && Math.abs(vlmResult.alphaDeg) > 0.5
+      ? vlmResult.clPotential / ((vlmResult.alphaDeg * Math.PI) / 180)
+      : 2.35;
+  const sweepPts = Array.from({ length: 16 }, (_, i) => {
+    const aDeg = -10 + i * 2;
+    const aRad = (aDeg * Math.PI) / 180;
+    const clPot = clSlopeApprox * aRad;
+    const clVort = aeroPolhamus
+      ? R.VLM_POLHAMUS_KV_APPROX.value * Math.sign(aRad) * Math.cos(aRad) * Math.sin(aRad) * Math.sin(aRad)
+      : 0;
+    const sx = 14 + ((aDeg + 10) / 30) * 272;
+    const sy = 54 - ((clPot + clVort) / 1.4) * 42;
+    return `${sx.toFixed(1)},${Math.max(6, Math.min(72, sy)).toFixed(1)}`;
+  }).join(' ');
+  const curAlphaX = 14 + ((aeroAlphaDeg + 10) / 30) * 272;
+  const curClY = Math.max(6, Math.min(72, 54 - ((vlmResult?.cl ?? 0) / 1.4) * 42));
+
+  return (
+    <div className="areas-body">
+      {/* Always-visible Model Limits Panel */}
+      <section className="airflow-limits-box" data-testid="airflow-limits-panel">
+        <div className="areas-heading" style={{ marginBottom: 4 }}>
+          <span>Model Limits (Linear VLM)</span>
+          <span className="spec-badge badge-computed">COMPUTED</span>
+        </div>
+        <p className="areas-note" style={{ margin: 0 }}>
+          Inviscid, attached potential flow: no stall, separation, viscosity, or thickness. Linear
+          Prandtl–Glauert valid only to <strong>M ≤ 0.70</strong>. Chine vortex lift is not
+          captured (Polhamus toggle is an approximate leading-edge suction analogy). Results apply
+          to our <strong>reference planform</strong>, not the real F-22.
+        </p>
+      </section>
+
+      {vlmResult && !vlmResult.valid && (
+        <div className="vlm-validity-banner" data-testid="vlm-validity-warning" role="alert">
+          {vlmResult.validityMessage}
+        </div>
+      )}
+
+      {/* Live COMPUTED Coefficients */}
+      <section className="areas-section" data-testid="vlm-coeffs-panel">
+        <div className="areas-heading">
+          <span>Aero Coefficients</span>
+          <span className="spec-badge badge-computed">COMPUTED</span>
+        </div>
+        <div className="brayton-grid">
+          <div className="brayton-cell">
+            <span className="brayton-code">C_L</span>
+            <span className="brayton-val" data-testid="vlm-cl">{(vlmResult?.cl ?? 0).toFixed(3)}</span>
+            <span className="brayton-sub">{aeroPolhamus ? 'Polhamus' : 'Potential'}</span>
+          </div>
+          <div className="brayton-cell">
+            <span className="brayton-code">C_Di</span>
+            <span className="brayton-val">{(vlmResult?.cdi ?? 0).toFixed(4)}</span>
+            <span className="brayton-sub">e={(vlmResult?.oswaldE ?? 0).toFixed(2)}</span>
+          </div>
+          <div className="brayton-cell">
+            <span className="brayton-code">Roll C_l</span>
+            <span className="brayton-val" data-testid="vlm-croll">{(vlmResult?.cRoll ?? 0).toFixed(4)}</span>
+            <span className="brayton-sub">RWD +</span>
+          </div>
+          <div className="brayton-cell">
+            <span className="brayton-code">Pitch C_m</span>
+            <span className="brayton-val">{(vlmResult?.cPitch ?? 0).toFixed(3)}</span>
+            <span className="brayton-sub">Yaw {(vlmResult?.cYaw ?? 0).toFixed(3)}</span>
+          </div>
+        </div>
+
+        {/* 2D Spanwise Lift Distribution Chart */}
+        <div className="aero-chart-wrap" data-testid="spanwise-lift-chart">
+          <div className="overflow-lbl" style={{ marginBottom: 2 }}>
+            Spanwise Lift c·c_l / c_ref (-6.8 m → +6.8 m)
+          </div>
+          <svg viewBox="0 0 300 68" width="100%" height="64" role="img" aria-label="Spanwise lift distribution">
+            <line x1="12" y1="56" x2="288" y2="56" stroke="#475569" strokeWidth="1" />
+            <line x1="150" y1="8" x2="150" y2="62" stroke="#334155" strokeWidth="1" strokeDasharray="2,2" />
+            {spanPoly && (
+              <polyline points={spanPoly} fill="none" stroke="#38bdf8" strokeWidth="2" />
+            )}
+          </svg>
+        </div>
+
+        {/* 2D AoA Sweep Chart (CL vs Alpha) */}
+        <div className="aero-chart-wrap" data-testid="aoa-sweep-chart">
+          <div className="overflow-lbl" style={{ marginBottom: 2 }}>
+            C_L vs AoA (-10° → +20°){aeroPolhamus ? ' · Polhamus Vortex Lift' : ''}
+          </div>
+          <svg viewBox="0 0 300 76" width="100%" height="68" role="img" aria-label="Lift coefficient vs angle of attack">
+            <line x1="14" y1="54" x2="286" y2="54" stroke="#475569" strokeWidth="1" />
+            <line x1="105" y1="6" x2="105" y2="72" stroke="#334155" strokeWidth="1" strokeDasharray="2,2" />
+            <polyline points={sweepPts} fill="none" stroke="#22c55e" strokeWidth="2" />
+            <circle cx={curAlphaX} cy={curClY} r="4" fill="#f8fafc" stroke="#22c55e" strokeWidth="2" />
+          </svg>
+        </div>
+      </section>
+
+      {/* Legends: ΔCp + Force Arrows */}
+      <section className="areas-section">
+        <div className="areas-heading">
+          <span>Overlays &amp; Legends</span>
+        </div>
+        <div className="areas-btn-row" style={{ marginBottom: 6 }}>
+          <button
+            type="button"
+            className={`mini-btn ${aeroShowCp ? 'active' : ''}`}
+            onClick={() => setAeroShowCp(!aeroShowCp)}
+          >
+            ΔCp Panels
+          </button>
+          <button
+            type="button"
+            className={`mini-btn ${aeroShowLiftRibbon ? 'active' : ''}`}
+            onClick={() => setAeroShowLiftRibbon(!aeroShowLiftRibbon)}
+          >
+            Lift Ribbon
+          </button>
+          <button
+            type="button"
+            className={`mini-btn ${aeroShowStreamlines ? 'active' : ''}`}
+            onClick={() => setAeroShowStreamlines(!aeroShowStreamlines)}
+          >
+            Streamlines
+          </button>
+          <button
+            type="button"
+            className={`mini-btn ${aeroShowForces ? 'active' : ''}`}
+            onClick={() => setAeroShowForces(!aeroShowForces)}
+          >
+            Arrows
+          </button>
+        </div>
+        <div className="cp-legend-bar" />
+        <div className="thermal-legend-ticks">
+          <span>-1.4 ΔCp (Suction)</span>
+          <span>0</span>
+          <span>+1.4 ΔCp (Pressure)</span>
+        </div>
+        <div className="force-legend-row">
+          <span><i style={{ background: '#22c55e' }} />Lift</span>
+          <span><i style={{ background: '#ef4444' }} />Ind. Drag</span>
+          <span><i style={{ background: '#f59e0b' }} />Roll</span>
+          <span><i style={{ background: '#a855f7' }} />Pitch</span>
+        </div>
+      </section>
+
+      {/* Flow Condition Sliders */}
+      <section className="areas-section">
+        <div className="areas-heading">
+          <span>Flow Conditions</span>
+          <button
+            type="button"
+            className={`mini-btn ${aeroPolhamus ? 'active' : ''}`}
+            onClick={() => setAeroPolhamus(!aeroPolhamus)}
+            data-testid="polhamus-toggle-btn"
+          >
+            Polhamus Vortex
+          </button>
+        </div>
+        <label className="areas-slider">
+          <span>Angle of Attack (α): {aeroAlphaDeg.toFixed(1)}°</span>
+          <input
+            type="range"
+            min={-10}
+            max={20}
+            step={0.5}
+            value={aeroAlphaDeg}
+            onChange={(e) => setAeroAlphaDeg(Number(e.target.value))}
+            data-testid="aero-alpha-slider"
+          />
+        </label>
+        <label className="areas-slider">
+          <span>Sideslip (β): {aeroBetaDeg.toFixed(1)}°</span>
+          <input
+            type="range"
+            min={-15}
+            max={15}
+            step={0.5}
+            value={aeroBetaDeg}
+            onChange={(e) => setAeroBetaDeg(Number(e.target.value))}
+            data-testid="aero-beta-slider"
+          />
+        </label>
+        <label className="areas-slider">
+          <span>Mach (valid ≤ 0.70): M {aeroMach.toFixed(2)}</span>
+          <input
+            type="range"
+            min={0}
+            max={0.8}
+            step={0.02}
+            value={aeroMach}
+            onChange={(e) => setAeroMach(Number(e.target.value))}
+            data-testid="aero-mach-slider"
+          />
+        </label>
+      </section>
+
+      {/* Reused Control Stick & Surface Deflections -> Live Aero Response */}
+      <section className="areas-section">
+        <div className="areas-heading">
+          <span>Flight Controls → Aero</span>
+          <button type="button" className="mini-btn" onClick={resetControlSurfaces}>
+            Center
+          </button>
+        </div>
+        <ControlStickPad />
+        <div className="areas-note" style={{ marginTop: 4 }}>
+          Stick Pitch {(stickPitch * 100).toFixed(0)}% · Roll {(stickRoll * 100).toFixed(0)}%
+        </div>
+        <label className="areas-slider">
+          <span>Flaperons / LEFs: {Math.round(flaps * 100)}%</span>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={flaps}
+            onChange={(e) => setFlaps(Number(e.target.value))}
+            data-testid="aero-flaps-slider"
+          />
+        </label>
+        <label className="areas-slider">
+          <span>Rudders: {Math.round(rudderYaw * 100)}%</span>
+          <input
+            type="range"
+            min={-1}
+            max={1}
+            step={0.05}
+            value={rudderYaw}
+            onChange={(e) => setRudderYaw(Number(e.target.value))}
+            data-testid="aero-rudder-slider"
+          />
+        </label>
+      </section>
+    </div>
+  );
+}
+
 const MODE_HEADERS = {
   explore: { kicker: 'EXPLORE MODE', title: 'Airframe & Disassembly' },
   cockpit: { kicker: 'COCKPIT MODE', title: 'Displays & Flight Controls' },
   weapons: { kicker: 'WEAPONS MODE', title: 'Internal Bays & Stores' },
   engines: { kicker: 'ENGINES MODE', title: 'Twin F119-PW-100' },
+  airflow: { kicker: 'AIRFLOW MODE', title: 'VLM Aerodynamics' },
 } as const;
 
 export function ModePanel() {
@@ -949,8 +1228,10 @@ export function ModePanel() {
       <CockpitModeBody />
     ) : activeMode === 'weapons' ? (
       <WeaponsModeBody />
-    ) : (
+    ) : activeMode === 'engines' ? (
       <EnginesModeBody isPhone={isPhone} />
+    ) : (
+      <AirflowModeBody />
     );
 
   if (isPhone) {

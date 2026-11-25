@@ -17,6 +17,7 @@ const MODES: readonly { id: ExplorerMode; label: string }[] = [
   { id: 'cockpit', label: 'Cockpit' },
   { id: 'weapons', label: 'Weapons' },
   { id: 'engines', label: 'Engines' },
+  { id: 'airflow', label: 'Airflow' },
 ];
 
 const SYSTEM_GROUPS = Object.keys(SYSTEM_GROUP_COLORS) as SystemGroup[];

@@ -2,6 +2,7 @@ import { Suspense, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html, useGLTF } from '@react-three/drei';
+import { AirflowOverlay } from './AirflowOverlay.js';
 import { CockpitDetail } from './CockpitDetail.js';
 import { ExhaustPlume } from './ExhaustPlume.js';
 import { F119CutawayDetail, isF119CutawayPart } from './F119CutawayDetail.js';
@@ -476,6 +477,7 @@ function F22ModelInner({
       ))}
       <WeaponsBaysDetail clippingPlanes={clippingPlanes} />
       <ExhaustPlume clippingPlanes={clippingPlanes} />
+      <AirflowOverlay />
     </group>
   );
 }

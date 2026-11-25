@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { savePhaseScreenshot, waitForExplorerReady } from './helpers.js';
 
-test.describe('v1.2 Mobile Staged Cutaway, Thermal Panel & Engine Running Layout', () => {
-  test('verifies mobile Engines thermal cutaway, skin heating panel & pinned throttle', async ({
+test.describe('v1.3 Mobile Airflow Mode (VLM) & 5-Tab Bottom Mode Bar', () => {
+  test('verifies mobile Airflow tab, model limits, live VLM coefficients & streamlines', async ({
     page,
   }, testInfo) => {
     const pageErrors: string[] = [];
@@ -14,35 +14,21 @@ test.describe('v1.2 Mobile Staged Cutaway, Thermal Panel & Engine Running Layout
     expect(state.registeredHitboxes.length).toBe(70);
 
     await expect(page.getByTestId('mobile-mode-bar')).toBeVisible();
+    await expect(page.getByTestId('mobile-mode-airflow')).toBeVisible();
 
-    // Jump to AB + open Engines sheet + activate F119 Thermal Cutaway
-    await page.evaluate(() => {
-      const dbg = (
-        window as unknown as {
-          __f22debug: {
-            setCameraPreset: (p: string) => void;
-            setEnginePreset: (p: string) => void;
-          };
-        }
-      ).__f22debug;
-      dbg.setEnginePreset('ab');
-      dbg.setCameraPreset('rear');
-    });
+    await page.getByTestId('mobile-mode-airflow').click();
+    await expect(page.getByTestId('mode-panel-airflow')).toBeVisible();
+    await expect(page.getByTestId('airflow-limits-panel')).toBeVisible();
+    await expect(page.getByTestId('vlm-coeffs-panel')).toBeVisible();
 
-    await page.getByTestId('mobile-mode-engines').click();
-    await expect(page.getByTestId('mode-panel-engines')).toBeVisible();
-    await expect(page.getByTestId('throttle-section')).toBeVisible();
-    await expect(page.getByTestId('engine-inline-hud')).toBeVisible();
-    await expect(page.getByTestId('engine-steps-collapsed-summary')).toBeVisible();
-    await expect(page.getByTestId('thermal-cycle-panel')).toBeVisible();
-    await expect(page.getByTestId('skin-heating-panel')).toBeVisible();
+    await expect
+      .poll(async () => Number(await page.getByTestId('vlm-cl').innerText()), { timeout: 10_000 })
+      .toBeGreaterThan(0.15);
 
-    await page.getByTestId('f119-cutaway-btn').click();
-    await page.waitForTimeout(850);
-
+    await page.waitForTimeout(800);
     await savePhaseScreenshot(
       page,
-      `docs/screenshots/v1.2/mobile-${testInfo.project.name}-thermal.png`
+      `docs/screenshots/v1.3/mobile-${testInfo.project.name}-airflow.png`
     );
 
     expect(pageErrors).toEqual([]);

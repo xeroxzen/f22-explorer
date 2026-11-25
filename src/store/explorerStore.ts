@@ -10,10 +10,11 @@ import {
   stepEngineSim,
   type EngineSimState,
 } from '../sim/engineSim.js';
+import type { VlmSolveResult } from '../sim/vlmSolver.js';
 
 export type QualityTier = 'low' | 'med' | 'high';
 export type ClipAxis = 'none' | 'x' | 'y' | 'z';
-export type ExplorerMode = 'explore' | 'cockpit' | 'weapons' | 'engines';
+export type ExplorerMode = 'explore' | 'cockpit' | 'weapons' | 'engines' | 'airflow';
 export type CameraPresetId =
   | 'three-quarter'
   | 'front'
@@ -64,6 +65,15 @@ export interface ExplorerState {
   readonly showThermalColors: boolean;
   readonly skinAltitudeM: number;
   readonly skinMach: number;
+  readonly aeroAlphaDeg: number;
+  readonly aeroBetaDeg: number;
+  readonly aeroMach: number;
+  readonly aeroPolhamus: boolean;
+  readonly aeroShowCp: boolean;
+  readonly aeroShowLiftRibbon: boolean;
+  readonly aeroShowStreamlines: boolean;
+  readonly aeroShowForces: boolean;
+  readonly vlmResult: VlmSolveResult | null;
   readonly xrayMode: boolean;
   readonly clipAxis: ClipAxis;
   readonly clipPosition: number;
@@ -119,6 +129,15 @@ export interface ExplorerState {
   setShowThermalColors: (enabled: boolean) => void;
   setSkinAltitudeM: (altM: number) => void;
   setSkinMach: (mach: number) => void;
+  setAeroAlphaDeg: (deg: number) => void;
+  setAeroBetaDeg: (deg: number) => void;
+  setAeroMach: (mach: number) => void;
+  setAeroPolhamus: (enabled: boolean) => void;
+  setAeroShowCp: (enabled: boolean) => void;
+  setAeroShowLiftRibbon: (enabled: boolean) => void;
+  setAeroShowStreamlines: (enabled: boolean) => void;
+  setAeroShowForces: (enabled: boolean) => void;
+  setVlmResult: (result: VlmSolveResult | null) => void;
   setXrayMode: (enabled: boolean) => void;
   setClipAxis: (axis: ClipAxis) => void;
   setClipPosition: (pos: number) => void;
@@ -176,6 +195,15 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   showThermalColors: true,
   skinAltitudeM: 12_000,
   skinMach: 1.5,
+  aeroAlphaDeg: 8,
+  aeroBetaDeg: 0,
+  aeroMach: 0.4,
+  aeroPolhamus: false,
+  aeroShowCp: true,
+  aeroShowLiftRibbon: true,
+  aeroShowStreamlines: true,
+  aeroShowForces: true,
+  vlmResult: null,
   xrayMode: false,
   clipAxis: 'none',
   clipPosition: 0,
@@ -272,6 +300,15 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   setShowThermalColors: (showThermalColors) => set({ showThermalColors }),
   setSkinAltitudeM: (altM) => set({ skinAltitudeM: clamp(altM, 0, 20_000) }),
   setSkinMach: (mach) => set({ skinMach: clamp(mach, 0, 2.0) }),
+  setAeroAlphaDeg: (deg) => set({ aeroAlphaDeg: clamp(deg, -10, 20) }),
+  setAeroBetaDeg: (deg) => set({ aeroBetaDeg: clamp(deg, -15, 15) }),
+  setAeroMach: (mach) => set({ aeroMach: clamp(mach, 0, 0.85) }),
+  setAeroPolhamus: (aeroPolhamus) => set({ aeroPolhamus }),
+  setAeroShowCp: (aeroShowCp) => set({ aeroShowCp }),
+  setAeroShowLiftRibbon: (aeroShowLiftRibbon) => set({ aeroShowLiftRibbon }),
+  setAeroShowStreamlines: (aeroShowStreamlines) => set({ aeroShowStreamlines }),
+  setAeroShowForces: (aeroShowForces) => set({ aeroShowForces }),
+  setVlmResult: (vlmResult) => set({ vlmResult }),
   setXrayMode: (xrayMode) => set({ xrayMode }),
   setClipAxis: (clipAxis) => set({ clipAxis, clipPosition: 0 }),
   setClipPosition: (clipPosition) => set({ clipPosition }),

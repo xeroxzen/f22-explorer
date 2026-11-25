@@ -16,7 +16,7 @@ Classified specifications (such as exact RCS, avionics internals, and detailed e
 
 ## Constants Registry (Single Source of Truth)
 
-Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (90 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
+Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURISTIC` constant in `src/sim/` (118 entries) is defined in `src/sim/config/registry.ts` and rendered here automatically.
 
 ### Physical & Atmosphere
 
@@ -35,6 +35,13 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `ISA_TROPOPAUSE_TEMP_K` | `216.65 K` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO ISA isothermal lower stratosphere temperature (11–20 km, -56.5 °C) |
 | `KELVIN_OFFSET` | `273.15 K` | `SOURCED` | — | `v1.2-thermal` | Exact SI offset between Kelvin and degrees Celsius |
 | `ISA_STRATOSPHERE_CEILING_M` | `20,000 m` | `SOURCED` | — | `v1.2-thermal` | ISO 2533 / ICAO ISA upper ceiling of isothermal lower stratosphere band (20 km) |
+| `VLM_VORTEX_CORE_RADIUS_M` | `0.02 m` | `HEURISTIC` | — | `v1.3-airflow` | Biot-Savart Vatistas/Rankine vortex core cutoff radius preventing 1/r singularity |
+| `VLM_PG_MAX_MACH` | `0.7` | `SOURCED` | — | `v1.3-airflow` | Katz & Plotkin (2nd ed., 2001) / Anderson: linear Prandtl-Glauert compressibility valid up to Mach ~0.7 |
+| `VLM_POLHAMUS_KV_APPROX` | `3.14159265` | `APPROXIMATE` | — | `v1.3-airflow` | Polhamus (NASA TN D-3767, 1966) leading-edge suction analogy vortex-lift factor K_v ≈ π for swept sharp-LE wings |
+| `VLM_QUARTER_CHORD_FRAC` | `0.25` | `SOURCED` | — | `v1.3-airflow` | Katz & Plotkin (2nd ed., 2001, Ch. 12 p. 333): horseshoe bound vortex placed at local 1/4 chord |
+| `VLM_THREE_QUARTER_CHORD_FRAC` | `0.75` | `SOURCED` | — | `v1.3-airflow` | Katz & Plotkin (2nd ed., 2001, Ch. 12 p. 333): collocation (control) point placed at local 3/4 chord |
+| `VLM_STREAMLINE_CORE_RADIUS_M` | `0.16 m` | `HEURISTIC` | — | `v1.3-airflow` | Smoothed Biot-Savart core radius for stable visual streamline particle advection near wingtip vortices |
+| `DEG_TO_RAD` | `0.017453292519943295 rad/deg` | `SOURCED` | — | `v1.3-airflow` | Exact mathematical conversion factor pi / 180 rad per degree |
 
 ### Airframe & Dimensions
 
@@ -57,6 +64,23 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `F22_EMPTY_WEIGHT_KG` | `19,700 kg` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet (43,340 lb) |
 | `F22_MTOW_KG` | `38,000 kg` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet (83,500 lb) |
 | `F22_INTERNAL_FUEL_KG` | `8,200 kg` | `SOURCED` | — | `phase1` | USAF F-22 Raptor Fact Sheet (18,000 lb internal fuel) |
+| `VLM_DEFAULT_WING_SPAN_PANELS` | `16` | `HEURISTIC` | — | `v1.3-airflow` | Spanwise VLM panel count per wing half (tunable; balances <30 ms LU factor time and spanwise accuracy) |
+| `VLM_DEFAULT_WING_CHORD_PANELS` | `6` | `HEURISTIC` | — | `v1.3-airflow` | Chordwise VLM panel count per wing half (tunable; resolves LEF, main box, flaperon/aileron) |
+| `VLM_DEFAULT_STAB_SPAN_PANELS` | `6` | `HEURISTIC` | — | `v1.3-airflow` | Spanwise VLM panel count per horizontal stabilator half |
+| `VLM_DEFAULT_STAB_CHORD_PANELS` | `3` | `HEURISTIC` | — | `v1.3-airflow` | Chordwise VLM panel count per horizontal stabilator half |
+| `VLM_DEFAULT_VTAIL_SPAN_PANELS` | `5` | `HEURISTIC` | — | `v1.3-airflow` | Spanwise VLM panel count per canted vertical stabilizer |
+| `VLM_DEFAULT_VTAIL_CHORD_PANELS` | `3` | `HEURISTIC` | — | `v1.3-airflow` | Chordwise VLM panel count per canted vertical stabilizer |
+| `VLM_STAB_ROOT_X_M` | `1.8 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference horizontal stabilator root lateral station (matches f22Geometry.ts) |
+| `VLM_STAB_TIP_X_M` | `4.4 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference horizontal stabilator tip lateral station (matches f22Geometry.ts) |
+| `VLM_STAB_ROOT_LE_FS_M` | `15.1 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference horizontal stabilator root leading-edge station (matches f22Geometry.ts) |
+| `VLM_STAB_ROOT_TE_FS_M` | `18.65 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference horizontal stabilator root trailing-edge station (matches f22Geometry.ts) |
+| `VLM_STAB_TIP_LE_FS_M` | `17.44 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference horizontal stabilator tip leading-edge station (matches f22Geometry.ts) |
+| `VLM_STAB_TIP_TE_FS_M` | `17.85 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference horizontal stabilator tip trailing-edge station (matches f22Geometry.ts) |
+| `VLM_VTAIL_ROOT_LE_FS_M` | `13 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference vertical stabilizer root leading-edge station (matches f22Geometry.ts) |
+| `VLM_VTAIL_ROOT_TE_FS_M` | `16.86 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference vertical stabilizer root trailing-edge station (matches f22Geometry.ts) |
+| `VLM_VTAIL_TIP_LE_FS_M` | `14.95 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference vertical stabilizer tip leading-edge station (matches f22Geometry.ts) |
+| `VLM_VTAIL_TIP_TE_FS_M` | `16.86 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference vertical stabilizer tip trailing-edge station (matches f22Geometry.ts) |
+| `VLM_WING_Y_M` | `1.9 m` | `APPROXIMATE` | — | `v1.3-airflow` | Aero reference wing mean vertical elevation in f22Geometry.ts coordinates |
 
 ### Propulsion & Engine Model
 
@@ -119,6 +143,10 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `F22_FLAPERON_RANGE_DEG` | `[-20, 30] deg` | `ASSUMED` | — | `phase1` | Educational animation range [-20° up, +30° down]; exact DoD limit is not publicly disclosed |
 | `F22_LEF_MAX_DEG` | `30 deg` | `ASSUMED` | — | `phase1` | Educational animation range (0° to +30° down); exact DoD limit is not publicly disclosed |
 | `F22_RUDDER_MAX_DEG` | `30 deg` | `ASSUMED` | — | `phase1` | Educational animation range (±30° yaw / split airbrake); exact DoD limit is not publicly disclosed |
+| `VLM_LEF_CHORD_END` | `0.18` | `APPROXIMATE` | — | `v1.3-airflow` | Approximate chord fraction of F-22 leading-edge flap panels on aero reference wing |
+| `VLM_FLAPERON_CHORD_START` | `0.72` | `APPROXIMATE` | — | `v1.3-airflow` | Approximate trailing-edge hinge chord fraction for flaperon and aileron panels |
+| `VLM_AILERON_SPAN_START` | `0.52` | `APPROXIMATE` | — | `v1.3-airflow` | Approximate outboard span fraction dividing inboard flaperon from outboard aileron |
+| `VLM_RUDDER_CHORD_START` | `0.68` | `APPROXIMATE` | — | `v1.3-airflow` | Approximate vertical-tail hinge chord fraction for rudder panels |
 
 ### Weapons Bays & Cockpit
 

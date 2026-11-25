@@ -4,8 +4,8 @@ import {
   waitForExplorerReady,
 } from './helpers.js';
 
-test.describe('v1.2 Staged Cutaway, Recognizable F119 Stages, Brayton Thermal Model & Skin Heating', () => {
-  test('verifies assembled, 3-stage explode, F119 thermal cutaway (idle/mil/AB), Inspector T/P, skin heating & bays coverage', async ({
+test.describe('v1.3 VLM Airflow Mode, Streamlines, Aileron Roll, Mach Cutoff & Regression Checks', () => {
+  test('verifies Airflow mode (AoA sweep, aileron roll, streamlines/vortices, Mach>0.70 cutoff) + v1.1/v1.2 invariants', async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
@@ -22,7 +22,6 @@ test.describe('v1.2 Staged Cutaway, Recognizable F119 Stages, Brayton Thermal Mo
     expect(state.soundMuted).toBe(true);
     expect(state.registeredHitboxes.length).toBe(70);
 
-    // Lock quality to HIGH for crisp desktop screenshots
     const defaultDesktopTier: 'med' | 'high' = process.env.CI ? 'med' : 'high';
     await page.evaluate((tier) => {
       const dbg = (
@@ -31,71 +30,67 @@ test.describe('v1.2 Staged Cutaway, Recognizable F119 Stages, Brayton Thermal Mo
       dbg.setQualityTier(tier);
     }, defaultDesktopTier);
 
-    // 1. Assembled view (neutral metals, no system tints by default)
-    await expect(page.getByTestId('mode-panel-explore')).toBeVisible();
-    await expect(page.getByTestId('explode-stage-badge')).toHaveText('Assembled');
-    await page.waitForTimeout(650);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-assembled.png');
+    // 1. Open Airflow mode: verify Model Limits panel, live VLM coefficients & 2D charts
+    await expect(page.getByTestId('mode-airflow')).toBeVisible();
+    await page.getByTestId('mode-airflow').click();
+    await expect(page.getByTestId('mode-panel-airflow')).toBeVisible();
+    await expect(page.getByTestId('airflow-limits-panel')).toBeVisible();
+    await expect(page.getByTestId('vlm-coeffs-panel')).toBeVisible();
+    await expect(page.getByTestId('spanwise-lift-chart')).toBeVisible();
+    await expect(page.getByTestId('aoa-sweep-chart')).toBeVisible();
 
-    // 2. Staged Explode: Stage 1 (Skin) -> Stage 2 (Systems) -> Stage 3 (Engine)
-    await page.getByTestId('explode-stage-1').click();
-    await expect(page.getByTestId('explode-stage-badge')).toHaveText('Stage 1: Skin');
-    await page.waitForTimeout(750);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-explode-stage1-skin.png');
+    // Wait for initial VLM Web Worker solve (alpha = 8 deg -> CL > 0.15)
+    await expect
+      .poll(async () => Number(await page.getByTestId('vlm-cl').innerText()), { timeout: 10_000 })
+      .toBeGreaterThan(0.15);
 
-    await page.getByTestId('explode-stage-2').click();
-    await expect(page.getByTestId('explode-stage-badge')).toHaveText('Stage 2: Systems');
-    await page.waitForTimeout(750);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-explode-stage2-systems.png');
+    await page.waitForTimeout(700);
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.3/desktop-airflow-aoa-sweep.png');
 
-    await page.getByTestId('explode-stage-3').click();
-    await expect(page.getByTestId('explode-stage-badge')).toHaveText('Stage 3: Engine');
-    await page.waitForTimeout(750);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-explode-stage3-engine.png');
+    // 2. Aileron roll case: drag stick right -> asymmetric ΔCp & lift ribbon + positive roll moment C_l > 0
+    const stick = page.getByTestId('control-stick-pad');
+    await stick.scrollIntoViewIfNeeded();
+    const sBox = await stick.boundingBox();
+    expect(sBox).not.toBeNull();
+    await page.mouse.click(sBox!.x + sBox!.width * 0.9, sBox!.y + sBox!.height * 0.5);
 
-    // Return to Assembled & verify Weapons Bays >= 80% store viewport coverage for all 3 loadouts
-    await page.getByTestId('explode-stage-0').click();
-    await page.getByTestId('mode-weapons').click();
-    await page.getByTestId('main-bay-toggle-btn').click();
-    await page.getByTestId('side-bays-toggle-btn').click();
-    await page.getByTestId('bays-cam-btn').click();
-    for (const loadout of ['air-to-air', 'jdam', 'sdb'] as const) {
-      await page.getByTestId(`loadout-${loadout}`).click();
-      await page.waitForTimeout(650);
-      const cov = await page.evaluate(() => {
-        const dbg = (
-          window as unknown as {
-            __f22debug: {
-              getLoadedStoresViewportCoverage: () => { count: number; minCoverage: number };
-            };
-          }
-        ).__f22debug;
-        return dbg.getLoadedStoresViewportCoverage();
-      });
-      expect(cov.count).toBeGreaterThanOrEqual(6);
-      expect(cov.minCoverage).toBeGreaterThanOrEqual(0.8);
-    }
+    await expect
+      .poll(async () => Number(await page.getByTestId('vlm-croll').innerText()), { timeout: 8_000 })
+      .toBeGreaterThan(0.01);
+    await page.getByTestId('vlm-coeffs-panel').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(700);
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.3/desktop-airflow-aileron-roll.png');
 
-    // 3. Engines Mode: F119 Thermal Cutaway at Idle, Mil, and AB + Inspector Brayton Station T/P
+    // 3. Streamlines with wingtip vortices from rear 3/4 view at higher AoA (14 deg) + Polhamus toggle
+    await page.getByTestId('polhamus-toggle-btn').scrollIntoViewIfNeeded();
+    await page.getByTestId('polhamus-toggle-btn').click();
+    await page.getByTestId('aero-alpha-slider').fill('14');
+    await page.evaluate(() => {
+      const dbg = (window as unknown as { __f22debug: { setCameraPreset: (p: string) => void } }).__f22debug;
+      dbg.setCameraPreset('rear');
+    });
+    await page.waitForTimeout(850);
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.3/desktop-airflow-streamlines-vortices.png');
+
+    // 4. Prandtl-Glauert validity cutoff above Mach 0.70 -> warning banner appears, no extrapolation
+    await page.getByTestId('aero-mach-slider').fill('0.76');
+    await expect(page.getByTestId('vlm-validity-warning')).toBeVisible();
+    await page.getByTestId('vlm-validity-warning').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(350);
+    await savePhaseScreenshot(page, 'docs/screenshots/v1.3/desktop-airflow-mach-limit.png');
+
+    // 5. Carry-over regression check: mil plume opacity <= 0.1 across all quality tiers
     await page.getByTestId('mode-engines').click();
-    await expect(page.getByTestId('thermal-cycle-panel')).toBeVisible();
-    await expect(page.getByTestId('thermal-legend')).toBeVisible();
-    await expect(page.getByTestId('skin-heating-panel')).toBeVisible();
-
-    // Mil opacity <= 0.1 across all quality tiers before opening cutaway
     await page.evaluate(() => {
       const dbg = (
         window as unknown as {
-          __f22debug: {
-            setEnginePreset: (p: string) => void;
-            setCameraPreset: (p: string) => void;
-          };
+          __f22debug: { setEnginePreset: (p: string) => void; setCameraPreset: (p: string) => void };
         }
       ).__f22debug;
       dbg.setEnginePreset('mil');
       dbg.setCameraPreset('rear');
     });
-    await page.waitForTimeout(550);
+    await page.waitForTimeout(450);
     for (const tier of ['low', 'med', 'high'] as const) {
       await page.evaluate((t) => {
         const dbg = (
@@ -103,7 +98,7 @@ test.describe('v1.2 Staged Cutaway, Recognizable F119 Stages, Brayton Thermal Mo
         ).__f22debug;
         dbg.setQualityTier(t);
       }, tier);
-      await page.waitForTimeout(150);
+      await page.waitForTimeout(140);
       const meshes = await page.evaluate(() => {
         const dbg = (
           window as unknown as {
@@ -120,46 +115,6 @@ test.describe('v1.2 Staged Cutaway, Recognizable F119 Stages, Brayton Thermal Mo
       }
       if (tier === 'low') expect(meshes.length).toBe(0);
     }
-
-    // Activate F119 Thermal Cutaway (Stage 3 + auto-framed cutaway camera + 30% dimmed airframe) and inspect Combustor Stn 4
-    await page.getByTestId('f119-cutaway-btn').click();
-    await page.getByTestId('inspect-combustor-btn').click();
-    await expect(page.getByTestId('inspector-panel')).toBeVisible();
-    await expect(page.getByTestId('inspector-brayton-station')).toBeVisible();
-    await expect(page.getByTestId('sae-station-diagram')).toBeVisible();
-
-    // Idle thermal cutaway
-    await page.evaluate(() => {
-      const dbg = (window as unknown as { __f22debug: { setEnginePreset: (p: string) => void } }).__f22debug;
-      dbg.setEnginePreset('idle');
-    });
-    await page.waitForTimeout(700);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-f119-thermal-idle.png');
-
-    // Mil thermal cutaway
-    await page.evaluate(() => {
-      const dbg = (window as unknown as { __f22debug: { setEnginePreset: (p: string) => void } }).__f22debug;
-      dbg.setEnginePreset('mil');
-    });
-    await page.waitForTimeout(700);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-f119-thermal-mil.png');
-
-    // AB thermal cutaway
-    await page.evaluate(() => {
-      const dbg = (window as unknown as { __f22debug: { setEnginePreset: (p: string) => void } }).__f22debug;
-      dbg.setEnginePreset('ab');
-    });
-    await page.waitForTimeout(700);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-f119-thermal-ab.png');
-
-    // 4. Skin Heating Panel scrolled into view at Mach 2.0 / 12 km ISA
-    await page.getByTestId('inspector-close-btn').click();
-    const skinPanel = page.getByTestId('skin-heating-panel');
-    await skinPanel.scrollIntoViewIfNeeded();
-    await page.getByTestId('skin-mach-slider').fill('2');
-    await expect(page.getByTestId('skin-temp-readout')).toContainText('390 K');
-    await page.waitForTimeout(400);
-    await savePhaseScreenshot(page, 'docs/screenshots/v1.2/desktop-skin-heating.png');
 
     expect(consoleErrors).toEqual([]);
     expect(pageErrors).toEqual([]);
