@@ -1385,3 +1385,11 @@ a:focus-visible {
   background: rgba(56, 189, 248, 0.22);
   color: #7dd3fc;
 }
+
+.sae-diagram-wrap {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 8px;
+  padding: 4px 6px 2px;
+  margin-bottom: 8px;
+}

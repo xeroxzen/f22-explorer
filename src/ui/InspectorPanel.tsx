@@ -1,6 +1,12 @@
 import { getComponentContent } from '../content/registry.js';
 import type { ComponentContent, SpecStatus } from '../content/schema.js';
-import { computeBraytonCycle, partIdToBraytonStation } from '../sim/braytonCycle.js';
+import { temperatureToInfernoHex } from '../scene/thermalColormap.js';
+import {
+  computeBraytonCycle,
+  partIdToBraytonStation,
+  type BraytonCycleResult,
+  type BraytonStationId,
+} from '../sim/braytonCycle.js';
 import { useExplorerStore } from '../store/explorerStore.js';
 import { BottomSheet } from './BottomSheet.js';
 import { useViewport } from './useViewport.js';
@@ -29,6 +35,72 @@ function formatSnippet(snippet: string, verbatim?: boolean): string {
   return verbatim ? `“${clean}”` : clean;
 }
 
+function SaeStationDiagram({
+  cycle,
+  activeStation,
+}: {
+  readonly cycle: BraytonCycleResult;
+  readonly activeStation: BraytonStationId;
+}) {
+  const nodes: Array<{ id: BraytonStationId; x: number; y: number; label: string }> = [
+    { id: '0', x: 16, y: 40, label: '0' },
+    { id: '2', x: 42, y: 40, label: '2' },
+    { id: '13', x: 74, y: 18, label: '13' },
+    { id: '25', x: 74, y: 56, label: '25' },
+    { id: '3', x: 108, y: 56, label: '3' },
+    { id: '4', x: 142, y: 56, label: '4' },
+    { id: '45', x: 174, y: 56, label: '45' },
+    { id: '5', x: 204, y: 56, label: '5' },
+    { id: '6', x: 234, y: 40, label: '6' },
+    { id: '7', x: 264, y: 40, label: '7' },
+    { id: '8', x: 292, y: 40, label: '8' },
+  ];
+
+  return (
+    <div className="sae-diagram-wrap" data-testid="sae-station-diagram">
+      <svg viewBox="0 0 310 82" width="100%" height="78" role="img" aria-label="SAE ARP755 station diagram">
+        {/* Bypass flow path: 2 -> 13 -> 6 */}
+        <polyline points="42,40 74,18 234,18 234,40" fill="none" stroke="#64748b" strokeWidth="1.5" strokeDasharray="3,2" />
+        {/* Core flow path: 0 -> 2 -> 25 -> 3 -> 4 -> 45 -> 5 -> 6 -> 7 -> 8 */}
+        <polyline points="16,40 42,40 74,56 204,56 234,40 292,40" fill="none" stroke="#94a3b8" strokeWidth="2" />
+        <text x="148" y="13" fill="#94a3b8" fontSize="8" textAnchor="middle">
+          Bypass Duct (BPR {cycle.bypassRatio.toFixed(1)})
+        </text>
+        <text x="234" y="75" fill="#94a3b8" fontSize="7.5" textAnchor="middle">
+          Mixer → AB → Noz
+        </text>
+        {nodes.map((n) => {
+          const st = cycle.stations[n.id];
+          const fill = temperatureToInfernoHex(st.totalTempK);
+          const isAct = n.id === activeStation;
+          return (
+            <g key={n.id}>
+              <circle
+                cx={n.x}
+                cy={n.y}
+                r={isAct ? 10 : 7.5}
+                fill={fill}
+                stroke={isAct ? '#38bdf8' : '#e2e8f0'}
+                strokeWidth={isAct ? 2.2 : 1}
+              />
+              <text
+                x={n.x}
+                y={n.y + 3}
+                fill={st.totalTempK > 1400 ? '#0f172a' : '#f8fafc'}
+                fontSize="7.5"
+                fontWeight="700"
+                textAnchor="middle"
+              >
+                {n.label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
 function InspectorBody({ content }: { readonly content: ComponentContent | null }) {
   const engineSim = useExplorerStore((s) => s.engineSim);
   if (!content) {
@@ -52,10 +124,11 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
 
   const stationId = partIdToBraytonStation(content.id);
   const isRightEng = content.id.endsWith('-right');
-  const liveStation =
+  const liveCycle =
     stationId !== null
-      ? computeBraytonCycle(isRightEng ? engineSim.right : engineSim.left).stations[stationId]
+      ? computeBraytonCycle(isRightEng ? engineSim.right : engineSim.left)
       : null;
+  const liveStation = liveCycle && stationId ? liveCycle.stations[stationId] : null;
 
   return (
     <div className="inspector-content">
@@ -76,11 +149,12 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
 
       <p className="inspector-summary">{content.summary}</p>
 
-      {liveStation && (
+      {liveStation && liveCycle && stationId && (
         <section className="inspector-section" data-testid="inspector-brayton-station">
           <h3 className="inspector-section-title">
-            Live Brayton Station ({liveStation.stationCode})
+            SAE ARP755 Station ({liveStation.stationCode} · {liveStation.name})
           </h3>
+          <SaeStationDiagram cycle={liveCycle} activeStation={stationId} />
           <div className="spec-list">
             <div className="spec-row">
               <div className="spec-row-top">

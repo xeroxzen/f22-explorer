@@ -39,6 +39,8 @@ export interface RegistryEntry<T extends ConstantValue = ConstantValue> {
   readonly id: string;
   readonly value: T;
   readonly unit: string;
+  /** Canonical physical quantity identifier (must be unique across registry). */
+  readonly quantity: string;
   readonly label: ConstantLabel;
   readonly category: ConstantCategory;
   readonly sourceOrDerivation: string;
@@ -61,6 +63,7 @@ export const CONSTANTS_REGISTRY = {
   G0: entry({
     id: 'G0',
     value: 9.80665,
+    quantity: 'physics.standard_gravity',
     unit: 'm/s^2',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -71,6 +74,7 @@ export const CONSTANTS_REGISTRY = {
   SEA_LEVEL_DENSITY_KG_M3: entry({
     id: 'SEA_LEVEL_DENSITY_KG_M3',
     value: 1.225,
+    quantity: 'sea.level.density',
     unit: 'kg/m^3',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -81,6 +85,7 @@ export const CONSTANTS_REGISTRY = {
   SEA_LEVEL_SPEED_OF_SOUND_MS: entry({
     id: 'SEA_LEVEL_SPEED_OF_SOUND_MS',
     value: 340.294,
+    quantity: 'sea.level.speed.of.sound',
     unit: 'm/s',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -95,6 +100,7 @@ export const CONSTANTS_REGISTRY = {
   F22_LENGTH_M: entry({
     id: 'F22_LENGTH_M',
     value: 18.92,
+    quantity: 'f22.length',
     unit: 'm',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -105,6 +111,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WINGSPAN_M: entry({
     id: 'F22_WINGSPAN_M',
     value: 13.56,
+    quantity: 'f22.wingspan',
     unit: 'm',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -115,6 +122,7 @@ export const CONSTANTS_REGISTRY = {
   F22_HEIGHT_M: entry({
     id: 'F22_HEIGHT_M',
     value: 5.08,
+    quantity: 'f22.height',
     unit: 'm',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -125,6 +133,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WING_AREA_M2: entry({
     id: 'F22_WING_AREA_M2',
     value: 78.04,
+    quantity: 'f22.wing.area',
     unit: 'm^2',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -135,6 +144,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WING_LE_SWEEP_DEG: entry({
     id: 'F22_WING_LE_SWEEP_DEG',
     value: 42,
+    quantity: 'f22.wing.le.sweep',
     unit: 'deg',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -145,6 +155,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WING_TE_SWEEP_DEG: entry({
     id: 'F22_WING_TE_SWEEP_DEG',
     value: -17,
+    quantity: 'f22.wing.te.sweep',
     unit: 'deg',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -155,6 +166,7 @@ export const CONSTANTS_REGISTRY = {
   F22_VTAIL_CANT_DEG: entry({
     id: 'F22_VTAIL_CANT_DEG',
     value: 28,
+    quantity: 'f22.vtail.cant',
     unit: 'deg',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -165,6 +177,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WING_ROOT_CHORD_CL_M: entry({
     id: 'F22_WING_ROOT_CHORD_CL_M',
     value: 9.85,
+    quantity: 'f22.wing.root.chord.cl',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -175,6 +188,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WING_TIP_CHORD_M: entry({
     id: 'F22_WING_TIP_CHORD_M',
     value: 1.67,
+    quantity: 'f22.wing.tip.chord',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -185,6 +199,7 @@ export const CONSTANTS_REGISTRY = {
   F22_WING_ROOT_X_M: entry({
     id: 'F22_WING_ROOT_X_M',
     value: 1.85,
+    quantity: 'f22.wing.root.x',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -195,6 +210,7 @@ export const CONSTANTS_REGISTRY = {
   F22_VTAIL_ROOT_X_M: entry({
     id: 'F22_VTAIL_ROOT_X_M',
     value: 1.45,
+    quantity: 'f22.vtail.root.x',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -205,6 +221,7 @@ export const CONSTANTS_REGISTRY = {
   F22_VTAIL_ROOT_Y_M: entry({
     id: 'F22_VTAIL_ROOT_Y_M',
     value: 2.45,
+    quantity: 'f22.vtail.root.y',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -215,6 +232,7 @@ export const CONSTANTS_REGISTRY = {
   F22_VTAIL_TIP_X_M: entry({
     id: 'F22_VTAIL_TIP_X_M',
     value: 2.85,
+    quantity: 'f22.vtail.tip.x',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Airframe & Dimensions',
@@ -225,6 +243,7 @@ export const CONSTANTS_REGISTRY = {
   F22_VTAIL_TIP_Y_M: entry({
     id: 'F22_VTAIL_TIP_Y_M',
     value: 5.08,
+    quantity: 'f22.vtail.tip.y',
     unit: 'm',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -235,6 +254,7 @@ export const CONSTANTS_REGISTRY = {
   AIM120_LENGTH_M: entry({
     id: 'AIM120_LENGTH_M',
     value: 3.66,
+    quantity: 'aim120.length',
     unit: 'm',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -245,6 +265,7 @@ export const CONSTANTS_REGISTRY = {
   AIM9_LENGTH_M: entry({
     id: 'AIM9_LENGTH_M',
     value: 3.02,
+    quantity: 'aim9.length',
     unit: 'm',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -255,6 +276,7 @@ export const CONSTANTS_REGISTRY = {
   GBU32_LENGTH_M: entry({
     id: 'GBU32_LENGTH_M',
     value: 3.04,
+    quantity: 'gbu32.length',
     unit: 'm',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -265,6 +287,7 @@ export const CONSTANTS_REGISTRY = {
   GBU39_LENGTH_M: entry({
     id: 'GBU39_LENGTH_M',
     value: 1.8,
+    quantity: 'gbu39.length',
     unit: 'm',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -275,6 +298,7 @@ export const CONSTANTS_REGISTRY = {
   GBU39_PER_RACK: entry({
     id: 'GBU39_PER_RACK',
     value: 4,
+    quantity: 'gbu39.per.rack',
     unit: '1',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -285,6 +309,7 @@ export const CONSTANTS_REGISTRY = {
   GBU39_RACKS_IN_MAIN_BAY: entry({
     id: 'GBU39_RACKS_IN_MAIN_BAY',
     value: 2,
+    quantity: 'gbu39.racks.in.main.bay',
     unit: '1',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -295,6 +320,7 @@ export const CONSTANTS_REGISTRY = {
   F22_EMPTY_WEIGHT_KG: entry({
     id: 'F22_EMPTY_WEIGHT_KG',
     value: 19_700,
+    quantity: 'f22.empty.weight',
     unit: 'kg',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -305,6 +331,7 @@ export const CONSTANTS_REGISTRY = {
   F22_MTOW_KG: entry({
     id: 'F22_MTOW_KG',
     value: 38_000,
+    quantity: 'f22.mtow',
     unit: 'kg',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -315,6 +342,7 @@ export const CONSTANTS_REGISTRY = {
   F22_INTERNAL_FUEL_KG: entry({
     id: 'F22_INTERNAL_FUEL_KG',
     value: 8_200,
+    quantity: 'f22.internal.fuel',
     unit: 'kg',
     label: 'SOURCED',
     category: 'Airframe & Dimensions',
@@ -329,6 +357,7 @@ export const CONSTANTS_REGISTRY = {
   F119_ENGINE_COUNT: entry({
     id: 'F119_ENGINE_COUNT',
     value: 2,
+    quantity: 'f119.engine.count',
     unit: '1',
     label: 'SOURCED',
     category: 'Propulsion & Engine Model',
@@ -339,6 +368,7 @@ export const CONSTANTS_REGISTRY = {
   F119_BYPASS_RATIO_APPROX: entry({
     id: 'F119_BYPASS_RATIO_APPROX',
     value: 0.3,
+    quantity: 'engine.bypass_ratio',
     unit: '1',
     label: 'APPROXIMATE',
     category: 'Propulsion & Engine Model',
@@ -349,6 +379,7 @@ export const CONSTANTS_REGISTRY = {
   F119_NOZZLE_VECTOR_MAX_DEG: entry({
     id: 'F119_NOZZLE_VECTOR_MAX_DEG',
     value: 20,
+    quantity: 'f119.nozzle.vector.max',
     unit: 'deg',
     label: 'SOURCED',
     category: 'Propulsion & Engine Model',
@@ -359,6 +390,7 @@ export const CONSTANTS_REGISTRY = {
   F119_AB_THRUST_CLASS_LBF: entry({
     id: 'F119_AB_THRUST_CLASS_LBF',
     value: 35_000,
+    quantity: 'engine.ab_thrust_class',
     unit: 'lbf',
     label: 'SOURCED',
     category: 'Propulsion & Engine Model',
@@ -370,6 +402,7 @@ export const CONSTANTS_REGISTRY = {
   LBF_TO_KN: entry({
     id: 'LBF_TO_KN',
     value: 0.0044482216,
+    quantity: 'lbf.to',
     unit: 'kN/lbf',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -380,6 +413,7 @@ export const CONSTANTS_REGISTRY = {
   F119_DRY_THRUST_FRACTION: entry({
     id: 'F119_DRY_THRUST_FRACTION',
     value: 0.68,
+    quantity: 'f119.dry.thrust.fraction',
     unit: '1',
     label: 'APPROXIMATE',
     category: 'Propulsion & Engine Model',
@@ -390,6 +424,7 @@ export const CONSTANTS_REGISTRY = {
   F119_IDLE_THRUST_FRACTION: entry({
     id: 'F119_IDLE_THRUST_FRACTION',
     value: 0.05,
+    quantity: 'f119.idle.thrust.fraction',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -400,6 +435,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_IDLE_N2_PCT: entry({
     id: 'ENGINE_IDLE_N2_PCT',
     value: 62,
+    quantity: 'engine.idle.n2',
     unit: '%',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -410,6 +446,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_MIL_N2_PCT: entry({
     id: 'ENGINE_MIL_N2_PCT',
     value: 100,
+    quantity: 'engine.mil.n2',
     unit: '%',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -420,6 +457,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_MIL_THROTTLE_THRESHOLD: entry({
     id: 'ENGINE_MIL_THROTTLE_THRESHOLD',
     value: 0.75,
+    quantity: 'engine.mil.throttle.threshold',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -430,6 +468,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_SPOOL_UP_TAU_S: entry({
     id: 'ENGINE_SPOOL_UP_TAU_S',
     value: 2.2,
+    quantity: 'engine.spool.up.tau',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -440,6 +479,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_SPOOL_DOWN_TAU_S: entry({
     id: 'ENGINE_SPOOL_DOWN_TAU_S',
     value: 3.6,
+    quantity: 'engine.spool.down.tau',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -450,6 +490,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_AB_TAU_S: entry({
     id: 'ENGINE_AB_TAU_S',
     value: 0.85,
+    quantity: 'engine.ab.tau',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -460,6 +501,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_NOZZLE_IDLE_OPEN_FRAC: entry({
     id: 'ENGINE_NOZZLE_IDLE_OPEN_FRAC',
     value: 0.25,
+    quantity: 'engine.nozzle.idle.open.frac',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -470,6 +512,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_NOZZLE_MIL_OPEN_FRAC: entry({
     id: 'ENGINE_NOZZLE_MIL_OPEN_FRAC',
     value: 0.55,
+    quantity: 'engine.nozzle.mil.open.frac',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -480,6 +523,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_NOZZLE_AB_OPEN_FRAC: entry({
     id: 'ENGINE_NOZZLE_AB_OPEN_FRAC',
     value: 1.0,
+    quantity: 'engine.nozzle.ab.open.frac',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -490,6 +534,7 @@ export const CONSTANTS_REGISTRY = {
   START_BATTERY_DURATION_S: entry({
     id: 'START_BATTERY_DURATION_S',
     value: 1.5,
+    quantity: 'start.battery.duration',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -500,6 +545,7 @@ export const CONSTANTS_REGISTRY = {
   START_APU_DURATION_S: entry({
     id: 'START_APU_DURATION_S',
     value: 3.0,
+    quantity: 'start.apu.duration',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -510,6 +556,7 @@ export const CONSTANTS_REGISTRY = {
   START_MOTOR_DURATION_S: entry({
     id: 'START_MOTOR_DURATION_S',
     value: 2.5,
+    quantity: 'start.motor.duration',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -520,6 +567,7 @@ export const CONSTANTS_REGISTRY = {
   START_IGNITION_DURATION_S: entry({
     id: 'START_IGNITION_DURATION_S',
     value: 1.5,
+    quantity: 'start.ignition.duration',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -530,6 +578,7 @@ export const CONSTANTS_REGISTRY = {
   START_LIGHTOFF_DURATION_S: entry({
     id: 'START_LIGHTOFF_DURATION_S',
     value: 3.5,
+    quantity: 'start.lightoff.duration',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -540,6 +589,7 @@ export const CONSTANTS_REGISTRY = {
   START_MOTOR_N2_PCT: entry({
     id: 'START_MOTOR_N2_PCT',
     value: 22,
+    quantity: 'start.motor.n2',
     unit: '%',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -550,6 +600,7 @@ export const CONSTANTS_REGISTRY = {
   SHUTDOWN_COOLDOWN_TAU_S: entry({
     id: 'SHUTDOWN_COOLDOWN_TAU_S',
     value: 4.0,
+    quantity: 'shutdown.cooldown.tau',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -560,6 +611,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_AB_ON_THRESHOLD: entry({
     id: 'ENGINE_AB_ON_THRESHOLD',
     value: 0.05,
+    quantity: 'engine.ab.on.threshold',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -570,6 +622,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_MIL_REGIME_THRESHOLD: entry({
     id: 'ENGINE_MIL_REGIME_THRESHOLD',
     value: 0.1,
+    quantity: 'engine.mil.regime.threshold',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -580,6 +633,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_SHUTDOWN_N2_CUTOFF_PCT: entry({
     id: 'ENGINE_SHUTDOWN_N2_CUTOFF_PCT',
     value: 1.5,
+    quantity: 'engine.shutdown.n2.cutoff',
     unit: '%',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -590,6 +644,7 @@ export const CONSTANTS_REGISTRY = {
   ENGINE_APU_SPOOL_TAU_S: entry({
     id: 'ENGINE_APU_SPOOL_TAU_S',
     value: 1.35,
+    quantity: 'engine.apu.spool.tau',
     unit: 's',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -604,6 +659,7 @@ export const CONSTANTS_REGISTRY = {
   F22_GEAR_TRACK_M: entry({
     id: 'F22_GEAR_TRACK_M',
     value: 3.23,
+    quantity: 'f22.gear.track',
     unit: 'm',
     label: 'APPROXIMATE',
     category: 'Control Surfaces & Gear',
@@ -614,6 +670,7 @@ export const CONSTANTS_REGISTRY = {
   F22_GEAR_WHEELBASE_M: entry({
     id: 'F22_GEAR_WHEELBASE_M',
     value: 6.4,
+    quantity: 'f22.gear.wheelbase',
     unit: 'm',
     label: 'ASSUMED',
     category: 'Control Surfaces & Gear',
@@ -624,6 +681,7 @@ export const CONSTANTS_REGISTRY = {
   F22_STABILATOR_MAX_DEG: entry({
     id: 'F22_STABILATOR_MAX_DEG',
     value: 25,
+    quantity: 'f22.stabilator.max',
     unit: 'deg',
     label: 'ASSUMED',
     category: 'Control Surfaces & Gear',
@@ -634,6 +692,7 @@ export const CONSTANTS_REGISTRY = {
   F22_AILERON_MAX_DEG: entry({
     id: 'F22_AILERON_MAX_DEG',
     value: 25,
+    quantity: 'f22.aileron.max',
     unit: 'deg',
     label: 'ASSUMED',
     category: 'Control Surfaces & Gear',
@@ -644,6 +703,7 @@ export const CONSTANTS_REGISTRY = {
   F22_FLAPERON_RANGE_DEG: entry({
     id: 'F22_FLAPERON_RANGE_DEG',
     value: [-20, 30],
+    quantity: 'f22.flaperon.range',
     unit: 'deg',
     label: 'ASSUMED',
     category: 'Control Surfaces & Gear',
@@ -654,6 +714,7 @@ export const CONSTANTS_REGISTRY = {
   F22_LEF_MAX_DEG: entry({
     id: 'F22_LEF_MAX_DEG',
     value: 30,
+    quantity: 'f22.lef.max',
     unit: 'deg',
     label: 'ASSUMED',
     category: 'Control Surfaces & Gear',
@@ -664,6 +725,7 @@ export const CONSTANTS_REGISTRY = {
   F22_RUDDER_MAX_DEG: entry({
     id: 'F22_RUDDER_MAX_DEG',
     value: 30,
+    quantity: 'f22.rudder.max',
     unit: 'deg',
     label: 'ASSUMED',
     category: 'Control Surfaces & Gear',
@@ -678,6 +740,7 @@ export const CONSTANTS_REGISTRY = {
   F22_CANOPY_OPEN_DEG: entry({
     id: 'F22_CANOPY_OPEN_DEG',
     value: 38,
+    quantity: 'f22.canopy.open',
     unit: 'deg',
     label: 'ASSUMED',
     category: 'Weapons Bays & Cockpit',
@@ -688,6 +751,7 @@ export const CONSTANTS_REGISTRY = {
   F22_M61A2_AMMO_ROUNDS: entry({
     id: 'F22_M61A2_AMMO_ROUNDS',
     value: 480,
+    quantity: 'f22.m61a2.ammo.rounds',
     unit: 'rounds',
     label: 'SOURCED',
     category: 'Weapons Bays & Cockpit',
@@ -698,6 +762,7 @@ export const CONSTANTS_REGISTRY = {
   AIR_GAMMA_COLD: entry({
     id: 'AIR_GAMMA_COLD',
     value: 1.4,
+    quantity: 'air.gamma.cold',
     unit: '1',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -708,6 +773,7 @@ export const CONSTANTS_REGISTRY = {
   AIR_CP_COLD_J_KG_K: entry({
     id: 'AIR_CP_COLD_J_KG_K',
     value: 1005,
+    quantity: 'air.cp.cold',
     unit: 'J/(kg*K)',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -718,6 +784,7 @@ export const CONSTANTS_REGISTRY = {
   GAS_GAMMA_HOT: entry({
     id: 'GAS_GAMMA_HOT',
     value: 1.33,
+    quantity: 'gas.gamma.hot',
     unit: '1',
     label: 'SOURCED',
     category: 'Propulsion & Engine Model',
@@ -728,6 +795,7 @@ export const CONSTANTS_REGISTRY = {
   GAS_CP_HOT_J_KG_K: entry({
     id: 'GAS_CP_HOT_J_KG_K',
     value: 1150,
+    quantity: 'gas.cp.hot',
     unit: 'J/(kg*K)',
     label: 'SOURCED',
     category: 'Propulsion & Engine Model',
@@ -738,6 +806,7 @@ export const CONSTANTS_REGISTRY = {
   ISA_SEA_LEVEL_TEMP_K: entry({
     id: 'ISA_SEA_LEVEL_TEMP_K',
     value: 288.15,
+    quantity: 'isa.sea.level.temp',
     unit: 'K',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -748,6 +817,7 @@ export const CONSTANTS_REGISTRY = {
   ISA_SEA_LEVEL_PRESSURE_PA: entry({
     id: 'ISA_SEA_LEVEL_PRESSURE_PA',
     value: 101_325,
+    quantity: 'isa.sea.level.pressure',
     unit: 'Pa',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -758,6 +828,7 @@ export const CONSTANTS_REGISTRY = {
   ISA_TROPOSPHERE_LAPSE_K_M: entry({
     id: 'ISA_TROPOSPHERE_LAPSE_K_M',
     value: 0.0065,
+    quantity: 'isa.troposphere.lapse',
     unit: 'K/m',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -768,6 +839,7 @@ export const CONSTANTS_REGISTRY = {
   ISA_TROPOPAUSE_ALT_M: entry({
     id: 'ISA_TROPOPAUSE_ALT_M',
     value: 11_000,
+    quantity: 'isa.tropopause.alt',
     unit: 'm',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -778,6 +850,7 @@ export const CONSTANTS_REGISTRY = {
   ISA_TROPOPAUSE_TEMP_K: entry({
     id: 'ISA_TROPOPAUSE_TEMP_K',
     value: 216.65,
+    quantity: 'isa.tropopause.temp',
     unit: 'K',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -788,6 +861,7 @@ export const CONSTANTS_REGISTRY = {
   KELVIN_OFFSET: entry({
     id: 'KELVIN_OFFSET',
     value: 273.15,
+    quantity: 'kelvin.offset',
     unit: 'K',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
@@ -795,19 +869,10 @@ export const CONSTANTS_REGISTRY = {
     calibratedOn: [],
     commit: 'v1.2-thermal',
   }),
-  BRAYTON_BYPASS_RATIO: entry({
-    id: 'BRAYTON_BYPASS_RATIO',
-    value: 0.3,
-    unit: '1',
-    label: 'ASSUMED',
-    category: 'Propulsion & Engine Model',
-    sourceOrDerivation: 'Low-bypass supercruise turbofan teaching value (F119 cycle not publicly disclosed)',
-    calibratedOn: [],
-    commit: 'v1.2-thermal',
-  }),
   BRAYTON_FAN_PR_IDLE: entry({
     id: 'BRAYTON_FAN_PR_IDLE',
     value: 1.5,
+    quantity: 'brayton.fan.pr.idle',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -818,6 +883,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_FAN_PR_MIL: entry({
     id: 'BRAYTON_FAN_PR_MIL',
     value: 4.0,
+    quantity: 'brayton.fan.pr.mil',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -828,6 +894,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_HPC_PR_IDLE: entry({
     id: 'BRAYTON_HPC_PR_IDLE',
     value: 3.2,
+    quantity: 'brayton.hpc.pr.idle',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -838,6 +905,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_HPC_PR_MIL: entry({
     id: 'BRAYTON_HPC_PR_MIL',
     value: 7.5,
+    quantity: 'brayton.hpc.pr.mil',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -848,6 +916,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_TIT_IDLE_K: entry({
     id: 'BRAYTON_TIT_IDLE_K',
     value: 1050,
+    quantity: 'brayton.tit.idle',
     unit: 'K',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -858,6 +927,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_TIT_MIL_K: entry({
     id: 'BRAYTON_TIT_MIL_K',
     value: 1850,
+    quantity: 'brayton.tit.mil',
     unit: 'K',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -868,6 +938,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_AB_TEMP_MAX_K: entry({
     id: 'BRAYTON_AB_TEMP_MAX_K',
     value: 2150,
+    quantity: 'brayton.ab.temp.max',
     unit: 'K',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -878,6 +949,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_ETA_FAN: entry({
     id: 'BRAYTON_ETA_FAN',
     value: 0.89,
+    quantity: 'brayton.eta.fan',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -888,6 +960,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_ETA_HPC: entry({
     id: 'BRAYTON_ETA_HPC',
     value: 0.87,
+    quantity: 'brayton.eta.hpc',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -898,6 +971,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_ETA_HPT: entry({
     id: 'BRAYTON_ETA_HPT',
     value: 0.9,
+    quantity: 'brayton.eta.hpt',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -908,6 +982,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_ETA_LPT: entry({
     id: 'BRAYTON_ETA_LPT',
     value: 0.91,
+    quantity: 'brayton.eta.lpt',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -918,6 +993,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_ETA_NOZZLE: entry({
     id: 'BRAYTON_ETA_NOZZLE',
     value: 0.97,
+    quantity: 'brayton.eta.nozzle',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -928,6 +1004,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_COMBUSTOR_DP_FRAC: entry({
     id: 'BRAYTON_COMBUSTOR_DP_FRAC',
     value: 0.04,
+    quantity: 'brayton.combustor.dp.frac',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -938,6 +1015,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_AB_DP_FRAC: entry({
     id: 'BRAYTON_AB_DP_FRAC',
     value: 0.05,
+    quantity: 'brayton.ab.dp.frac',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -948,6 +1026,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_UNLIT_PR_FRAC: entry({
     id: 'BRAYTON_UNLIT_PR_FRAC',
     value: 0.25,
+    quantity: 'brayton.unlit.pr.frac',
     unit: '1',
     label: 'ASSUMED',
     category: 'Propulsion & Engine Model',
@@ -958,6 +1037,7 @@ export const CONSTANTS_REGISTRY = {
   BRAYTON_MIN_TURBINE_TERM: entry({
     id: 'BRAYTON_MIN_TURBINE_TERM',
     value: 0.05,
+    quantity: 'brayton.min.turbine.term',
     unit: '1',
     label: 'HEURISTIC',
     category: 'Propulsion & Engine Model',
@@ -968,10 +1048,22 @@ export const CONSTANTS_REGISTRY = {
   ISA_STRATOSPHERE_CEILING_M: entry({
     id: 'ISA_STRATOSPHERE_CEILING_M',
     value: 20_000,
+    quantity: 'isa.stratosphere.ceiling',
     unit: 'm',
     label: 'SOURCED',
     category: 'Physical & Atmosphere',
     sourceOrDerivation: 'ISO 2533 / ICAO ISA upper ceiling of isothermal lower stratosphere band (20 km)',
+    calibratedOn: [],
+    commit: 'v1.2-thermal',
+  }),
+  JET_FUEL_LHV_J_KG: entry({
+    id: 'JET_FUEL_LHV_J_KG',
+    value: 43_200_000,
+    unit: 'J/kg',
+    quantity: 'fuel.lower_heating_value',
+    label: 'ASSUMED',
+    category: 'Propulsion & Engine Model',
+    sourceOrDerivation: 'Assumed JP-8 / Jet A-1 lower heating value (~43.2 MJ/kg textbook teaching value for Brayton first-law check)',
     calibratedOn: [],
     commit: 'v1.2-thermal',
   }),

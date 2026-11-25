@@ -121,11 +121,12 @@ test.describe('v1.2 Staged Cutaway, Recognizable F119 Stages, Brayton Thermal Mo
       if (tier === 'low') expect(meshes.length).toBe(0);
     }
 
-    // Activate F119 Thermal Cutaway (Stage 3 + rear camera) and inspect Combustor Stn 4
+    // Activate F119 Thermal Cutaway (Stage 3 + auto-framed cutaway camera + 30% dimmed airframe) and inspect Combustor Stn 4
     await page.getByTestId('f119-cutaway-btn').click();
     await page.getByTestId('inspect-combustor-btn').click();
     await expect(page.getByTestId('inspector-panel')).toBeVisible();
     await expect(page.getByTestId('inspector-brayton-station')).toBeVisible();
+    await expect(page.getByTestId('sae-station-diagram')).toBeVisible();
 
     // Idle thermal cutaway
     await page.evaluate(() => {

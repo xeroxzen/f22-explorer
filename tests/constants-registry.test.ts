@@ -194,24 +194,27 @@ describe('Constants Registry & Label Audit', () => {
   });
 
   it('ensures no physical quantity appears twice in CONSTANTS_REGISTRY (single source of truth)', () => {
-    // Strip trailing unit suffixes so e.g. F119_AB_THRUST_CLASS_LBF and F119_AB_THRUST_CLASS_KN collide
-    const UNIT_SUFFIX_RE = /_(LBF|KN|N|KG|LB|M|FT|IN|M2|DEG|RAD|S|MS|PCT|KG_M3)$/;
-    const seen = new Map<string, string>();
-    const duplicates: string[] = [];
+    const seenQuantities = new Map<string, string>();
+    const quantityDuplicates: string[] = [];
 
     for (const entry of REGISTRY_ENTRIES) {
-      const stem = entry.id.replace(UNIT_SUFFIX_RE, '');
-      const prev = seen.get(stem);
-      if (prev) {
-        duplicates.push(`${prev} <-> ${entry.id} (shared quantity stem: ${stem})`);
+      expect(
+        entry.quantity.trim().length,
+        `${entry.id} must define an explicit physical quantity`
+      ).toBeGreaterThan(2);
+      const prevQ = seenQuantities.get(entry.quantity);
+      if (prevQ) {
+        quantityDuplicates.push(`${prevQ} <-> ${entry.id} (duplicate quantity: ${entry.quantity})`);
       } else {
-        seen.set(stem, entry.id);
+        seenQuantities.set(entry.quantity, entry.id);
       }
     }
 
-    expect(duplicates).toEqual([]);
+    expect(quantityDuplicates).toEqual([]);
     expect('F119_AB_THRUST_CLASS_KN' in CONSTANTS_REGISTRY).toBe(false);
     expect('F119_DRY_THRUST_CLASS_KN' in CONSTANTS_REGISTRY).toBe(false);
+    expect('BRAYTON_BYPASS_RATIO' in CONSTANTS_REGISTRY).toBe(false);
     expect(CONSTANTS_REGISTRY.F119_AB_THRUST_CLASS_LBF.label).toBe('SOURCED');
+    expect(CONSTANTS_REGISTRY.F119_BYPASS_RATIO_APPROX.quantity).toBe('engine.bypass_ratio');
   });
 });

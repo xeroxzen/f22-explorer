@@ -791,10 +791,11 @@ function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
           onClick={() => {
             if (explodeFactor > 0.8) {
               setExplodeStage(0);
+              setCameraPreset('rear');
             } else {
               setExplodeStage(3);
               setShowThermalColors(true);
-              setCameraPreset('rear');
+              setCameraPreset('thermal-cutaway');
             }
           }}
           data-testid="f119-cutaway-btn"
@@ -804,7 +805,14 @@ function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
         <button
           type="button"
           className={`mini-btn ${showThermalColors ? 'active' : ''}`}
-          onClick={() => setShowThermalColors(!showThermalColors)}
+          onClick={() => {
+            const next = !showThermalColors;
+            setShowThermalColors(next);
+            if (next) {
+              setExplodeStage(3);
+              setCameraPreset('thermal-cutaway');
+            }
+          }}
           data-testid="engines-thermal-toggle-btn"
         >
           Thermal Map
@@ -825,13 +833,16 @@ function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
         <span>{THERMAL_MAX_K} K ({Math.round(THERMAL_MAX_K - 273.15)} °C)</span>
       </div>
       <div className="brayton-grid">
-        {brayton.orderedStations.slice(1).map((st) => (
-          <div key={st.id} className="brayton-cell">
-            <span className="brayton-code">{st.stationCode}</span>
-            <span className="brayton-val">{Math.round(st.totalTempK)} K</span>
-            <span className="brayton-sub">{Math.round(st.totalTempC)} °C</span>
-          </div>
-        ))}
+        {(['2', '13', '3', '4', '45', '5', '6', '7', '8'] as const).map((code) => {
+          const st = brayton.stations[code];
+          return (
+            <div key={st.id} className="brayton-cell">
+              <span className="brayton-code">{st.stationCode}</span>
+              <span className="brayton-val">{Math.round(st.totalTempK)} K</span>
+              <span className="brayton-sub">{Math.round(st.totalTempC)} °C</span>
+            </div>
+          );
+        })}
       </div>
       <p className="areas-note">
         F119 cycle not publicly disclosed — ideal Brayton model on ASSUMED teaching inputs.

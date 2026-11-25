@@ -21,7 +21,8 @@ export type CameraPresetId =
   | 'side'
   | 'rear'
   | 'cockpit'
-  | 'bays';
+  | 'bays'
+  | 'thermal-cutaway';
 export type WeaponsLoadoutId = 'air-to-air' | 'jdam' | 'sdb';
 
 export interface QualityPreset {

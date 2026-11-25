@@ -90,7 +90,6 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `ENGINE_APU_SPOOL_TAU_S` | `1.35 s` | `ASSUMED` | — | `phase4` | First-order lag time constant for Honeywell G-250 APU spool-up |
 | `GAS_GAMMA_HOT` | `1.33` | `SOURCED` | — | `v1.2-thermal` | Textbook gas-turbine hot-section combustion products specific heat ratio (gamma_h = 1.33) |
 | `GAS_CP_HOT_J_KG_K` | `1,150 J/(kg*K)` | `SOURCED` | — | `v1.2-thermal` | Textbook gas-turbine hot-section specific heat at constant pressure (c_p,h = 1150 J/(kg·K)) |
-| `BRAYTON_BYPASS_RATIO` | `0.3` | `ASSUMED` | — | `v1.2-thermal` | Low-bypass supercruise turbofan teaching value (F119 cycle not publicly disclosed) |
 | `BRAYTON_FAN_PR_IDLE` | `1.5` | `ASSUMED` | — | `v1.2-thermal` | Assumed idle fan pressure ratio for teaching Brayton cycle (F119 cycle not publicly disclosed) |
 | `BRAYTON_FAN_PR_MIL` | `4` | `ASSUMED` | — | `v1.2-thermal` | Assumed mil/max 3-stage fan pressure ratio for teaching Brayton cycle (F119 cycle not publicly disclosed) |
 | `BRAYTON_HPC_PR_IDLE` | `3.2` | `ASSUMED` | — | `v1.2-thermal` | Assumed idle 6-stage HPC pressure ratio for teaching Brayton cycle (F119 cycle not publicly disclosed) |
@@ -107,6 +106,7 @@ Every `SOURCED`, `APPROXIMATE`, `CALIBRATED`, `EMPIRICAL`, `ASSUMED`, and `HEURI
 | `BRAYTON_AB_DP_FRAC` | `0.05` | `ASSUMED` | — | `v1.2-thermal` | Textbook afterburner fractional total pressure loss when lit (F119 cycle not publicly disclosed) |
 | `BRAYTON_UNLIT_PR_FRAC` | `0.25` | `ASSUMED` | — | `v1.2-thermal` | Motoring compression fraction before light-off for smooth Brayton start transition |
 | `BRAYTON_MIN_TURBINE_TERM` | `0.05` | `HEURISTIC` | — | `v1.2-thermal` | Numerical guard keeping turbine pressure-ratio base strictly positive |
+| `JET_FUEL_LHV_J_KG` | `4.3200e+7 J/kg` | `ASSUMED` | — | `v1.2-thermal` | Assumed JP-8 / Jet A-1 lower heating value (~43.2 MJ/kg textbook teaching value for Brayton first-law check) |
 
 ### Control Surfaces & Gear
 
