@@ -1,0 +1,53 @@
+{
+  "id": "gun-port-door",
+  "title": "M61A2 Retractable Gun Port Door",
+  "parentId": "m61a2-cannon",
+  "category": "Weapons & Armament",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Flush low-observable muzzle cover door on the right dorsal wing root that opens only while firing the M61A2 20 mm cannon.",
+  "role": "Preserves continuous stealth outer mold line when the internal cannon is not firing.",
+  "materials": "Radar-absorbent composite panel with high-speed actuator.",
+  "modelingNotes": {
+    "stationRangeM": [
+      7.5,
+      7.82
+    ],
+    "approxSizeM": [
+      0.18,
+      0.04,
+      0.32
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      2.2,
+      2.0,
+      -0.4
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Operation",
+      "value": "Closed except when firing",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "Muzzle covered by a retractable door that remains closed when not firing"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

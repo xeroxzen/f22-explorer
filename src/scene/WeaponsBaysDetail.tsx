@@ -23,7 +23,7 @@ function Aim120Mesh({
   const s = RENDERED_STORE_SPECS.aim120;
   const noseZ = -(s.bodyLengthM / 2 + s.noseLengthM / 2);
   return (
-    <group position={position} onClick={onSelect}>
+    <group position={position} onClick={onSelect} userData={{ loadedStore: true }}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[s.radiusM, s.radiusM, s.bodyLengthM, 12]} />
         <meshStandardMaterial color="#dce3ec" metalness={0.3} roughness={0.42} clippingPlanes={clippingPlanes} />
@@ -64,7 +64,7 @@ function Aim9Mesh({
   const s = RENDERED_STORE_SPECS.aim9x;
   const domeZ = -s.bodyLengthM / 2;
   return (
-    <group position={position} onClick={onSelect}>
+    <group position={position} onClick={onSelect} userData={{ loadedStore: true }}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[s.radiusM, s.radiusM, s.bodyLengthM, 12]} />
         <meshStandardMaterial color="#e2e8f0" metalness={0.3} roughness={0.4} clippingPlanes={clippingPlanes} />
@@ -106,7 +106,7 @@ function Gbu32JdamMesh({
   const noseZ = -(s.bodyLengthM / 2 + s.noseLengthM / 2);
   const tailZ = s.bodyLengthM / 2 + s.tailLengthM / 2;
   return (
-    <group position={position} onClick={onSelect}>
+    <group position={position} onClick={onSelect} userData={{ loadedStore: true }}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[s.radiusM * 0.94, s.radiusM, s.bodyLengthM, 14]} />
         <meshStandardMaterial color="#4b5548" metalness={0.35} roughness={0.58} clippingPlanes={clippingPlanes} />
@@ -155,7 +155,7 @@ function Gbu39SdbMesh({
   const s = RENDERED_STORE_SPECS.gbu39;
   const noseZ = -(s.bodyLengthM / 2 + s.noseLengthM / 2);
   return (
-    <group position={position} onClick={onSelect}>
+    <group position={position} onClick={onSelect} userData={{ loadedStore: true }}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[s.radiusM, s.radiusM, s.bodyLengthM, 12]} />
         <meshStandardMaterial color="#94a3b8" metalness={0.45} roughness={0.42} clippingPlanes={clippingPlanes} />
@@ -278,7 +278,7 @@ export function WeaponsBaysDetail({
   };
 
   return (
-    <group name="animated-weapons-bays">
+    <group name="animated-weapons-bays" position={[0, -0.68, 0]}>
       {/* Main Weapons Bay Doors + Distinguishable Clickable Stores */}
       {mainBayOpen && (
         <>

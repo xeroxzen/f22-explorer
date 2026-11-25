@@ -43,6 +43,32 @@ import nozzle2dRight from './parts/nozzle-2d-right.json';
 import noseLandingGear from './parts/nose-landing-gear.json';
 import mainLandingGearLeft from './parts/main-landing-gear-left.json';
 import mainLandingGearRight from './parts/main-landing-gear-right.json';
+import f119FanLeft from './parts/f119-fan-left.json';
+import f119FanRight from './parts/f119-fan-right.json';
+import f119HpcLeft from './parts/f119-hpc-left.json';
+import f119HpcRight from './parts/f119-hpc-right.json';
+import f119CombustorLeft from './parts/f119-combustor-left.json';
+import f119CombustorRight from './parts/f119-combustor-right.json';
+import f119HptLeft from './parts/f119-hpt-left.json';
+import f119HptRight from './parts/f119-hpt-right.json';
+import f119LptLeft from './parts/f119-lpt-left.json';
+import f119LptRight from './parts/f119-lpt-right.json';
+import f119AugmentorLeft from './parts/f119-augmentor-left.json';
+import f119AugmentorRight from './parts/f119-augmentor-right.json';
+import f119NozzleFlapsLeft from './parts/f119-nozzle-flaps-left.json';
+import f119NozzleFlapsRight from './parts/f119-nozzle-flaps-right.json';
+import fuelTankForward from './parts/fuel-tank-forward.json';
+import fuelTankAft from './parts/fuel-tank-aft.json';
+import fuelTankWingLeft from './parts/fuel-tank-wing-left.json';
+import fuelTankWingRight from './parts/fuel-tank-wing-right.json';
+import anApg77Radar from './parts/an-apg-77-radar.json';
+import tailHook from './parts/tail-hook.json';
+import gunPortDoor from './parts/gun-port-door.json';
+import pitotAirDataProbes from './parts/pitot-air-data-probes.json';
+import iffCommAntennas from './parts/iff-comm-antennas.json';
+import canopyActuator from './parts/canopy-actuator.json';
+import noseGearDoors from './parts/nose-gear-doors.json';
+import mainGearDoors from './parts/main-gear-doors.json';
 import {
   validateComponentContent,
   validatePartsHierarchy,
@@ -95,6 +121,32 @@ const RAW_COMPONENTS: readonly [string, unknown][] = [
   ['parts/nose-landing-gear.json', noseLandingGear],
   ['parts/main-landing-gear-left.json', mainLandingGearLeft],
   ['parts/main-landing-gear-right.json', mainLandingGearRight],
+  ['parts/f119-fan-left.json', f119FanLeft],
+  ['parts/f119-fan-right.json', f119FanRight],
+  ['parts/f119-hpc-left.json', f119HpcLeft],
+  ['parts/f119-hpc-right.json', f119HpcRight],
+  ['parts/f119-combustor-left.json', f119CombustorLeft],
+  ['parts/f119-combustor-right.json', f119CombustorRight],
+  ['parts/f119-hpt-left.json', f119HptLeft],
+  ['parts/f119-hpt-right.json', f119HptRight],
+  ['parts/f119-lpt-left.json', f119LptLeft],
+  ['parts/f119-lpt-right.json', f119LptRight],
+  ['parts/f119-augmentor-left.json', f119AugmentorLeft],
+  ['parts/f119-augmentor-right.json', f119AugmentorRight],
+  ['parts/f119-nozzle-flaps-left.json', f119NozzleFlapsLeft],
+  ['parts/f119-nozzle-flaps-right.json', f119NozzleFlapsRight],
+  ['parts/fuel-tank-forward.json', fuelTankForward],
+  ['parts/fuel-tank-aft.json', fuelTankAft],
+  ['parts/fuel-tank-wing-left.json', fuelTankWingLeft],
+  ['parts/fuel-tank-wing-right.json', fuelTankWingRight],
+  ['parts/an-apg-77-radar.json', anApg77Radar],
+  ['parts/tail-hook.json', tailHook],
+  ['parts/gun-port-door.json', gunPortDoor],
+  ['parts/pitot-air-data-probes.json', pitotAirDataProbes],
+  ['parts/iff-comm-antennas.json', iffCommAntennas],
+  ['parts/canopy-actuator.json', canopyActuator],
+  ['parts/nose-gear-doors.json', noseGearDoors],
+  ['parts/main-gear-doors.json', mainGearDoors],
 ];
 
 export const ALL_COMPONENTS: readonly ComponentContent[] = RAW_COMPONENTS.map(

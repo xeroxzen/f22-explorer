@@ -1,0 +1,53 @@
+{
+  "id": "main-gear-doors",
+  "title": "Main Landing Gear Bay Doors",
+  "parentId": "main-landing-gear-left",
+  "category": "Landing Gear",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Left and right flush stealth bay doors sealing the main landing gear wells during flight.",
+  "role": "Encloses the main landing gear struts and wheels with radar-scattering sawtooth seams.",
+  "materials": "Composite panels with RAM edge seals (third-party GLB mesh, APPROXIMATE).",
+  "modelingNotes": {
+    "stationRangeM": [
+      10.74,
+      11.66
+    ],
+    "approxSizeM": [
+      3.0,
+      0.38,
+      0.92
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -2.2,
+      0.6
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Configuration",
+      "value": "Twin main wheel-well stealth doors",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "Retractable tricycle landing gear enclosed by flush bay doors"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

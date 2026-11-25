@@ -32,3 +32,13 @@ Keep this table updated whenever any vendored file is modified.
 | `tests/mobile-layout.test.ts` | `tests/mobile-layout.test.ts` | Adapted quality preset assertions to `explorerStore.ts` (`antialias` instead of `starCount`). |
 | `src/scene/debugBridge.ts` | `src/scene/debugBridge.ts` | Renamed debug handle to `window.__f22debug`; kept FPS/frame-time ring buffer, hitbox registration, screen-space bounds projection, SAT collision check, and Phase 4 engine state hooks. |
 | `e2e/helpers.ts` | `e2e/helpers.ts` | Adapted `waitForExplorerReady()` for `window.__f22debug`; kept screenshot and viewport occlusion/overlap helpers. |
+
+
+## Third-Party 3D Assets & Environments (v1.1+)
+
+| Local Asset | Upstream Source | Author | License | Accessed | Modifications |
+| :--- | :--- | :--- | :--- | :---: | :--- |
+| `public/models/f22-raptor-nlm.glb` | [F22 Raptor FREE (Sketchfab)](https://sketchfab.com/3d-models/f22-raptor-free-2a64abf0866a405c865466c7642ca689) | NLM (`@NLM-Group`) | **CC-BY 4.0** (`creativecommons.org/licenses/by/4.0/`, verified via direct page fetch) | `2026-11-25` | Converted via committed `scripts/blender/split_f22_mesh.py`: removed boarding ladder, normalized to 18.92 m length (nose `-Z`, ground `Y=0`), decimated tires, split into 33 explorer part IDs, replaced textures with trademark-free PBR materials, Draco-compressed (381 KB). |
+| `public/hdri/hangar_1k.hdr` | [Aircraft Workshop 01 (Poly Haven)](https://polyhaven.com/a/aircraft_workshop_01) | Poly Haven | **CC0 1.0** | `2026-11-25` | Used unmodified as indoor hangar IBL environment map (`1k` HDR). |
+| `public/hdri/airfield_overcast_1k.hdr` | [Kloofendal 48d Partly Cloudy PureSky (Poly Haven)](https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky) | Poly Haven | **CC0 1.0** | `2026-11-25` | Used unmodified as outdoor run-up pad IBL environment map (`1k` HDR). |
+| `public/draco/*` | Three.js `examples/jsm/libs/draco/gltf/` | Google / Three.js | Apache-2.0 / MIT | `2026-11-25` | Bundled locally for offline/CI Draco glTF decoding. |

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>F-22 Explorer v1.1 — Desktop Mode-Based UI Mockup</title>
+  <style>
+    :root {
+      --bg-canvas: #0b1018;
+      --surface-1: rgba(14, 21, 33, 0.90);
+      --surface-2: rgba(26, 36, 54, 0.78);
+      --border-subtle: rgba(148, 163, 184, 0.22);
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --badge-sourced: #22c55e;
+      --badge-approx: #f59e0b;
+      --badge-assumed: #a78bfa;
+      --badge-classified: #ef4444;
+      --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+      --radius-sm: 6px; --radius-md: 12px; --radius-pill: 999px;
+      --fs-xs: 11px; --fs-sm: 12px; --fs-md: 13px; --fs-lg: 15px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1280px; height: 800px; overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 54% 48%, #1f2937 0%, #0b1018 72%);
+      color: var(--text-primary);
+      position: relative;
+    }
+    .viewport-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(rgba(11, 16, 24, 0.14), rgba(11, 16, 24, 0.42)),
+        url('../../screenshots/v1.1/desktop-ab-plume-new.png') center/cover no-repeat;
+      clip-path: inset(52px 0 60px 0);
+    }
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--sp-4);
+      background: var(--surface-1);
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(12px);
+      z-index: 20;
+    }
+    .brand { display: flex; align-items: baseline; gap: 10px; }
+    .brand-title { font-size: 14px; font-weight: 800; letter-spacing: 0.12em; }
+    .brand-tag { font-size: var(--fs-xs); color: var(--text-muted); }
+    .mode-switcher {
+      display: inline-flex; gap: 2px; padding: 3px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-subtle);
+    }
+    .mode-btn {
+      padding: 6px 16px; border-radius: var(--radius-pill); border: none;
+      background: transparent; color: var(--text-secondary);
+      font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+    }
+    .mode-btn.active {
+      background: rgba(56, 189, 248, 0.22);
+      color: #e0f2fe;
+      box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.6);
+    }
+    .mode-btn.soon { color: var(--text-muted); opacity: 0.55; }
+    .menu-btn {
+      padding: 6px 12px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      background: rgba(56, 189, 248, 0.16); color: var(--text-primary);
+      font-size: var(--fs-sm); font-weight: 600;
+    }
+    .panel {
+      position: fixed; top: 68px; width: 310px;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(14px);
+      padding: var(--sp-4);
+      display: flex; flex-direction: column; gap: var(--sp-3);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+    }
+    .left-panel { left: 16px; }
+    .right-panel { right: 16px; top: 318px; }
+    .overflow-menu {
+      position: fixed; top: 60px; right: 16px; width: 270px;
+      background: rgba(14, 21, 33, 0.96);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: var(--radius-md);
+      padding: var(--sp-3);
+      display: flex; flex-direction: column; gap: 10px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+      z-index: 30;
+    }
+    .kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase; }
+    .panel-title { font-size: var(--fs-lg); font-weight: 700; margin-top: 2px; }
+    .section-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      padding: 5px 10px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-2); color: var(--text-secondary);
+      font-size: var(--fs-xs); font-weight: 600;
+    }
+    .chip.active { border-color: var(--accent); color: #e0f2fe; background: rgba(56, 189, 248, 0.18); }
+    .slider-track { height: 5px; border-radius: 99px; background: #1e293b; position: relative; margin: 8px 0 4px; }
+    .slider-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 35%; background: var(--accent); border-radius: 99px; }
+    .slider-thumb { position: absolute; left: 35%; top: -5px; width: 15px; height: 15px; border-radius: 50%; background: var(--accent); border: 2px solid #0b1018; }
+    .divider { height: 1px; background: var(--border-subtle); }
+    .tree-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 8px; border-radius: var(--radius-sm); font-size: var(--fs-sm);
+      color: var(--text-secondary);
+    }
+    .tree-item.selected { background: rgba(56, 189, 248, 0.18); color: #f8fafc; border: 1px solid rgba(56, 189, 248, 0.45); }
+    .badge {
+      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.04em;
+    }
+    .b-sourced { background: rgba(34, 197, 94, 0.18); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .b-approx { background: rgba(245, 158, 11, 0.18); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .credits-box {
+      padding: 8px; border-radius: 8px; background: rgba(30, 41, 59, 0.65);
+      border: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-secondary); line-height: 1.4;
+    }
+    .mockup-banner {
+      position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      background: rgba(14, 21, 33, 0.92); border: 1px solid var(--border-subtle);
+      font-size: 11px; color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport-bg"></div>
+
+  <header class="top-bar">
+    <div class="brand">
+      <span class="brand-title">F-22 RAPTOR</span>
+      <span class="brand-tag">v1.1 MODE-BASED UI MOCKUP</span>
+    </div>
+
+    <nav class="mode-switcher" aria-label="Explorer Modes">
+      <button class="mode-btn active">Explore</button>
+      <button class="mode-btn">Cockpit</button>
+      <button class="mode-btn">Weapons</button>
+      <button class="mode-btn">Engines</button>
+      <button class="mode-btn soon" disabled>Airflow (v1.3)</button>
+    </nav>
+
+    <button class="menu-btn">⋯ Menu</button>
+  </header>
+
+  <!-- Single Contextual Panel (Explore Mode) -->
+  <aside class="panel left-panel">
+    <div>
+      <div class="kicker">EXPLORE MODE · 1 PANEL AT A TIME</div>
+      <div class="panel-title">Airframe &amp; Disassembly</div>
+    </div>
+
+    <div>
+      <div class="section-lbl">Camera Views</div>
+      <div class="btn-row">
+        <span class="chip active">3/4</span>
+        <span class="chip">Front</span>
+        <span class="chip">Top</span>
+        <span class="chip">Side</span>
+        <span class="chip">Rear</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-lbl">Explode · 35%</div>
+      <div class="slider-track"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
+      <div class="btn-row" style="margin-top:8px;">
+        <span class="chip">X-Ray</span>
+        <span class="chip">Section: Off</span>
+        <span class="chip active">Gear Down</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-lbl">Parts (~70 in v1.1)</div>
+      <div class="tree-item selected"><span>F-22 Airframe</span><span class="badge b-approx">APPROX</span></div>
+      <div class="tree-item"><span>Radome &amp; AN/APG-77</span><span class="badge b-sourced">EXIST</span></div>
+      <div class="tree-item"><span>F119 Cutaway Core</span><span class="badge b-approx">CUTAWAY</span></div>
+      <div class="tree-item"><span>Internal Fuel Tanks</span><span class="badge b-approx">APPROX</span></div>
+      <div class="tree-item"><span>Aerial Refuelling Port</span><span class="badge b-sourced">EXIST</span></div>
+    </div>
+  </aside>
+
+  <!-- Compact Secondary Overflow Menu (open state) -->
+  <div class="overflow-menu">
+    <div>
+      <div class="section-lbl">Graphics Quality</div>
+      <div class="btn-row">
+        <span class="chip">LOW</span>
+        <span class="chip">MED</span>
+        <span class="chip active">HIGH</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <span class="chip">Audio: Muted</span>
+      <span class="chip">Guided Tours</span>
+      <span class="chip">Share Link</span>
+    </div>
+    <div class="divider"></div>
+    <div class="credits-box">
+      <div class="section-lbl" style="margin-bottom:3px;color:#38bdf8;">Credits &amp; Licenses</div>
+      <strong>F22 Raptor FREE</strong> by NLM (Sketchfab) — <strong>CC-BY 4.0</strong>.<br/>
+      HDRIs by Poly Haven — <strong>CC0 1.0</strong>.
+    </div>
+  </div>
+
+  <!-- Right Inspector (when a part is selected) -->
+  <aside class="panel right-panel">
+    <div>
+      <div class="kicker">PART INSPECTOR</div>
+      <div class="panel-title">F-22 Raptor Airframe</div>
+    </div>
+    <div class="btn-row">
+      <span class="badge b-sourced">EXISTENCE: SOURCED</span>
+      <span class="badge b-approx">GEOMETRY: APPROXIMATE</span>
+    </div>
+    <p style="font-size:12px;color:#cbd5e1;line-height:1.45;">
+      Third-party CC-BY 4.0 exterior model (NLM), normalized to 18.92 m USAF length (not verified against engineering drawings).
+    </p>
+  </aside>
+
+  <div class="mockup-banner">Design System Mockup · Desktop 1280×800 · 4-Mode Top Bar + Compact ⋯ Menu + Single Contextual Panel</div>
+</body>
+</html>

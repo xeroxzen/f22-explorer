@@ -92,7 +92,7 @@ function computeIoU(a: Uint8Array, b: Uint8Array): number {
   return union === 0 ? 0 : inter / union;
 }
 
-describe('F-22 Orthographic Silhouette Regression (ASSUMED hand-authored reference-outlines.json, IoU >= 0.85)', () => {
+describe('Aero Reference Geometry (f22Geometry.ts) Orthographic Silhouette Regression — NOT the visual GLB (ASSUMED hand-authored reference-outlines.json, IoU >= 0.85)', () => {
   it('achieves Top-view (planform) IoU >= 0.85 against hand-authored reference outline', () => {
     const bounds: Bounds2D = { minU: -7.5, maxU: 7.5, minV: -10.2, maxV: 10.2 };
     const modelMask = rasterizeModelView(bounds, (x, _y, z) => [x, z]);

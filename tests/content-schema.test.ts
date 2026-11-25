@@ -126,11 +126,11 @@ describe('Component content JSON schema & hierarchy validation', () => {
     ).toThrow(/urlOrLocator/);
   });
 
-  it('validates all 30–50 F-22 parts JSON files on disk, dual labels, and tree integrity', () => {
+  it('validates all ~70 F-22 parts JSON files on disk, dual labels, and tree integrity', () => {
     const dir = path.resolve(process.cwd(), 'src/content/parts');
     const files = collectJsonFiles(dir);
-    expect(files.length).toBeGreaterThanOrEqual(30);
-    expect(files.length).toBeLessThanOrEqual(50);
+    expect(files.length).toBeGreaterThanOrEqual(65);
+    expect(files.length).toBeLessThanOrEqual(75);
 
     const validatedParts = files.map((file) => {
       const rel = path.relative(process.cwd(), file);
@@ -151,7 +151,7 @@ describe('Component content JSON schema & hierarchy validation', () => {
     const approxOrAssumedGeom = ALL_COMPONENTS.filter(
       (p) => p.geometryLabel === 'APPROXIMATE' || p.geometryLabel === 'ASSUMED'
     );
-    expect(approxOrAssumedGeom.length).toBeGreaterThanOrEqual(40);
+    expect(approxOrAssumedGeom.length).toBeGreaterThanOrEqual(65);
 
     // Classified areas must explicitly include NOT_PUBLICLY_DISCLOSED entries
     const allSpecs = ALL_COMPONENTS.flatMap((p) => p.specs);

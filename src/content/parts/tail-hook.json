@@ -1,0 +1,53 @@
+{
+  "id": "tail-hook",
+  "title": "Emergency Arresting Tailhook",
+  "parentId": "aft-fuselage",
+  "category": "Aft Fuselage & Empennage",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Retractable ventral emergency arresting hook stowed flush between the aft engine nacelles for runway cable engagement.",
+  "role": "Provides emergency runway arresting capability during brake failure or aborted takeoff.",
+  "materials": "Forged high-strength steel shank with flush stealth door.",
+  "modelingNotes": {
+    "stationRangeM": [
+      14.48,
+      15.92
+    ],
+    "approxSizeM": [
+      0.14,
+      0.1,
+      1.45
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -1.6,
+      2.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Function",
+      "value": "Emergency runway arresting",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "Retractable tricycle landing gear and an emergency tailhook"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

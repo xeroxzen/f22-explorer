@@ -1,7 +1,8 @@
-import { useEffect, useRef, type ComponentRef } from 'react';
+import { Suspense, useEffect, useRef, type ComponentRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Grid, OrbitControls } from '@react-three/drei';
+import { ContactShadows, Environment, Grid, OrbitControls } from '@react-three/drei';
+import { Bloom, EffectComposer, SSAO } from '@react-three/postprocessing';
 import { soundEngine } from '../audio/soundEngine.js';
 import {
   QUALITY_PRESETS,
@@ -24,8 +25,8 @@ const CAMERA_PRESETS: Record<
   rear: { pos: [-10.5, 4.4, 19.5], target: [-0.8, 2.0, 5.2] },
   // Seat-level pilot eye camera (forward of ACES II headrest) with wide 52° FOV framing all 6 Code One LCDs + HUD
   cockpit: { pos: [0, 2.82, fsToZ(5.10)], target: [0, 2.51, fsToZ(3.96)] },
-  // Below-belly forward-outboard camera looking unobstructed into the open main bay & side bay stores
-  bays: { pos: [0.55, 0.22, fsToZ(5.45)], target: [0.05, 1.32, fsToZ(9.35)] },
+  // Below-belly forward-starboard exterior camera framing the open main & side weapons bays unobstructed
+  bays: { pos: [6.4, 0.85, -6.2], target: [0.0, 0.95, -0.4] },
 };
 
 function HangarStructure({ shadows }: { readonly shadows: boolean }) {
@@ -90,12 +91,12 @@ function OutdoorRunUpPad({ shadows }: { readonly shadows: boolean }) {
           <meshBasicMaterial color="#eab308" />
         </mesh>
       </group>
-      {/* Apron edge lights */}
+      {/* Flush low-profile apron edge markers (no tall distracting posts) */}
       {[-16, 16].flatMap((x) =>
         [-14, 0, 14].map((z) => (
-          <mesh key={`${x}-${z}`} position={[x, 0.35, z]}>
-            <cylinderGeometry args={[0.08, 0.1, 0.7, 8]} />
-            <meshStandardMaterial color="#38bdf8" emissive="#0ea5e9" emissiveIntensity={1.5} />
+          <mesh key={`${x}-${z}`} position={[x, 0.02, z]}>
+            <cylinderGeometry args={[0.14, 0.16, 0.04, 10]} />
+            <meshStandardMaterial color="#475569" roughness={0.7} metalness={0.2} />
           </mesh>
         ))
       )}
@@ -111,6 +112,9 @@ function SceneController() {
   const cameraPresetNonce = useExplorerStore((s) => s.cameraPresetNonce);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const bottomSheetHeightPx = useExplorerStore((s) => s.bottomSheetHeightPx);
+  const mainBayOpen = useExplorerStore((s) => s.mainBayOpen);
+  const sideBaysOpen = useExplorerStore((s) => s.sideBaysOpen);
+  const weaponsLoadout = useExplorerStore((s) => s.weaponsLoadout);
   const rightDrawerWidthPx = useExplorerStore((s) => s.rightDrawerWidthPx);
   const animatingRef = useRef(false);
   const goalPosRef = useRef(new THREE.Vector3(14.5, 6.2, -13.5));
@@ -168,11 +172,53 @@ function SceneController() {
     }
   }, [camera, cameraPreset]);
 
-  // Camera preset transitions
+  // Camera preset transitions (with bounding-box auto-fit for open weapons bays + loaded stores)
   useEffect(() => {
-    if (cameraPresetNonce === 0) return;
+    if (cameraPresetNonce === 0 && cameraPreset !== 'bays') return;
+
+    if (cameraPreset === 'bays') {
+      const box = new THREE.Box3();
+      const baysRoot = scene.getObjectByName('animated-weapons-bays');
+      if (baysRoot) {
+        baysRoot.updateMatrixWorld(true);
+        box.setFromObject(baysRoot);
+      }
+      if (box.isEmpty()) {
+        box.set(new THREE.Vector3(-1.85, 0.25, -2.5), new THREE.Vector3(1.85, 1.0, 2.0));
+      }
+      const center = box.getCenter(new THREE.Vector3());
+      const ext = box.getSize(new THREE.Vector3());
+      const radius = Math.max(1.8, ext.length() * 0.5);
+
+      const persp = camera as THREE.PerspectiveCamera;
+      const fovRad = ((persp.isPerspectiveCamera ? persp.fov : 40) * Math.PI) / 180;
+      const aspect = Math.max(0.35, size.width / Math.max(1, size.height));
+      const halfV = fovRad / 2;
+      const halfH = Math.atan(Math.tan(halfV) * aspect);
+      const minHalf = Math.min(halfV, halfH);
+
+      // Account for mobile bottom sheet or desktop left panel
+      const sheetFrac = bottomSheetHeightPx > 0 ? bottomSheetHeightPx / Math.max(300, size.height) : 0;
+      const fitScale = (size.width < size.height ? 1.38 : 1.25) * (1 + sheetFrac * 0.75);
+      const dist = (radius / Math.sin(minHalf)) * fitScale;
+
+      // Below and outboard (~30° downward look angle toward open bays & stores, clamped above floor)
+      const dir = new THREE.Vector3(0.76, -0.14, -0.63).normalize();
+      goalTargetRef.current.copy(center);
+      // Shift target slightly down on mobile when bottom sheet is open so bays sit in upper viewport
+      if (sheetFrac > 0.05) {
+        goalTargetRef.current.y -= radius * sheetFrac * 0.45;
+      }
+      goalPosRef.current.copy(goalTargetRef.current).addScaledVector(dir, dist);
+      if (goalPosRef.current.y < 0.26) {
+        goalPosRef.current.y = 0.26;
+      }
+      animatingRef.current = true;
+      return;
+    }
+
     const p = CAMERA_PRESETS[cameraPreset];
-    const isCloseView = cameraPreset === 'cockpit' || cameraPreset === 'bays';
+    const isCloseView = cameraPreset === 'cockpit';
     const aspectScale = !isCloseView && size.width < size.height ? 1.48 : 1.0;
     const sheetScale =
       !isCloseView && bottomSheetHeightPx > 0
@@ -187,7 +233,18 @@ function SceneController() {
       .copy(goalTargetRef.current)
       .addScaledVector(dir, aspectScale * sheetScale * explodeScale);
     animatingRef.current = true;
-  }, [cameraPreset, cameraPresetNonce, size.width, size.height, bottomSheetHeightPx]);
+  }, [
+    camera,
+    scene,
+    cameraPreset,
+    cameraPresetNonce,
+    size.width,
+    size.height,
+    bottomSheetHeightPx,
+    mainBayOpen,
+    sideBaysOpen,
+    weaponsLoadout,
+  ]);
 
   // Auto-fit camera bounding box when exploding or when mobile sheet opens/closes
   useEffect(() => {
@@ -308,10 +365,58 @@ function SceneController() {
   );
 }
 
+const BASE = import.meta.env.BASE_URL;
+const SSAO_COLOR = new THREE.Color('#090d14');
+
+function PostEffects({
+  qualityTier,
+  afterburnerOn,
+}: {
+  readonly qualityTier: 'low' | 'med' | 'high';
+  readonly afterburnerOn: boolean;
+}) {
+  if (qualityTier === 'low') return null;
+  if (qualityTier === 'med' && !afterburnerOn) return null;
+
+  return (
+    <EffectComposer multisampling={0} enableNormalPass={qualityTier === 'high'}>
+      {qualityTier === 'high' ? (
+        <SSAO
+          samples={8}
+          resolutionScale={0.5}
+          radius={0.35}
+          intensity={14}
+          luminanceInfluence={0.5}
+          color={SSAO_COLOR}
+          worldDistanceThreshold={40}
+          worldDistanceFalloff={5}
+          worldProximityThreshold={0.4}
+          worldProximityFalloff={0.1}
+        />
+      ) : (
+        <></>
+      )}
+      {afterburnerOn ? (
+        <Bloom
+          mipmapBlur
+          luminanceThreshold={1.08}
+          intensity={0.48}
+          radius={0.62}
+        />
+      ) : (
+        <></>
+      )}
+    </EffectComposer>
+  );
+}
+
 export function HangarCanvas() {
   const qualityTier = useExplorerStore((s) => s.qualityTier);
   const selectPart = useExplorerStore((s) => s.selectPart);
   const outdoors = useExplorerStore((s) => s.engineSim.outdoors);
+  const afterburnerOn = useExplorerStore(
+    (s) => s.engineSim.left.afterburnerOn || s.engineSim.right.afterburnerOn
+  );
   const preset = QUALITY_PRESETS[qualityTier];
 
   return (
@@ -319,15 +424,36 @@ export function HangarCanvas() {
       <Canvas
         dpr={preset.dpr}
         shadows={preset.shadows}
-        gl={{ antialias: preset.antialias, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: preset.antialias,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.12,
+          powerPreference: 'high-performance',
+        }}
         camera={{ position: [14.5, 6.2, -13.5], fov: 40, near: 0.08, far: 320 }}
         onPointerMissed={() => selectPart(null)}
       >
-        <color attach="background" args={[outdoors ? '#1b2c44' : '#0c1118']} />
-        <fog attach="fog" args={[outdoors ? '#1b2c44' : '#0c1118', outdoors ? 55 : 48, outdoors ? 185 : 135]} />
+        <color attach="background" args={[outdoors ? '#556e8a' : '#1b222c']} />
+        <fog attach="fog" args={[outdoors ? '#647c96' : '#1b222c', outdoors ? 70 : 52, outdoors ? 220 : 145]} />
 
-        <ambientLight intensity={outdoors ? 0.65 : 0.55} />
-        <hemisphereLight args={[outdoors ? '#dbeafe' : '#c8dcff', outdoors ? '#334155' : '#1b2430', 0.65]} />
+        {qualityTier !== 'low' && (
+          <Suspense fallback={null}>
+            <Environment
+              files={
+                outdoors
+                  ? `${BASE}hdri/airfield_overcast_1k.hdr`
+                  : `${BASE}hdri/hangar_1k.hdr`
+              }
+              background
+              backgroundBlurriness={outdoors ? 0.16 : 0.42}
+              backgroundIntensity={outdoors ? 0.85 : 0.55}
+              environmentIntensity={outdoors ? 0.88 : 0.72}
+            />
+          </Suspense>
+        )}
+
+        <ambientLight intensity={qualityTier === 'low' ? 0.65 : 0.35} />
+        <hemisphereLight args={[outdoors ? '#dbeafe' : '#c8dcff', outdoors ? '#334155' : '#1b2430', 0.55]} />
         <directionalLight
           position={[16, 22, -14]}
           intensity={outdoors ? 1.55 : 1.35}
@@ -341,6 +467,18 @@ export function HangarCanvas() {
           <OutdoorRunUpPad shadows={preset.shadows} />
         ) : (
           <HangarStructure shadows={preset.shadows} />
+        )}
+
+        {qualityTier !== 'low' && (
+          <ContactShadows
+            position={[0, 0.012, 0]}
+            opacity={0.55}
+            scale={28}
+            blur={2.2}
+            far={6}
+            resolution={256}
+            frames={1}
+          />
         )}
 
         <Grid
@@ -357,6 +495,7 @@ export function HangarCanvas() {
         />
 
         <F22Model />
+        <PostEffects qualityTier={qualityTier} afterburnerOn={afterburnerOn} />
         <SceneController />
       </Canvas>
     </div>

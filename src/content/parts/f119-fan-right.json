@@ -1,0 +1,60 @@
+{
+  "id": "f119-fan-right",
+  "title": "Right F119 3-Stage Low-Pressure Fan",
+  "parentId": "engine-f119-right",
+  "category": "Propulsion",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Three-stage integrally bladed titanium fan compressing incoming airflow from the S-duct into the core and low-bypass duct.",
+  "role": "Compresses inlet air for both the bypass stream and the high-pressure core compressor.",
+  "materials": "Integrally bladed titanium rotors (IBRs) for high thrust-to-weight ratio.",
+  "modelingNotes": {
+    "stationRangeM": [
+      12.66,
+      13.26
+    ],
+    "approxSizeM": [
+      0.76,
+      0.76,
+      0.6
+    ],
+    "proportionReference": "Conceptual F119 cutaway proportions inside aft nacelle",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0.8,
+      -0.3,
+      3.0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Stage Count",
+      "value": "3",
+      "unit": "stages",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan driven by a single-stage low-pressure turbine"
+    },
+    {
+      "label": "Exact Fan Pressure Ratio",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified / proprietary Pratt & Whitney cycle parameter"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"
+    }
+  ]
+}

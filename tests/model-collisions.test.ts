@@ -6,7 +6,7 @@ import {
 } from '../src/scene/f22Geometry.js';
 
 describe('Phase 2 Lofted F-22 Part Geometry & Exact SAT Collision Guards', () => {
-  it('covers all 44 physical sub-parts in the Phase 1 content catalog 1:1', () => {
+  it('covers all 70 physical sub-parts in the v1.1 content catalog 1:1', () => {
     const physicalContentIds = ALL_COMPONENTS.filter((c) => c.parentId !== null)
       .map((c) => c.id)
       .sort();

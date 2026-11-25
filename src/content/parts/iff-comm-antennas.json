@@ -1,0 +1,66 @@
+{
+  "id": "iff-comm-antennas",
+  "title": "Conformal IFF & CNI Antenna Apertures",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Avionics",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Flush conformal Communications, Navigation, and Identification (CNI) and IFF antenna apertures integrated into the airframe skin.",
+  "role": "Enables encrypted intra-flight data link, Link 16 receive, voice communications, and IFF without protruding blade drag/RCS.",
+  "materials": "Flush radar-transparent dielectric windows over phased-array elements.",
+  "modelingNotes": {
+    "stationRangeM": [
+      6.48,
+      6.92
+    ],
+    "approxSizeM": [
+      0.36,
+      0.06,
+      0.44
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      3.2,
+      -0.6
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Suite",
+      "value": "Integrated CNI + IFF",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Air & Space Forces Magazine \u2014 F-22 Raptor Almanac (fetch-verified)",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-25",
+      "snippet": "Integrated CNI and IFF avionics suite"
+    },
+    {
+      "label": "Exact Waveform & Frequencies",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified military communications parameters"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Air & Space Forces Magazine \u2014 F-22 Raptor Almanac (fetch-verified)",
+      "urlOrLocator": "https://www.airandspaceforces.com/weapons-platforms/f-22/",
+      "accessed": "2026-11-25",
+      "snippet": "F-22 airframe, F119 propulsion, M61A2 cannon, ACES II, IFF and refueling overview"
+    },
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

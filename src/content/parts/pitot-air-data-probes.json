@@ -1,0 +1,53 @@
+{
+  "id": "pitot-air-data-probes",
+  "title": "Air Data & Pitot-Static Sensors",
+  "parentId": "forward-fuselage",
+  "category": "Forward Fuselage & Avionics",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Forward-fuselage air data sensors measuring pitot-static pressure, angle of attack, and sideslip for the flight control computers.",
+  "role": "Supplies redundant airspeed, altitude, and Mach data to the triplex digital flight control system.",
+  "materials": "Heated low-observable metallic sensor probes.",
+  "modelingNotes": {
+    "stationRangeM": [
+      2.6,
+      3.0
+    ],
+    "approxSizeM": [
+      2.54,
+      0.06,
+      0.36
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      -0.2,
+      -4.1
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Role",
+      "value": "Airspeed / AoA / static pressure",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "Air data sensor inputs feeding flight control computers"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

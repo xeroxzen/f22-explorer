@@ -13,6 +13,7 @@ import {
 
 export type QualityTier = 'low' | 'med' | 'high';
 export type ClipAxis = 'none' | 'x' | 'y' | 'z';
+export type ExplorerMode = 'explore' | 'cockpit' | 'weapons' | 'engines';
 export type CameraPresetId =
   | 'three-quarter'
   | 'front'
@@ -85,7 +86,10 @@ export interface ExplorerState {
   // Phase 4: Engine start sequence & twin-F119 spool simulation
   readonly engineSim: EngineSimState;
 
-  // Phase 5: Guided tours, accessibility & adaptive quality
+  // Phase 5 / v1.1: Mode-based UI, guided tours, accessibility & adaptive quality
+  readonly activeMode: ExplorerMode;
+  readonly modePanelOpen: boolean;
+  readonly showOverflowMenu: boolean;
   readonly activeTourId: TourId | null;
   readonly tourStepIndex: number;
   readonly showTourPicker: boolean;
@@ -134,6 +138,9 @@ export interface ExplorerState {
   tickEngineSim: (dtS: number) => void;
   setEnginePreset: (preset: 'off' | 'mid-start' | 'idle' | 'mil' | 'ab') => void;
 
+  setActiveMode: (mode: ExplorerMode, autoCamera?: boolean) => void;
+  setModePanelOpen: (open: boolean) => void;
+  setShowOverflowMenu: (open: boolean) => void;
   startTour: (id: TourId, stepIndex?: number) => void;
   setTourStepIndex: (index: number) => void;
   closeTour: () => void;
@@ -178,6 +185,10 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   flaps: 0,
   nozzlePitch: 0,
   engineSim: createInitialEngineSimState(),
+  activeMode: 'explore',
+  modePanelOpen:
+    typeof window !== 'undefined' ? window.innerWidth > 600 : true,
+  showOverflowMenu: false,
   activeTourId: null,
   tourStepIndex: 0,
   showTourPicker: false,
@@ -204,6 +215,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
     set({
       selectedPartId,
       showInspector: selectedPartId !== null,
+      showOverflowMenu: false,
       mobileControlsHidden: false,
     }),
   setHoveredPart: (hoveredPartId) => set({ hoveredPartId }),
@@ -211,6 +223,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
     set((s) => ({
       showInspector,
       selectedPartId: showInspector ? s.selectedPartId : null,
+      showOverflowMenu: showInspector ? false : s.showOverflowMenu,
       mobileControlsHidden: showInspector ? false : s.mobileControlsHidden,
     })),
   setShowPartTree: (showPartTree) =>
@@ -314,11 +327,49 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
       engineSim: createEnginePresetState(preset),
     })),
 
+  setActiveMode: (mode, autoCamera = true) =>
+    set((s) => {
+      const nextCam: CameraPresetId =
+        mode === 'cockpit'
+          ? 'cockpit'
+          : mode === 'weapons'
+            ? 'bays'
+            : mode === 'engines'
+              ? 'rear'
+              : 'three-quarter';
+      return {
+        activeMode: mode,
+        modePanelOpen: true,
+        showOverflowMenu: false,
+        showTourPicker: false,
+        explodeFactor: mode === 'explore' ? s.explodeFactor : 0,
+        mainBayOpen: mode === 'weapons' ? true : s.mainBayOpen,
+        sideBaysOpen: mode === 'weapons' ? true : s.sideBaysOpen,
+        cameraPreset: autoCamera ? nextCam : s.cameraPreset,
+        cameraPresetNonce: autoCamera ? s.cameraPresetNonce + 1 : s.cameraPresetNonce,
+      };
+    }),
+  setModePanelOpen: (modePanelOpen) =>
+    set((s) => ({
+      modePanelOpen,
+      showOverflowMenu: modePanelOpen ? false : s.showOverflowMenu,
+    })),
+  setShowOverflowMenu: (showOverflowMenu) =>
+    set((s) => ({
+      showOverflowMenu,
+      // Panel rule: opening ⋯ Menu closes overlapping overlays (no menu-over-HUD/Inspector overlap)
+      showInspector: showOverflowMenu ? false : s.showInspector,
+      showTourPicker: showOverflowMenu ? false : s.showTourPicker,
+      activeTourId: showOverflowMenu ? null : s.activeTourId,
+    })),
+
   startTour: (id, stepIndex = 0) =>
     set((s) => ({
       activeTourId: id,
       tourStepIndex: stepIndex,
       showTourPicker: false,
+      showOverflowMenu: false,
+      modePanelOpen: false,
       showPartTree: false,
       showAreasPanel: false,
       showEnginesPanel: false,

@@ -4,7 +4,7 @@
   "parentId": null,
   "category": "Airframe",
   "existenceLabel": "SOURCED",
-  "geometryLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
   "summary": "Fifth-generation twin-engine air-dominance fighter airframe combining low-observable shaping, internal weapons carriage, supercruise aerodynamics, and thrust vectoring.",
   "role": "Primary structural and aerodynamic envelope integrating all major airframe sections, propulsion, avionics, and internal payload bays.",
   "materials": "Approximately 39% titanium alloys, 24% carbon-fiber composites (24–35% across production summaries), 16% aluminum alloys, and ~1% thermoplastics by structural weight.",
@@ -18,8 +18,8 @@
       5.08,
       18.92
     ],
-    "proportionReference": "USAF Fact Sheet envelope dimensions (62 ft 1 in × 44 ft 6 in × 16 ft 8 in)",
-    "confidence": "HIGH"
+    "proportionReference": "Third-party model (NLM, CC-BY 4.0), not verified against drawings; normalized to 18.92 m USAF length",
+    "confidence": "MEDIUM"
   },
   "interaction": {
     "explodes": false,
