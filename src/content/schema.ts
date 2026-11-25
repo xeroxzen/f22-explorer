@@ -2,12 +2,14 @@ export type SpecStatus =
   | 'SOURCED'
   | 'APPROXIMATE'
   | 'ASSUMED'
+  | 'COMPUTED'
   | 'NOT_PUBLICLY_DISCLOSED';
 
 export const VALID_SPEC_STATUSES: readonly SpecStatus[] = [
   'SOURCED',
   'APPROXIMATE',
   'ASSUMED',
+  'COMPUTED',
   'NOT_PUBLICLY_DISCLOSED',
 ];
 

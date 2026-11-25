@@ -1,5 +1,6 @@
 import { getComponentContent } from '../content/registry.js';
 import type { ComponentContent, SpecStatus } from '../content/schema.js';
+import { computeBraytonCycle, partIdToBraytonStation } from '../sim/braytonCycle.js';
 import { useExplorerStore } from '../store/explorerStore.js';
 import { BottomSheet } from './BottomSheet.js';
 import { useViewport } from './useViewport.js';
@@ -12,6 +13,8 @@ function statusBadgeClass(status: SpecStatus): string {
       return 'badge-approximate';
     case 'ASSUMED':
       return 'badge-assumed';
+    case 'COMPUTED':
+      return 'badge-computed';
     case 'NOT_PUBLICLY_DISCLOSED':
       return 'badge-classified';
   }
@@ -27,6 +30,7 @@ function formatSnippet(snippet: string, verbatim?: boolean): string {
 }
 
 function InspectorBody({ content }: { readonly content: ComponentContent | null }) {
+  const engineSim = useExplorerStore((s) => s.engineSim);
   if (!content) {
     return (
       <div className="inspector-empty" data-testid="inspector-empty">
@@ -38,12 +42,20 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
           Every part displays dual provenance badges (Existence &amp; Geometry):{' '}
           <span className="spec-badge badge-sourced">SOURCED</span>,{' '}
           <span className="spec-badge badge-approximate">APPROXIMATE</span>,{' '}
-          <span className="spec-badge badge-assumed">ASSUMED</span>, or{' '}
+          <span className="spec-badge badge-assumed">ASSUMED</span>,{' '}
+          <span className="spec-badge badge-computed">COMPUTED</span>, or{' '}
           <span className="spec-badge badge-classified">NOT PUBLICLY DISCLOSED</span>.
         </p>
       </div>
     );
   }
+
+  const stationId = partIdToBraytonStation(content.id);
+  const isRightEng = content.id.endsWith('-right');
+  const liveStation =
+    stationId !== null
+      ? computeBraytonCycle(isRightEng ? engineSim.right : engineSim.left).stations[stationId]
+      : null;
 
   return (
     <div className="inspector-content">
@@ -63,6 +75,40 @@ function InspectorBody({ content }: { readonly content: ComponentContent | null 
       </div>
 
       <p className="inspector-summary">{content.summary}</p>
+
+      {liveStation && (
+        <section className="inspector-section" data-testid="inspector-brayton-station">
+          <h3 className="inspector-section-title">
+            Live Brayton Station ({liveStation.stationCode})
+          </h3>
+          <div className="spec-list">
+            <div className="spec-row">
+              <div className="spec-row-top">
+                <span className="spec-label">Total Temperature (Tₜ)</span>
+                <span className="spec-badge badge-computed">COMPUTED</span>
+              </div>
+              <div className="spec-value">
+                {Math.round(liveStation.totalTempK)} K ({Math.round(liveStation.totalTempC)} °C)
+              </div>
+              <div className="spec-source">
+                Ideal Brayton cycle on ASSUMED inputs (F119 cycle not publicly disclosed)
+              </div>
+            </div>
+            <div className="spec-row">
+              <div className="spec-row-top">
+                <span className="spec-label">Total Pressure (Pₜ)</span>
+                <span className="spec-badge badge-computed">COMPUTED</span>
+              </div>
+              <div className="spec-value">
+                {Math.round(liveStation.totalPressureKpa)} kPa ({liveStation.pressureRatioToAmbient.toFixed(1)}× P₀)
+              </div>
+              <div className="spec-source">
+                Driven by live {isRightEng ? 'ENG 2 (R)' : 'ENG 1 (L)'} spool &amp; throttle state
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="inspector-section">
         <h3 className="inspector-section-title">Role &amp; Function</h3>

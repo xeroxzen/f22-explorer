@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ALL_COMPONENTS } from '../content/registry.js';
 import type { ComponentContent, SpecStatus } from '../content/schema.js';
+import { INFERNO_CSS_GRADIENT, THERMAL_MAX_K, THERMAL_MIN_K } from '../scene/thermalColormap.js';
+import { computeBraytonCycle } from '../sim/braytonCycle.js';
 import { CONSTANTS_REGISTRY as R } from '../sim/config/registry.js';
 import { ENGINE_START_STEPS } from '../sim/engineSim.js';
+import { computeSkinHeating } from '../sim/skinHeating.js';
 import {
   useExplorerStore,
   type CameraPresetId,
@@ -37,6 +40,8 @@ function shortBadgeText(status: SpecStatus): string {
       return 'APPROX';
     case 'ASSUMED':
       return 'ASSUMED';
+    case 'COMPUTED':
+      return 'COMPUTED';
     case 'NOT_PUBLICLY_DISCLOSED':
       return 'N/D';
   }
@@ -50,6 +55,8 @@ function badgeClass(status: SpecStatus): string {
       return 'badge-approximate';
     case 'ASSUMED':
       return 'badge-assumed';
+    case 'COMPUTED':
+      return 'badge-computed';
     case 'NOT_PUBLICLY_DISCLOSED':
       return 'badge-classified';
   }
@@ -102,6 +109,8 @@ function ControlStickPad() {
 function ExploreModeBody() {
   const cameraPreset = useExplorerStore((s) => s.cameraPreset);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
+  const showSystemTints = useExplorerStore((s) => s.showSystemTints);
+  const showThermalColors = useExplorerStore((s) => s.showThermalColors);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
   const clipAxis = useExplorerStore((s) => s.clipAxis);
   const clipPosition = useExplorerStore((s) => s.clipPosition);
@@ -112,7 +121,9 @@ function ExploreModeBody() {
 
   const setCameraPreset = useExplorerStore((s) => s.setCameraPreset);
   const setExplodeFactor = useExplorerStore((s) => s.setExplodeFactor);
-  const toggleExplode = useExplorerStore((s) => s.toggleExplode);
+  const setExplodeStage = useExplorerStore((s) => s.setExplodeStage);
+  const setShowSystemTints = useExplorerStore((s) => s.setShowSystemTints);
+  const setShowThermalColors = useExplorerStore((s) => s.setShowThermalColors);
   const setXrayMode = useExplorerStore((s) => s.setXrayMode);
   const setClipAxis = useExplorerStore((s) => s.setClipAxis);
   const setClipPosition = useExplorerStore((s) => s.setClipPosition);
@@ -158,12 +169,18 @@ function ExploreModeBody() {
         </div>
       </section>
 
-      {/* Disassembly & Cutaway Controls */}
+      {/* Staged Disassembly & Cutaway Controls */}
       <section className="areas-section">
         <div className="areas-heading">
-          <span>Disassembly &amp; View</span>
-          <span className="spec-badge badge-approximate">
-            {Math.round(explodeFactor * 100)}%
+          <span>Staged Explode &amp; Cutaway</span>
+          <span className="spec-badge badge-approximate" data-testid="explode-stage-badge">
+            {explodeFactor < 0.02
+              ? 'Assembled'
+              : explodeFactor <= 0.35
+                ? 'Stage 1: Skin'
+                : explodeFactor <= 0.68
+                  ? 'Stage 2: Systems'
+                  : 'Stage 3: Engine'}
           </span>
         </div>
 
@@ -181,14 +198,27 @@ function ExploreModeBody() {
         </label>
 
         <div className="areas-btn-row" style={{ marginTop: 6 }}>
-          <button
-            type="button"
-            className={`mini-btn ${explodeFactor > 0.5 ? 'active' : ''}`}
-            onClick={toggleExplode}
-            data-testid="explode-toggle-btn"
-          >
-            {explodeFactor > 0.5 ? 'Assemble' : 'Explode 100%'}
-          </button>
+          {([0, 1, 2, 3] as const).map((st) => {
+            const active =
+              (st === 0 && explodeFactor < 0.05) ||
+              (st === 1 && explodeFactor >= 0.05 && explodeFactor <= 0.45) ||
+              (st === 2 && explodeFactor > 0.45 && explodeFactor <= 0.8) ||
+              (st === 3 && explodeFactor > 0.8);
+            return (
+              <button
+                key={st}
+                type="button"
+                className={`mini-btn ${active ? 'active' : ''}`}
+                onClick={() => setExplodeStage(st)}
+                data-testid={`explode-stage-${st}`}
+              >
+                {st === 0 ? 'Assembled' : `S${st}`}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="areas-btn-row" style={{ marginTop: 6 }}>
           <button
             type="button"
             className={`mini-btn ${xrayMode ? 'active' : ''}`}
@@ -197,6 +227,24 @@ function ExploreModeBody() {
             aria-pressed={xrayMode}
           >
             X-Ray
+          </button>
+          <button
+            type="button"
+            className={`mini-btn ${showSystemTints ? 'active' : ''}`}
+            onClick={() => setShowSystemTints(!showSystemTints)}
+            data-testid="system-tints-toggle-btn"
+            aria-pressed={showSystemTints}
+          >
+            System Tints
+          </button>
+          <button
+            type="button"
+            className={`mini-btn ${showThermalColors ? 'active' : ''}`}
+            onClick={() => setShowThermalColors(!showThermalColors)}
+            data-testid="thermal-toggle-btn"
+            aria-pressed={showThermalColors}
+          >
+            Thermal
           </button>
           <button
             type="button"
@@ -509,13 +557,28 @@ function WeaponsModeBody() {
 
 function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
   const engineSim = useExplorerStore((s) => s.engineSim);
+  const explodeFactor = useExplorerStore((s) => s.explodeFactor);
+  const showThermalColors = useExplorerStore((s) => s.showThermalColors);
+  const skinAltitudeM = useExplorerStore((s) => s.skinAltitudeM);
+  const skinMach = useExplorerStore((s) => s.skinMach);
   const startEngines = useExplorerStore((s) => s.startEngines);
   const abortOrShutdown = useExplorerStore((s) => s.abortOrShutdown);
   const setThrottle = useExplorerStore((s) => s.setThrottle);
   const setCameraPreset = useExplorerStore((s) => s.setCameraPreset);
   const setActiveMode = useExplorerStore((s) => s.setActiveMode);
+  const setExplodeStage = useExplorerStore((s) => s.setExplodeStage);
+  const setShowThermalColors = useExplorerStore((s) => s.setShowThermalColors);
+  const setSkinAltitudeM = useExplorerStore((s) => s.setSkinAltitudeM);
+  const setSkinMach = useExplorerStore((s) => s.setSkinMach);
+  const selectPart = useExplorerStore((s) => s.selectPart);
   const activeStepRef = useRef<HTMLLIElement>(null);
   const [stepsExpandedMobile, setStepsExpandedMobile] = useState(false);
+
+  const brayton = useMemo(() => computeBraytonCycle(engineSim.left), [engineSim.left]);
+  const skinHeat = useMemo(
+    () => computeSkinHeating(skinAltitudeM, skinMach),
+    [skinAltitudeM, skinMach]
+  );
 
   const isOff = engineSim.phase === 'OFF';
   const isRunning = engineSim.phase === 'RUNNING';
@@ -715,12 +778,123 @@ function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
     </section>
   );
 
+  const thermalCutawaySection = (
+    <section className="areas-section" data-testid="thermal-cycle-panel">
+      <div className="areas-heading">
+        <span>F119 Thermal Cutaway (Brayton)</span>
+        <span className="spec-badge badge-computed">COMPUTED</span>
+      </div>
+      <div className="areas-btn-row" style={{ marginBottom: 6 }}>
+        <button
+          type="button"
+          className={`mini-btn ${explodeFactor > 0.8 ? 'active' : ''}`}
+          onClick={() => {
+            if (explodeFactor > 0.8) {
+              setExplodeStage(0);
+            } else {
+              setExplodeStage(3);
+              setShowThermalColors(true);
+              setCameraPreset('rear');
+            }
+          }}
+          data-testid="f119-cutaway-btn"
+        >
+          {explodeFactor > 0.8 ? 'Assemble Jet' : 'F119 Cutaway'}
+        </button>
+        <button
+          type="button"
+          className={`mini-btn ${showThermalColors ? 'active' : ''}`}
+          onClick={() => setShowThermalColors(!showThermalColors)}
+          data-testid="engines-thermal-toggle-btn"
+        >
+          Thermal Map
+        </button>
+        <button
+          type="button"
+          className="mini-btn"
+          onClick={() => selectPart('f119-combustor-left')}
+          data-testid="inspect-combustor-btn"
+        >
+          Inspect Stn 4
+        </button>
+      </div>
+      <div className="thermal-legend-bar" style={{ background: INFERNO_CSS_GRADIENT }} />
+      <div className="thermal-legend-ticks" data-testid="thermal-legend">
+        <span>{THERMAL_MIN_K} K ({Math.round(THERMAL_MIN_K - 273.15)} °C)</span>
+        <span>1200 K (927 °C)</span>
+        <span>{THERMAL_MAX_K} K ({Math.round(THERMAL_MAX_K - 273.15)} °C)</span>
+      </div>
+      <div className="brayton-grid">
+        {brayton.orderedStations.slice(1).map((st) => (
+          <div key={st.id} className="brayton-cell">
+            <span className="brayton-code">{st.stationCode}</span>
+            <span className="brayton-val">{Math.round(st.totalTempK)} K</span>
+            <span className="brayton-sub">{Math.round(st.totalTempC)} °C</span>
+          </div>
+        ))}
+      </div>
+      <p className="areas-note">
+        F119 cycle not publicly disclosed — ideal Brayton model on ASSUMED teaching inputs.
+      </p>
+    </section>
+  );
+
+  const skinHeatingSection = (
+    <section className="areas-section" data-testid="skin-heating-panel">
+      <div className="areas-heading">
+        <span>Aerodynamic Skin Heating</span>
+        <span className="spec-badge badge-computed">COMPUTED</span>
+      </div>
+      <div className="skin-formula-row">
+        <span className="skin-formula">T₀ = T · (1 + 0.2 · M²)</span>
+        <span className="spec-badge badge-sourced">SOURCED</span>
+      </div>
+      <label className="areas-slider">
+        <span>Altitude (ISA): {(skinAltitudeM / 1000).toFixed(1)} km (T = {Math.round(skinHeat.staticTempK)} K / {Math.round(skinHeat.staticTempC)} °C)</span>
+        <input
+          type="range"
+          min={0}
+          max={20000}
+          step={500}
+          value={skinAltitudeM}
+          onChange={(e) => setSkinAltitudeM(Number(e.target.value))}
+          data-testid="skin-altitude-slider"
+        />
+      </label>
+      <label className="areas-slider">
+        <span>Mach Number: M {skinMach.toFixed(2)}</span>
+        <input
+          type="range"
+          min={0}
+          max={2}
+          step={0.05}
+          value={skinMach}
+          onChange={(e) => setSkinMach(Number(e.target.value))}
+          data-testid="skin-mach-slider"
+        />
+      </label>
+      <div className="skin-heat-readout" data-testid="skin-temp-readout">
+        <div>
+          <div className="engine-hud-label">LEADING-EDGE STAGNATION T₀</div>
+          <div className="engine-hud-val">
+            {Math.round(skinHeat.stagnationTempK)} K ({Math.round(skinHeat.stagnationTempC)} °C)
+          </div>
+        </div>
+        <div className="engine-hud-sub">
+          +{Math.round(skinHeat.deltaTempK)} K ram rise
+        </div>
+      </div>
+    </section>
+  );
+
   if (isPhone && isRunning) {
     return (
       <div className="areas-body">
         {throttleSection}
         {telemetrySection}
         {stepsSection}
+        {thermalCutawaySection}
+        {skinHeatingSection}
         {startControlsSection}
       </div>
     );
@@ -731,6 +905,8 @@ function EnginesModeBody({ isPhone }: { readonly isPhone: boolean }) {
       {telemetrySection}
       {startControlsSection}
       {throttleSection}
+      {thermalCutawaySection}
+      {skinHeatingSection}
       {stepsSection}
     </div>
   );

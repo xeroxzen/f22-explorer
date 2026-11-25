@@ -17,10 +17,11 @@ const VALID_LABELS = new Set<ConstantLabel>([
   'EMPIRICAL',
   'ASSUMED',
   'HEURISTIC',
+  'COMPUTED',
 ]);
 
 const LABEL_REGEX =
-  /\b(SOURCED|APPROXIMATE|CALIBRATED|EMPIRICAL|ASSUMED|HEURISTIC|DERIVED)\b/;
+  /\b(SOURCED|APPROXIMATE|CALIBRATED|EMPIRICAL|ASSUMED|HEURISTIC|DERIVED|COMPUTED)\b/;
 
 function collectTsFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) return [];

@@ -4,6 +4,7 @@ import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html, useGLTF } from '@react-three/drei';
 import { CockpitDetail } from './CockpitDetail.js';
 import { ExhaustPlume } from './ExhaustPlume.js';
+import { F119CutawayDetail, isF119CutawayPart } from './F119CutawayDetail.js';
 import { WeaponsBaysDetail } from './WeaponsBaysDetail.js';
 import {
   F22_BUILT_PARTS,
@@ -147,6 +148,7 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
   const pivotRef = useRef<THREE.Group>(null);
   const selectedPartId = useExplorerStore((s) => s.selectedPartId);
   const hoveredPartId = useExplorerStore((s) => s.hoveredPartId);
+  const showSystemTints = useExplorerStore((s) => s.showSystemTints);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
   const xrayMode = useExplorerStore((s) => s.xrayMode);
   const cameraPreset = useExplorerStore((s) => s.cameraPreset);
@@ -191,15 +193,25 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
     hiddenPartIds.includes(part.id) ||
     (isolatedPartId !== null && isolatedPartId !== part.id);
 
-  // Smooth directional explode + Phase 3 hinge articulation
+  // Staged directional explode:
+  //   Stage 1 (0.00 -> 0.33): Outer skin panels lift
+  //   Stage 2 (0.33 -> 0.66): Internal systems separate
+  //   Stage 3 (0.66 -> 1.00): F119 engine cutaway stages slide apart axially
+  const isEngineStage = isF119CutawayPart(part.id);
+
   useFrame((_, delta) => {
     const g = explodeGroupRef.current;
     if (g) {
       const f = useExplorerStore.getState().explodeFactor;
+      const stageFactor = part.isOuterSkin
+        ? Math.min(1, f / 0.33)
+        : !isEngineStage
+          ? Math.max(0, Math.min(1, (f - 0.33) / 0.33))
+          : Math.max(0, Math.min(1, (f - 0.66) / 0.34));
       const alpha = Math.min(1, delta * 10);
-      g.position.x += (part.explode[0] * f - g.position.x) * alpha;
-      g.position.y += (part.explode[1] * f - g.position.y) * alpha;
-      g.position.z += (part.explode[2] * f - g.position.z) * alpha;
+      g.position.x += (part.explode[0] * stageFactor - g.position.x) * alpha;
+      g.position.y += (part.explode[1] * stageFactor - g.position.y) * alpha;
+      g.position.z += (part.explode[2] * stageFactor - g.position.z) * alpha;
     }
 
     const p = pivotRef.current;
@@ -248,14 +260,15 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
   const pal = MATERIAL_PALETTE[part.material];
   const groupInfo = SYSTEM_GROUP_COLORS[part.systemGroup];
 
+  // Technical-illustration neutral metals by default; system tints ONLY when user enables toggle
   const blendedColor = useMemo(() => {
     const base = new THREE.Color(pal.color);
-    if (explodeFactor > 0.04) {
+    if (showSystemTints && explodeFactor > 0.04) {
       const tint = new THREE.Color(groupInfo.tint);
       base.lerp(tint, Math.min(0.45, explodeFactor * 0.45));
     }
     return `#${base.getHexString()}`;
-  }, [pal.color, groupInfo.tint, explodeFactor]);
+  }, [pal.color, groupInfo.tint, explodeFactor, showSystemTints]);
 
   const xrayGhost = xrayMode && part.isOuterSkin;
   const transparent = xrayGhost || pal.opacity !== undefined;
@@ -308,42 +321,52 @@ function F22PartNode({ part, gltfGeometry, clippingPlanes, isPhone }: PartNodePr
             -pivot[2],
           ]}
         >
-          {!replacedByCockpitDetail && !(part.id === 'cockpit-displays-hud' && cameraPreset !== 'cockpit' && explodeFactor <= 0.05) && (
-            <mesh geometry={geometry} castShadow receiveShadow>
-              {part.material === 'canopy-gold' ? (
-                <meshPhysicalMaterial
-                  color={blendedColor}
-                  metalness={0.35}
-                  roughness={0.08}
-                  ior={1.52}
-                  reflectivity={0.96}
-                  clearcoat={1}
-                  clearcoatRoughness={0.06}
-                  envMapIntensity={1.55}
-                  transparent
-                  opacity={xrayGhost ? 0.16 : 0.68}
-                  emissive={emissive}
-                  emissiveIntensity={emissiveIntensity}
-                  clippingPlanes={clippingPlanes as THREE.Plane[]}
-                  side={THREE.DoubleSide}
-                />
-              ) : (
-                <meshStandardMaterial
-                  color={blendedColor}
-                  metalness={pal.metalness}
-                  roughness={pal.roughness}
-                  envMapIntensity={pal.envMapIntensity ?? 1.0}
-                  transparent={transparent}
-                  opacity={opacity}
-                  depthWrite={!xrayGhost}
-                  emissive={emissive}
-                  emissiveIntensity={emissiveIntensity}
-                  clippingPlanes={clippingPlanes as THREE.Plane[]}
-                  clipShadows
-                  side={clippingPlanes.length > 0 ? THREE.DoubleSide : THREE.FrontSide}
-                />
-              )}
-            </mesh>
+          {isEngineStage ? (
+            <F119CutawayDetail
+              partId={part.id}
+              clippingPlanes={clippingPlanes}
+              isSelected={isSelected}
+              isHovered={isHovered}
+            />
+          ) : (
+            !replacedByCockpitDetail &&
+            !(part.id === 'cockpit-displays-hud' && cameraPreset !== 'cockpit' && explodeFactor <= 0.05) && (
+              <mesh geometry={geometry} castShadow receiveShadow>
+                {part.material === 'canopy-gold' ? (
+                  <meshPhysicalMaterial
+                    color={blendedColor}
+                    metalness={0.35}
+                    roughness={0.08}
+                    ior={1.52}
+                    reflectivity={0.96}
+                    clearcoat={1}
+                    clearcoatRoughness={0.06}
+                    envMapIntensity={1.55}
+                    transparent
+                    opacity={xrayGhost ? 0.16 : 0.68}
+                    emissive={emissive}
+                    emissiveIntensity={emissiveIntensity}
+                    clippingPlanes={clippingPlanes as THREE.Plane[]}
+                    side={THREE.DoubleSide}
+                  />
+                ) : (
+                  <meshStandardMaterial
+                    color={blendedColor}
+                    metalness={pal.metalness}
+                    roughness={pal.roughness}
+                    envMapIntensity={pal.envMapIntensity ?? 1.0}
+                    transparent={transparent}
+                    opacity={opacity}
+                    depthWrite={!xrayGhost}
+                    emissive={emissive}
+                    emissiveIntensity={emissiveIntensity}
+                    clippingPlanes={clippingPlanes as THREE.Plane[]}
+                    clipShadows
+                    side={clippingPlanes.length > 0 ? THREE.DoubleSide : THREE.FrontSide}
+                  />
+                )}
+              </mesh>
+            )
           )}
 
           {part.id === 'cockpit-displays-hud' && cameraPreset === 'cockpit' && (

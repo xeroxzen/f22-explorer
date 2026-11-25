@@ -27,6 +27,7 @@ export function App() {
   const modePanelOpen = useExplorerStore((s) => s.modePanelOpen);
   const showOverflowMenu = useExplorerStore((s) => s.showOverflowMenu);
   const explodeFactor = useExplorerStore((s) => s.explodeFactor);
+  const showSystemTints = useExplorerStore((s) => s.showSystemTints);
 
   const setActiveMode = useExplorerStore((s) => s.setActiveMode);
   const setModePanelOpen = useExplorerStore((s) => s.setModePanelOpen);
@@ -103,7 +104,7 @@ export function App() {
       <InspectorPanel />
       <TourOverlay />
 
-      {!isPhone && explodeFactor > 0.1 && (
+      {!isPhone && showSystemTints && explodeFactor > 0.1 && (
         <div className="system-legend" data-testid="system-legend">
           {SYSTEM_GROUPS.map((g) => (
             <span key={g} className="legend-item">
