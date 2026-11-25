@@ -1,0 +1,53 @@
+{
+  "id": "canopy-actuator",
+  "title": "Canopy Drive Actuator & Latch Mechanism",
+  "parentId": "canopy",
+  "category": "Cockpit & Crew Station",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Aft-hinged electromechanical actuator and multipoint locking hooks that raise and seal the single-piece frameless bubble canopy.",
+  "role": "Opens and closes the heavy bird-strike-resistant polycarbonate canopy and locks it for cockpit pressurization.",
+  "materials": "High-strength titanium/steel linkages and electromechanical drive.",
+  "modelingNotes": {
+    "stationRangeM": [
+      5.72,
+      6.16
+    ],
+    "approxSizeM": [
+      0.18,
+      0.16,
+      0.44
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      2.9,
+      -1.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Canopy Type",
+      "value": "Single-piece aft-hinged",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "Single-piece frameless bubble canopy over the cockpit"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

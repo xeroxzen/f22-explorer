@@ -25,8 +25,8 @@ const CAMERA_PRESETS: Record<
   rear: { pos: [-10.5, 4.4, 19.5], target: [-0.8, 2.0, 5.2] },
   // Seat-level pilot eye camera (forward of ACES II headrest) with wide 52° FOV framing all 6 Code One LCDs + HUD
   cockpit: { pos: [0, 2.82, fsToZ(5.10)], target: [0, 2.51, fsToZ(3.96)] },
-  // Below-belly forward-outboard camera looking unobstructed into the open main bay & side bay stores
-  bays: { pos: [0.55, 0.22, fsToZ(5.45)], target: [0.05, 1.32, fsToZ(9.35)] },
+  // Below-belly forward-starboard exterior camera framing the open main & side weapons bays unobstructed
+  bays: { pos: [6.4, 0.85, -6.2], target: [0.0, 0.95, -0.4] },
 };
 
 function HangarStructure({ shadows }: { readonly shadows: boolean }) {
@@ -377,8 +377,8 @@ export function HangarCanvas() {
         camera={{ position: [14.5, 6.2, -13.5], fov: 40, near: 0.08, far: 320 }}
         onPointerMissed={() => selectPart(null)}
       >
-        <color attach="background" args={[outdoors ? '#1e3048' : '#0c1118']} />
-        <fog attach="fog" args={[outdoors ? '#1e3048' : '#0c1118', outdoors ? 55 : 48, outdoors ? 185 : 135]} />
+        <color attach="background" args={[outdoors ? '#556e8a' : '#1b222c']} />
+        <fog attach="fog" args={[outdoors ? '#647c96' : '#1b222c', outdoors ? 70 : 52, outdoors ? 220 : 145]} />
 
         {qualityTier !== 'low' && (
           <Suspense fallback={null}>
@@ -388,7 +388,10 @@ export function HangarCanvas() {
                   ? `${BASE}hdri/airfield_overcast_1k.hdr`
                   : `${BASE}hdri/hangar_1k.hdr`
               }
-              environmentIntensity={outdoors ? 0.92 : 0.72}
+              background
+              backgroundBlurriness={outdoors ? 0.16 : 0.42}
+              backgroundIntensity={outdoors ? 0.85 : 0.55}
+              environmentIntensity={outdoors ? 0.88 : 0.72}
             />
           </Suspense>
         )}

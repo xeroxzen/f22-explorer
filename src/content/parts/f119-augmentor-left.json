@@ -1,0 +1,60 @@
+{
+  "id": "f119-augmentor-left",
+  "title": "Left F119 Low-Observable Augmentor (Afterburner)",
+  "parentId": "engine-f119-left",
+  "category": "Propulsion",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Three-zone low-observable afterburner with fuel injectors integrated into thick curved radar-blocking vanes.",
+  "role": "Provides full afterburning thrust augmentation while shielding hot turbine blades from rear radar and IR detection.",
+  "materials": "High-temperature ceramic-matrix and superalloy thermal liners.",
+  "modelingNotes": {
+    "stationRangeM": [
+      15.44,
+      16.54
+    ],
+    "approxSizeM": [
+      0.74,
+      0.74,
+      1.1
+    ],
+    "proportionReference": "Conceptual F119 cutaway proportions inside aft nacelle",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -0.8,
+      -0.3,
+      6.0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Zones",
+      "value": "3-zone",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-zone afterburner with fuel injectors integrated into thick curved vanes"
+    },
+    {
+      "label": "Exact IR Signature Reduction",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified stealth propulsion parameter"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"
+    }
+  ]
+}

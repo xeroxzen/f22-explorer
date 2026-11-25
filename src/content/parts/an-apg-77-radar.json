@@ -1,0 +1,66 @@
+{
+  "id": "an-apg-77-radar",
+  "title": "AN/APG-77 AESA Radar Array",
+  "parentId": "radome",
+  "category": "Forward Fuselage & Avionics",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Northrop Grumman / Raytheon AN/APG-77(V)1 solid-state X-band Active Electronically Scanned Array (AESA) low-probability-of-intercept radar.",
+  "role": "Provides long-range multi-target air-to-air and air-to-ground search, track, and electronic warfare support.",
+  "materials": "Solid-state transmit/receive (T/R) module array behind low-observable radome.",
+  "modelingNotes": {
+    "stationRangeM": [
+      2.17,
+      2.26
+    ],
+    "approxSizeM": [
+      0.72,
+      0.72,
+      0.09
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0,
+      0,
+      -4.6
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Radar Type",
+      "value": "X-band LPIR AESA",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "AN/APG-77 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/AN/APG-77",
+      "accessed": "2026-11-25",
+      "snippet": "Multifunction X-band low probability of intercept solid-state AESA radar"
+    },
+    {
+      "label": "Detection Range & T/R Power",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified radar performance parameters"
+    }
+  ],
+  "sources": [
+    {
+      "title": "AN/APG-77 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/AN/APG-77",
+      "accessed": "2026-11-25",
+      "snippet": "Multifunction X-band low probability of intercept (LPIR) solid-state AESA radar installed aboard the F-22 Raptor"
+    },
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

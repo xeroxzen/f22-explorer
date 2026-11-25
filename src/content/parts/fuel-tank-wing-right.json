@@ -1,0 +1,60 @@
+{
+  "id": "fuel-tank-wing-right",
+  "title": "Right Integral Wing Fuel Tank",
+  "parentId": "internal-fuel-tanks",
+  "category": "Center Fuselage & Intakes",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Right wet-wing structural fuel tank sealed within the clipped-diamond titanium/composite wing box.",
+  "role": "Increases internal fuel volume symmetrically with the left wing tank.",
+  "materials": "Sealed titanium and carbon-bismaleimide composite wet structure.",
+  "modelingNotes": {
+    "stationRangeM": [
+      10.6,
+      11.6
+    ],
+    "approxSizeM": [
+      1.9,
+      0.1,
+      1.0
+    ],
+    "proportionReference": "Conceptual internal cell subdivision of 18,000 lb total internal fuel",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      3.2,
+      -0.6,
+      0
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Total Aircraft Internal Fuel",
+      "value": "18,000 lb (8,165 kg)",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "18,000 lb (8,165 kg) of internal fuel"
+    },
+    {
+      "label": "Individual Tank Capacity",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Detailed per-cell fuel breakdown not released publicly"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

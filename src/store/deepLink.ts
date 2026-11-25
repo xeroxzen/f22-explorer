@@ -143,6 +143,12 @@ export function applyDeepLinkFromUrl(search: string): boolean {
     s.selectPart(parsed.part);
   }
   if (parsed.cam) {
+    if (parsed.cam === 'cockpit') {
+      s.setActiveMode('cockpit', false);
+      s.setModePanelOpen(false);
+    } else if (parsed.cam === 'bays') {
+      s.setActiveMode('weapons', false);
+    }
     s.setCameraPreset(parsed.cam);
   }
   return true;

@@ -1,6 +1,6 @@
-# F-22 Explorer v1.1 — Part Mapping Report (v1.0 → NLM CC-BY 4.0 GLB)
+# F-22 Explorer v1.1 — Part Mapping Report (70-Part Catalog → NLM CC-BY 4.0 GLB + Cutaway Internals)
 
-Every one of the **45** part IDs in `src/content/parts/*.json` maps to either a split node in `public/models/f22-raptor-nlm.glb` (33 parts), a parametric internal/detail fallback mesh in `src/scene/f22Geometry.ts` (11 parts), or the root assembly container (`f22-airframe`). **Zero parts in the Part Tree select nothing** (verified in `tests/glb-integrity.test.ts`).
+Every one of the **71** part IDs in `src/content/parts/*.json` (`70` selectable physical parts + `1` root container `f22-airframe`) maps to either a split node in `public/models/f22-raptor-nlm.glb` (33 parts, including `nose-gear-doors` & `main-gear-doors`) or a non-colliding parametric internal/cutaway mesh in `src/scene/f22Geometry.ts` (37 parts). **Zero parts in the Part Tree select nothing** (verified in `tests/glb-integrity.test.ts` and `tests/model-collisions.test.ts` with 0 SAT collisions across `explode = 0..1`).
 
 | # | v1.0 Part ID | v1.1 Source | Notes |
 | :-: | :--- | :--- | :--- |
@@ -49,6 +49,15 @@ Every one of the **45** part IDs in `src/content/parts/*.json` maps to either a 
 | 43 | `aces-ii-seat` | **Parametric fallback** | Internal ejection seat + `CockpitDetail` headrest/handle |
 | 44 | `cockpit-displays-hud` | **Parametric + `CockpitDetail`** | Code One sourced 6-LCD + HUD + ICP detail in seat view |
 | 45 | `hotas-controls` | **Parametric + `CockpitDetail`** | Animated stick + dual throttles in seat view |
-| 46* | `internal-ordnance-display` | **Parametric + `WeaponsBaysDetail`** | USAF/NAVAIR-scaled AIM-120 / AIM-9X / GBU-32 / 2×BRU-61 SDBs |
+| 46 | `internal-ordnance-display` | **Parametric + `WeaponsBaysDetail`** | USAF/NAVAIR-scaled AIM-120 / AIM-9X / GBU-32 / 2×BRU-61 SDBs |
+| 47 | `refueling-receptacle` | **Parametric internal** | Dorsal UARRSI boom receptacle |
+| 48–61 | `f119-{fan,hpc,combustor,hpt,lpt,augmentor,nozzle-flaps}-{left,right}` (14) | **Parametric cutaway** | Sequential F119-PW-100 axial stages (`ASSUMED` geometry, fetch-verified `SOURCED` existence) |
+| 62–65 | `fuel-tank-{forward,aft,wing-left,wing-right}` (4) | **Parametric internal** | Individual fuselage & integral wing fuel cells (`ASSUMED` geometry) |
+| 66 | `an-apg-77-radar` | **Parametric internal** | AN/APG-77 X-band AESA array behind radome (internals `NOT_PUBLICLY_DISCLOSED`) |
+| 67 | `tail-hook` | **Parametric internal** | Ventral emergency arresting tailhook between engine nacelles |
+| 68 | `gun-port-door` | **Parametric internal** | Retractable stealth M61A2 cannon muzzle door |
+| 69 | `pitot-air-data-probes` | **Parametric internal** | Forward nose-chine air data & pitot-static sensors |
+| 70 | `iff-comm-antennas` | **Parametric internal** | Conformal dorsal IFF & CNI antenna apertures (waveforms `NOT_PUBLICLY_DISCLOSED`) |
+| 71 | `canopy-actuator` | **Parametric internal** | Aft-hinged single-piece canopy drive actuator & latch mechanism |
 
-*(44 selectable leaf/section hitboxes + 1 root `f22-airframe` = 45 total entries in `ALL_COMPONENTS`; `internal-ordnance-display` is entry #45 alongside the 44 above — `f22-airframe` is the root container and does not duplicate a leaf mesh.)*
+*(70 selectable leaf/section hitboxes + 1 root `f22-airframe` = 71 total entries in `ALL_COMPONENTS`.)*

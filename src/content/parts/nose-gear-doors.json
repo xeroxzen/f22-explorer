@@ -1,0 +1,53 @@
+{
+  "id": "nose-gear-doors",
+  "title": "Nose Landing Gear Bay Doors",
+  "parentId": "nose-landing-gear",
+  "category": "Landing Gear",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "APPROXIMATE",
+  "summary": "Sawtooth-edged stealth doors enclosing the nose landing gear wheel well flush with the lower forward fuselage.",
+  "role": "Minimizes aerodynamic drag and aligns door edges with stealth planform angles when gear is retracted.",
+  "materials": "Composite skin panels with sawtooth RAM-treated edges (third-party GLB mesh, APPROXIMATE).",
+  "modelingNotes": {
+    "stationRangeM": [
+      3.88,
+      4.72
+    ],
+    "approxSizeM": [
+      0.5,
+      0.36,
+      0.84
+    ],
+    "proportionReference": "Public F-22 subsystem references; conceptual placement",
+    "confidence": "MEDIUM"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -0.8,
+      -2.0,
+      -1.2
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Configuration",
+      "value": "Retractable tricycle gear doors",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "Retractable tricycle landing gear enclosed by flush bay doors"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lockheed Martin F-22 Raptor \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor",
+      "accessed": "2026-11-25",
+      "snippet": "AN/APG-77(V)1 AESA radar, 18,000 lb internal fuel, M61A2 retractable gun port door,"
+    }
+  ]
+}

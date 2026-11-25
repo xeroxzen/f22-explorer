@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { savePhaseScreenshot, waitForExplorerReady } from './helpers.js';
 
-test.describe('Phase 5 Mobile Engine Sheet (Running) & Performance', () => {
-  test('pins throttle at top and collapses start steps to 1-line summary when RUNNING on mobile', async ({
+test.describe('v1.1 Mobile Bottom Mode Bar, Single Sheet & Engine Running Layout', () => {
+  test('uses 4-tab bottom mode bar, single sheet, and pins throttle when RUNNING on mobile', async ({
     page,
   }, testInfo) => {
     const pageErrors: string[] = [];
@@ -11,7 +11,13 @@ test.describe('Phase 5 Mobile Engine Sheet (Running) & Performance', () => {
     const state = await waitForExplorerReady(page);
     expect(state.sceneReady).toBe(true);
     expect(state.qualityTier).toBe('low');
-    expect(state.registeredHitboxes.length).toBe(44);
+    expect(state.registeredHitboxes.length).toBe(70);
+
+    // Verify 4-tab mobile bottom bar is visible and legacy floating explode dock is gone
+    await expect(page.getByTestId('mobile-mode-bar')).toBeVisible();
+    await expect(page.getByTestId('mobile-mode-explore')).toBeVisible();
+    await expect(page.getByTestId('mobile-mode-engines')).toBeVisible();
+    await expect(page.getByTestId('explode-dock')).toHaveCount(0);
 
     // Jump to steady-state RUNNING AB on outdoor run-up pad, rear view
     await page.evaluate(() => {
@@ -27,10 +33,11 @@ test.describe('Phase 5 Mobile Engine Sheet (Running) & Performance', () => {
       dbg.setCameraPreset('rear');
     });
 
-    await page.getByTestId('engines-toggle-btn').click();
-    await expect(page.getByTestId('engines-panel')).toBeVisible();
-    // Verify throttle is pinned at top & step list is collapsed to 1-line summary
+    await page.getByTestId('mobile-mode-engines').click();
+    await expect(page.getByTestId('mode-panel-engines')).toBeVisible();
+    // Verify throttle is pinned at top, inline thrust HUD is present, & step list is collapsed to 1-line summary
     await expect(page.getByTestId('throttle-section')).toBeVisible();
+    await expect(page.getByTestId('engine-inline-hud')).toBeVisible();
     await expect(page.getByTestId('engine-steps-collapsed-summary')).toBeVisible();
     await page.waitForTimeout(850);
 
@@ -50,14 +57,14 @@ test.describe('Phase 5 Mobile Engine Sheet (Running) & Performance', () => {
       return dbg.getPerfMetrics();
     });
     console.log(
-      `[Phase 5 Perf Mobile LOW ${testInfo.project.name} (headless SwiftShader)]`,
+      `[v1.1 Perf Mobile LOW ${testInfo.project.name} (headless SwiftShader)]`,
       JSON.stringify(perf)
     );
 
-    // Close sheet -> compact HUD becomes visible
+    // Close sheet -> panel closes cleanly with no floating engine HUD overlap
     await page.getByTestId('sheet-close-btn').click();
-    await expect(page.getByTestId('engines-panel')).toHaveCount(0);
-    await expect(page.getByTestId('engine-hud-overlay')).toBeVisible();
+    await expect(page.getByTestId('mode-panel-engines')).toHaveCount(0);
+    await expect(page.getByTestId('engine-hud-overlay')).toHaveCount(0);
 
     expect(pageErrors).toEqual([]);
   });

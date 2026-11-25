@@ -1,0 +1,60 @@
+{
+  "id": "f119-hpt-left",
+  "title": "Left F119 Single-Stage High-Pressure Turbine",
+  "parentId": "engine-f119-left",
+  "category": "Propulsion",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Single-stage air-cooled high-pressure turbine driving the 6-stage HPC via the outer concentric shaft.",
+  "role": "Extracts thermal energy from combustor gases to drive the high-pressure compressor and accessory gearbox.",
+  "materials": "Single-crystal superalloy blades with film cooling (public overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      14.64,
+      14.96
+    ],
+    "approxSizeM": [
+      0.68,
+      0.68,
+      0.32
+    ],
+    "proportionReference": "Conceptual F119 cutaway proportions inside aft nacelle",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -0.8,
+      -0.3,
+      4.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Stage Count",
+      "value": "1",
+      "unit": "stage (counter-rotating)",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Single-stage high-pressure turbine counter-rotating relative to the LPT"
+    },
+    {
+      "label": "Exact Turbine Inlet Temp",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified / proprietary Pratt & Whitney specification"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"
+    }
+  ]
+}

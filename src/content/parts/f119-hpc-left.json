@@ -1,0 +1,60 @@
+{
+  "id": "f119-hpc-left",
+  "title": "Left F119 6-Stage High-Pressure Compressor",
+  "parentId": "engine-f119-left",
+  "category": "Propulsion",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Six-stage axial high-pressure compressor driven by the single-stage HP turbine to achieve high overall pressure ratio for supercruise.",
+  "role": "Raises core air pressure and temperature prior to fuel injection in the annular combustor.",
+  "materials": "Titanium and nickel-base superalloy integrally bladed rotors.",
+  "modelingNotes": {
+    "stationRangeM": [
+      13.34,
+      14.04
+    ],
+    "approxSizeM": [
+      0.66,
+      0.66,
+      0.7
+    ],
+    "proportionReference": "Conceptual F119 cutaway proportions inside aft nacelle",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -0.8,
+      -0.3,
+      3.6
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Stage Count",
+      "value": "6",
+      "unit": "stages",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Six-stage high-pressure compressor driven by single-stage high-pressure turbine"
+    },
+    {
+      "label": "Exact Compressor Map",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified / proprietary Pratt & Whitney design data"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"
+    }
+  ]
+}

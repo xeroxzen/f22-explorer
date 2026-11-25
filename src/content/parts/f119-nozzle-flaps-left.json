@@ -1,0 +1,53 @@
+{
+  "id": "f119-nozzle-flaps-left",
+  "title": "Left F119 2D Vectoring Nozzle Internal Flaps",
+  "parentId": "engine-f119-left",
+  "category": "Propulsion",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Variable-geometry convergent-divergent upper and lower flaps actuated by FADEC for +/-20 degree pitch thrust vectoring.",
+  "role": "Varies throat/exit area for supercruise vs afterburner and vectors exhaust pitch up to +/-20 degrees.",
+  "materials": "High-temperature titanium and ceramic thermal-barrier-coated flaps.",
+  "modelingNotes": {
+    "stationRangeM": [
+      16.6,
+      16.84
+    ],
+    "approxSizeM": [
+      0.72,
+      0.42,
+      0.24
+    ],
+    "proportionReference": "Conceptual F119 cutaway proportions inside aft nacelle",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      -0.8,
+      -0.3,
+      6.8
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Pitch Vectoring Range",
+      "value": "+/-20",
+      "unit": "deg",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Thrust vectoring nozzles direct engine thrust +/-20 degrees in the pitch axis"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"
+    }
+  ]
+}

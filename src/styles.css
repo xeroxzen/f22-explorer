@@ -1094,3 +1094,213 @@ a:focus-visible {
     white-space: nowrap;
   }
 }
+
+
+/* v1.1 Design System Mode Switcher, Compact Overflow Menu & Mobile 4-Tab Bar */
+.mode-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid var(--panel-border);
+}
+
+.mode-btn {
+  padding: 6px 15px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms ease-out, color 140ms ease-out;
+}
+
+.mode-btn:hover {
+  color: #f8fafc;
+}
+
+.mode-btn.active {
+  background: rgba(56, 189, 248, 0.22);
+  color: #e0f2fe;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.65);
+}
+
+.overflow-menu {
+  position: fixed;
+  top: 58px;
+  right: 14px;
+  z-index: 35;
+  width: min(300px, calc(100vw - 24px));
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(13, 19, 30, 0.96);
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overflow-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.overflow-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.overflow-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.overflow-row,
+.overflow-tour-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.overflow-tours {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.overflow-credits {
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.credits-line {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+.credits-line a {
+  color: #7dd3fc;
+}
+
+.tree-search {
+  width: 100%;
+  padding: 6px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background: rgba(15, 23, 42, 0.85);
+  color: #f1f5f9;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.part-tree-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.tree-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.tree-row-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 7px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tree-row-btn:hover {
+  background: rgba(30, 41, 59, 0.65);
+}
+
+.tree-row-btn.selected {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.55);
+  color: #f8fafc;
+}
+
+.tree-row-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mobile 48px header + Fixed 4-Tab Bottom Mode Bar */
+.top-bar.mobile-header {
+  height: 48px;
+  padding: 0 12px;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.mobile-mode-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 32;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding: 6px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  background: rgba(10, 15, 24, 0.96);
+  border-top: 1px solid var(--panel-border);
+  backdrop-filter: blur(12px);
+}
+
+.mobile-tab {
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mobile-tab.active {
+  background: rgba(56, 189, 248, 0.2);
+  color: #e0f2fe;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.55);
+}
+
+/* Lift BottomSheet cleanly above the 56px Mobile Mode Bar */
+@media (max-width: 600px) {
+  .bottom-sheet {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+}

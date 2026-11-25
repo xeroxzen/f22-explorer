@@ -9,6 +9,30 @@ const DEG = Math.PI / 180;
 const DIAMOND_INDICES = [0, 1, 2, 3, 4, 5, 6];
 
 /**
+ * Emissive axial color gradient for the AB outer flame:
+ * brightest blue-white at the nozzle exit -> hot orange -> deep amber -> transparent.
+ */
+function createFlameGradientTexture(): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = 16;
+  c.height = 128;
+  const ctx = c.getContext('2d')!;
+  const grad = ctx.createLinearGradient(0, 0, 0, 128);
+  grad.addColorStop(0.0, '#e0f2fe');
+  grad.addColorStop(0.14, '#fde68a');
+  grad.addColorStop(0.42, '#f97316');
+  grad.addColorStop(0.78, '#c2410c');
+  grad.addColorStop(1.0, '#431407');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 16, 128);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+/**
  * Axial feather alpha map so the open-ended rectangular-to-round AB plume
  * dissolves smoothly to 0% opacity at the far end (zero visible end caps or rings).
  */
@@ -20,8 +44,8 @@ function createAxialFadeTexture(): THREE.CanvasTexture | null {
   const ctx = c.getContext('2d')!;
   const grad = ctx.createLinearGradient(0, 0, 0, 128);
   grad.addColorStop(0.0, '#ffffff');
-  grad.addColorStop(0.35, '#e5e5e5');
-  grad.addColorStop(0.75, '#666666');
+  grad.addColorStop(0.28, '#e0e0e0');
+  grad.addColorStop(0.72, '#555555');
   grad.addColorStop(1.0, '#000000');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 16, 128);
@@ -34,7 +58,7 @@ function createAxialFadeTexture(): THREE.CanvasTexture | null {
  * Open-ended lofted plume shell whose exit cross-section is genuinely rectangular
  * (matching the F-22's 2D thrust-vectoring nozzle aspect ratio) for the first
  * ~1.5–2 nozzle widths, then smoothly relaxes via superellipse interpolation toward
- * a feathered round tail with UV.y = t for axial alpha fadeout. Zero end caps.
+ * a feathered round tail with UV.y = 1 - t for axial alpha fadeout. Zero end caps.
  */
 function createRectToRoundPlumeGeometry(
   exitHalfW: number,
@@ -50,9 +74,8 @@ function createRectToRoundPlumeGeometry(
   for (let iz = 0; iz <= lengthSegs; iz++) {
     const t = iz / lengthSegs; // 0 = nozzle exit, 1 = feathered tip
     const z = t * length;
-    // Stay strictly rectangular for first ~25% (~1.5–2 nozzle widths), then relax to round (p = 2)
     const relaxT = Math.max(0, (t - 0.25) / 0.75);
-    const p = 12 - relaxT * 10; // superellipse exponent: 12 (crisp rectangle) -> 2 (round)
+    const p = 12 - relaxT * 10; // superellipse exponent: 12 (rectangular) -> 2 (round)
     const taper = Math.max(0.05, 1 - t * 0.92);
     const hw = exitHalfW * taper;
     const hh = exitHalfH * Math.max(0.05, 1 - t * 0.86);
@@ -65,7 +88,6 @@ function createRectToRoundPlumeGeometry(
       const x = Math.sign(ct) * Math.pow(Math.abs(ct), 2 / p) * hw;
       const y = Math.sign(st) * Math.pow(Math.abs(st), 2 / p) * hh;
       positions.push(x, y, z);
-      // CanvasTexture flipY=true -> v = 1 - t maps gradient top (white) to exit t=0 and bottom (black) to tip t=1
       uvs.push(u, 1 - t);
     }
   }
@@ -93,9 +115,8 @@ function createRectToRoundPlumeGeometry(
  * Single F119-PW-100 rectangular 2D-nozzle exhaust plume (visual approximation, NOT CFD).
  * - Idle & Mil: NO opaque or white geometry and NO tubes at any tier; at MED/HIGH shows only
  *   an ultra-subtle <= 8%-opacity heat-haze ribbon; at LOW renders nothing.
- * - Afterburner: genuinely rectangular exit cross-section relaxing toward a feathered round
- *   tip (open-ended, zero end caps), translucent flame envelope, and 7 discrete fading Mach
- *   shock diamonds strictly inside the flame envelope.
+ * - Afterburner: emissive gradient (blue-white exit -> orange -> transparent), rectangular-to-round
+ *   open-ended envelope (no end caps), bloom strictly on the inner blue-white core & shock diamonds.
  */
 function SingleNozzlePlume({
   xPos,
@@ -103,6 +124,7 @@ function SingleNozzlePlume({
   nozzlePitchRad,
   reducedMotion,
   qualityTier,
+  flameMap,
   alphaMap,
   clippingPlanes,
 }: {
@@ -111,6 +133,7 @@ function SingleNozzlePlume({
   readonly nozzlePitchRad: number;
   readonly reducedMotion: boolean;
   readonly qualityTier: 'low' | 'med' | 'high';
+  readonly flameMap: THREE.CanvasTexture | null;
   readonly alphaMap: THREE.CanvasTexture | null;
   readonly clippingPlanes: THREE.Plane[];
 }) {
@@ -122,17 +145,17 @@ function SingleNozzlePlume({
     () => createRectToRoundPlumeGeometry(0.38, 0.22, 1.0, 28, 16),
     []
   );
-  const innerPlumeGeo = useMemo(
-    () => createRectToRoundPlumeGeometry(0.24, 0.14, 1.0, 24, 12),
+  const innerCoreGeo = useMemo(
+    () => createRectToRoundPlumeGeometry(0.22, 0.13, 1.0, 24, 12),
     []
   );
 
   useEffect(() => {
     return () => {
       outerPlumeGeo.dispose();
-      innerPlumeGeo.dispose();
+      innerCoreGeo.dispose();
     };
-  }, [outerPlumeGeo, innerPlumeGeo]);
+  }, [outerPlumeGeo, innerCoreGeo]);
 
   useFrame(({ clock }) => {
     if (reducedMotion) return;
@@ -191,16 +214,16 @@ function SingleNozzlePlume({
         </group>
       )}
 
-      {/* Afterburner: rectangular exit relaxing to feathered round tip + 7 discrete interior shock diamonds */}
+      {/* Afterburner: emissive gradient outer flame (below bloom threshold) + HDR bloomed blue-white core & shock diamonds */}
       {engine.afterburnerOn && (
         <group>
-          {/* Outer open-ended rectangular-to-round translucent AB flame */}
+          {/* Outer open-ended rectangular-to-round translucent AB flame (toneMapped=true -> no bloom halo) */}
           <mesh ref={abOuterRef} geometry={outerPlumeGeo} scale={[1, 1, abLen]}>
             <meshBasicMaterial
-              color="#ea580c"
+              map={flameMap}
               alphaMap={alphaMap}
               transparent
-              opacity={0.26 + ab * 0.16}
+              opacity={0.34 + ab * 0.18}
               blending={THREE.AdditiveBlending}
               depthWrite={false}
               side={THREE.DoubleSide}
@@ -208,13 +231,14 @@ function SingleNozzlePlume({
             />
           </mesh>
 
-          {/* Subtle stoichiometric inner blue-amber shear envelope (feathered, zero end cap) */}
-          <mesh geometry={innerPlumeGeo} scale={[1, 1, abLen * 0.68]}>
+          {/* Bright blue-white nozzle-exit core (HDR toneMapped=false -> triggers subtle bloom on core only!) */}
+          <mesh geometry={innerCoreGeo} scale={[1, 1, abLen * 0.42]}>
             <meshBasicMaterial
-              color="#38bdf8"
+              color={[1.65, 1.95, 2.4] as unknown as THREE.ColorRepresentation}
               alphaMap={alphaMap}
+              toneMapped={false}
               transparent
-              opacity={0.14 + ab * 0.08}
+              opacity={0.28 + ab * 0.16}
               blending={THREE.AdditiveBlending}
               depthWrite={false}
               side={THREE.DoubleSide}
@@ -226,15 +250,15 @@ function SingleNozzlePlume({
           <group ref={diamondsRef}>
             {DIAMOND_INDICES.map((i) => {
               const frac = (i + 0.45) / (DIAMOND_INDICES.length + 0.65);
-              const dz = 0.30 + frac * abLen * 0.78;
+              const dz = 0.28 + frac * abLen * 0.78;
               const envT = dz / abLen;
               const envHalfW = 0.38 * Math.max(0.05, 1 - envT * 0.92);
               const envHalfH = 0.22 * Math.max(0.05, 1 - envT * 0.86);
               const fade = Math.pow(1 - frac, 1.35);
-              // Keep strictly inside the outer flame envelope (<= 62% of local envelope radius)
-              const widthR = envHalfW * 0.60 * (0.75 + ab * 0.25);
-              const heightR = envHalfH * 0.60 * (0.75 + ab * 0.25);
-              const diamondLen = 0.24 * (1 - frac * 0.28);
+              const widthR = envHalfW * 0.58 * (0.75 + ab * 0.25);
+              const heightR = envHalfH * 0.58 * (0.75 + ab * 0.25);
+              const diamondLen = 0.23 * (1 - frac * 0.28);
+              const isCoreDiamond = i < 3;
               return (
                 <mesh
                   key={i}
@@ -244,13 +268,13 @@ function SingleNozzlePlume({
                   <octahedronGeometry args={[1, 0]} />
                   <meshBasicMaterial
                     color={
-                      i < 2
-                        ? ([2.4, 2.2, 1.8] as unknown as THREE.ColorRepresentation)
-                        : i < 4
-                          ? ([2.2, 1.8, 0.8] as unknown as THREE.ColorRepresentation)
-                          : '#fb923c'
+                      i === 0
+                        ? ([2.2, 2.4, 2.8] as unknown as THREE.ColorRepresentation)
+                        : isCoreDiamond
+                          ? ([2.1, 1.85, 1.25] as unknown as THREE.ColorRepresentation)
+                          : '#f97316'
                     }
-                    toneMapped={false}
+                    toneMapped={!isCoreDiamond}
                     transparent
                     opacity={Math.max(0.12, fade * (0.72 + ab * 0.26))}
                     blending={THREE.AdditiveBlending}
@@ -287,10 +311,14 @@ export function ExhaustPlume({
   const reducedMotion = useExplorerStore((s) => s.reducedMotion);
   const qualityTier = useExplorerStore((s) => s.qualityTier);
 
+  const flameMap = useMemo(() => createFlameGradientTexture(), []);
   const alphaMap = useMemo(() => createAxialFadeTexture(), []);
   useEffect(() => {
-    return () => alphaMap?.dispose();
-  }, [alphaMap]);
+    return () => {
+      flameMap?.dispose();
+      alphaMap?.dispose();
+    };
+  }, [flameMap, alphaMap]);
 
   if (explodeFactor > 0.05 || engineSim.phase === 'OFF') return null;
 
@@ -305,6 +333,7 @@ export function ExhaustPlume({
         nozzlePitchRad={pitchRad}
         reducedMotion={reducedMotion}
         qualityTier={qualityTier}
+        flameMap={flameMap}
         alphaMap={alphaMap}
         clippingPlanes={cp}
       />
@@ -314,6 +343,7 @@ export function ExhaustPlume({
         nozzlePitchRad={pitchRad}
         reducedMotion={reducedMotion}
         qualityTier={qualityTier}
+        flameMap={flameMap}
         alphaMap={alphaMap}
         clippingPlanes={cp}
       />

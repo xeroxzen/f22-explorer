@@ -1,0 +1,60 @@
+{
+  "id": "f119-combustor-right",
+  "title": "Right F119 Floatwall Annular Combustor",
+  "parentId": "engine-f119-right",
+  "category": "Propulsion",
+  "existenceLabel": "SOURCED",
+  "geometryLabel": "ASSUMED",
+  "summary": "Compact Floatwall annular combustion chamber lined with high-cobalt panels for oxidation resistance and low-smoke combustion.",
+  "role": "Mixes compressed air with JP-8 fuel for continuous combustion feeding the high-pressure turbine.",
+  "materials": "High-cobalt Floatwall liner panels (public F119 overview).",
+  "modelingNotes": {
+    "stationRangeM": [
+      14.12,
+      14.56
+    ],
+    "approxSizeM": [
+      0.68,
+      0.68,
+      0.44
+    ],
+    "proportionReference": "Conceptual F119 cutaway proportions inside aft nacelle",
+    "confidence": "LOW"
+  },
+  "interaction": {
+    "explodes": true,
+    "explodeVectorM": [
+      0.8,
+      -0.3,
+      4.2
+    ],
+    "kind": "static"
+  },
+  "specs": [
+    {
+      "label": "Combustor Type",
+      "value": "Floatwall annular",
+      "unit": "",
+      "status": "SOURCED",
+      "source": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Floatwall annular combustor lined with high-cobalt material"
+    },
+    {
+      "label": "Exact Combustor Exit Temp",
+      "value": "Not publicly disclosed",
+      "unit": "",
+      "status": "NOT_PUBLICLY_DISCLOSED",
+      "source": "Classified / proprietary thermal limit"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Pratt & Whitney F119 \u2014 Wikipedia (fetch-verified)",
+      "urlOrLocator": "https://en.wikipedia.org/wiki/Pratt_%26_Whitney_F119",
+      "accessed": "2026-11-25",
+      "snippet": "Three-stage fan, six-stage HPC, Floatwall annular combustor, counter-rotating single-stage HPT/LPT, three-zone low-observable"
+    }
+  ]
+}
